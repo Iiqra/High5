@@ -3,16 +3,7 @@
 //#include <ctime>
 //#include "Message.h"
 //#include <iostream>
-//
-//class request {
-//public:
-//	char type;
-//	char sender[6];
-//	char recipient[6];
-//	int length;
-//
-//	unsigned char* buffer;
-//};
+//#include "Message.h"
 //
 //void processmessage(std::string raw, request & r) {
 //	int pointer = 0;

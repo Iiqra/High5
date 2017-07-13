@@ -19,26 +19,44 @@ public:
 	std::string fileextension;
 	int length;
 	std::string actualcontent;
-
-};
-class MessageHelper {
-
-	void readmessage(MessageEntity);
-	bool validateheader();
-	void processmessage(std::string actionType);
-	void sendresponse(std::string);
-	void discardmessage(MessageEntity, int id);
-
 };
 
+class request {
+public:
+	char type;
+	char sender[6];
+	char recipient[6];
+	int length;
 
-class request :public MessageEntity {
-
-
+	unsigned char* buffer;
 };
 
 class response {
-
-
-
+	enum ResponseType { Invalid, HeaderError, Blocked, Unauthorized };
+public:
+	ResponseType type;
+	char message[19];
 };
+
+// 
+class MessageHelper {
+public:
+	static response processmessage(request r);
+};
+
+/*
+pmsg (r) {
+
+  if(r.tye == register || r.type == login) { 
+       // process
+	   if(successfull) {
+	      // store the socket
+	   }
+  } else {
+	  // store the mst
+	  // generate response 
+  }
+
+  return response
+}
+*/

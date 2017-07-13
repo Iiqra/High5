@@ -2,7 +2,11 @@
 #include <string>
 #include <stdio.h>
 #include <ctime>
-inline std::string NowTime();
+
+inline std::string NowTime() {
+	time_t t;
+	return ctime(&t);
+}
 
 enum TLogLevel { logERROR, logWARNING, logINFO, logDEBUG };
 
@@ -15,10 +19,9 @@ public:
 	void logger(TLogLevel level , int l, int ecode, time_t dt, std::string coninfo);
 	
    private:
-	std::ostringstream os;
 	int line;
-	int Errorcode;
-	time_t datetime;
-	std::string connectioninfo;
+	int errorcode;
+	std::string datetime;
+	std::string clientinfo;
 };
 

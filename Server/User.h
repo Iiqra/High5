@@ -13,3 +13,11 @@ public:
 	void deleteUser(std::string userId);
 	void updateProfile(std::string userId);
 };
+
+
+
+/*
+1- class diagram finishing.
+2- sequence of functions and their structure. 
+ 
+*/

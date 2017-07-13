@@ -3,6 +3,30 @@
 #include "ace/Log_Msg.h"
 #include <iostream>
 #include "ace/OS.h"
+#include "Message.h"
+
+
+class Connection {
+public:
+	int id;
+	ACE_SOCK_Stream *socket;
+	std::string userid;
+
+	Connection(int i, ACE_SOCK_Stream *sock, std::string userid) :
+		id(i), socket(sock), userid(userid) {}
+};
+
+class ClientManager {
+
+public:
+	static std::vector<Connection> connections;
+
+	static void addconnection(Connection conn);
+
+	static void removeconnection(int id);
+
+	static void getpeerinfo(std::string userid, Connection &connection);
+};
 
 #define SIZE 10
 int id = 1;
@@ -14,11 +38,21 @@ public:  Service_Handler() {
 	}
 	int handle_input(ACE_HANDLE handle) override
 	{	
-		
         bytereceived = get_stream().recv_n(data,SIZE);
 
 		bytesend = get_stream().send_n(data, bytereceived);
-	
+		request r;
+
+		if (r.type = 1) // login
+		{
+			Connection con(1, &get_stream(), "someone");
+			ClientManager::addconnection(con); // con stored
+		}
+		auto response = MessageHelper::processmessage(r);
+
+
+		// C:\First\Second\Third\folder.txt
+
 	/*data[rec_cnt] = '\0';
 	printf("\r\nClient said");
 	std::cout <<data<<std::endl;*/
@@ -57,11 +91,9 @@ public:
 			0, // timeout
 			1) == -1) //restart if interrupted
 			ACE_DEBUG((LM_ERROR, "Error in connection (%P|%t)\n"));
-
-     		
 			ACE_DEBUG((LM_DEBUG, "Connection established from %s\n", peer_name));
-		
-		
+		//<ip:500087>
+  //<ip:50086>
 		ACE_Reactor::instance()->
 			register_handler(eh, ACE_Event_Handler::READ_MASK);
 		return 0;

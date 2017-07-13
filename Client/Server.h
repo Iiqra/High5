@@ -11,11 +11,21 @@
 #include "ace/OS.h"
 #include "ace/Task.h"
 #include "ClientManager.h"
+#include "Message.h"
 
 class Service_Handler : public ACE_Event_Handler{
 	int handle_input(ACE_HANDLE handle);
 	ACE_HANDLE get_handle(void);
-	ACE_SOCK_Stream &peer_i();	
+	ACE_SOCK_Stream &peer_i();
+
+	int handle_input(ACE_HANDLE h) override {
+		auto buffer = peer_.recv(b, 50);
+		request r;
+
+		// buffer prcoessing
+		auto response = MessageHelper::prcoessmessage(r);
+
+	}
 private:
 	ACE_SOCK_Stream peer_;
 	char data[10] = { 0 };
@@ -30,3 +40,5 @@ public:
 private:
 	ACE_SOCK_Stream peer;
 };
+
+// this will onlly manage client info, maintain there status (active now or not)

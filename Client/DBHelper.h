@@ -21,3 +21,11 @@ private:
 	 int _status;
 };
 	
+
+/*
+
+class 
+
+x=connection not found..
+logger -> (,,
+*/
