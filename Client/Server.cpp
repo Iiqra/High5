@@ -130,13 +130,13 @@
 //
 //	int id = std::stoi(buffer);
 //
-//	auto cons = ConnectionManager::connections;
+//	/*auto cons = ConnectionManager::connections;
 //
 //	for (auto con : cons) {
 //	if (con.id == id) {
 //	con.socket.send_n("1", 1);
 //	}
-//	}
+//	}*/
 //
 //	// 1. Backend thread for database
 //	// 2. ConnectionManager -- > List

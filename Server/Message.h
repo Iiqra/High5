@@ -2,9 +2,6 @@
 #include<vector>
 #include <ctime>
 
-
-
-
 class MessageEntity {
 	enum MessageType {Register, Login,Message, Group, Broadcast, Image, File};
 	
@@ -23,7 +20,25 @@ public:
 	int length;
 	std::string actualcontent;
 
-	void fetchMessage(MessageEntity);
-	bool validateMessage();
-	void processMessage(std::string actionType);
+};
+class MessageHelper {
+
+	void readmessage(MessageEntity);
+	bool validateheader();
+	void processmessage(std::string actionType);
+	void sendresponse(std::string);
+	void discardmessage(MessageEntity, int id);
+
+};
+
+
+class request :public MessageEntity {
+
+
+};
+
+class response {
+
+
+
 };
