@@ -5,7 +5,7 @@
 #include "ace/OS.h"
 #include <iostream>
 #include <string>
-#define SIZE 30
+#define SIZE 10
 using namespace std;
 int ACE_TMAIN(int, ACE_TCHAR *[])
 {
@@ -17,21 +17,22 @@ int ACE_TMAIN(int, ACE_TCHAR *[])
 			ACE_TEXT("%p\r\n"),
 			ACE_TEXT("connect")), 100);
 	//char buff[BUFFER];
-	int bc;
-	char buff[SIZE] = { 0 };
+	int bs, br;
+	char buff[SIZE] = {0};
 	// to send mxg 
 	//string cName;
 	//ACE_OS::printf("\n Give a Client Name\n");
 	//std::cin >> cName;
 	while (true)
 	{
+		//buff[SIZE] = { 0 };
 		ACE_OS::printf("\r\nEnter data to send ");
 		ACE_OS::read(ACE_STDIN, buff, sizeof(buff));
 
-		peer.send_n(buff, sizeof(buff));
+		bs=peer.send(buff, sizeof(buff));
 		// to rcv from server 
-		bc = peer.recv(buff, sizeof(buff));
-		_write(1, buff, bc);
+		br = peer.recv_n(buff, sizeof(buff));
+		_write(1, buff, br);
 	}
 
 	peer.close();

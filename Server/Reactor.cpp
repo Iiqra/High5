@@ -10,9 +10,12 @@ public:
 	Service_Handler() {
 		ACE_DEBUG((LM_DEBUG, "Input Handler Constructor\r\n"));
 	}
-	int handle_input(ACE_HANDLE handle) override {
-	int rec_cnt = peer_i().recv_n(data,SIZE);
-	peer_i().send_n(data, rec_cnt);
+	int handle_input(ACE_HANDLE handle) override
+	
+	{	
+		int rec_cnt = peer_i().recv_n(data,SIZE);
+
+		peer_i().send_n(data, rec_cnt);
 	
 	/*data[rec_cnt] = '\0';
 	printf("\r\nClient said");
