@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="ClientAcceptor" Collapsed="true">
+    <Position X="0.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAEAAAAAAAAAAAAACAAQAAAAgAAAAAAAABAAAAAAAA=</HashCode>
+      <FileName>C:\Users\iali\Documents\Visual Studio 2015\Projects\C++\ACE\High5\High5\Client\Server.cpp</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ClientService" Collapsed="true">
+    <Position X="2.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAEEAAAAAIAAAAAACAABAAAAgAAAIAAAABAAAAAAAA=</HashCode>
+      <FileName>C:\Users\iali\Documents\Visual Studio 2015\Projects\C++\ACE\High5\High5\Client\Server.cpp</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="request" Collapsed="true">
+    <Position X="2.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAgAAAAAAAAAAAAAAMAAAAAAAAABAAAAAABAAAAAAAA=</HashCode>
+      <FileName>Message.cpp</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MessageEntity" Collapsed="true">
+    <Position X="4" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEgAAABAAAAAAAAAAJAAAAAAAAABAAAAAAAAAAAEAgA=</HashCode>
+      <FileName>C:\Users\iali\Documents\Visual Studio 2015\Projects\C++\ACE\High5\High5\Client\DBHelper.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MessageTable" Collapsed="true">
+    <Position X="0.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAABAAAAgAAAAAAAAAAAAAA=</HashCode>
+      <FileName>C:\Users\iali\Documents\Visual Studio 2015\Projects\C++\ACE\High5\High5\Client\DBHelper.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="UserTable" Collapsed="true">
+    <Position X="0.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>C:\Users\iali\Documents\Visual Studio 2015\Projects\C++\ACE\High5\High5\Client\DBHelper.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="User" Collapsed="true">
+    <Position X="4" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAABAAAAAAAAAAACAAAAAAAAAAAIAAIAAAAAhEAAAQ=</HashCode>
+      <FileName>User.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
