@@ -1,10 +1,14 @@
 #include<string>
 
-class User {
+class UserEntity {
+public:
 	int userId;
 	std::string userName;
 	std::string password;
 	bool isactive;
+};
+
+class UserManager{
 public:
 	void registerUser(std::string, std::string password);
 	void authenticateUser();
@@ -13,8 +17,6 @@ public:
 	void deleteUser(std::string userId);
 	void updateProfile(std::string userId);
 };
-
-
 
 /*
 1- class diagram finishing.

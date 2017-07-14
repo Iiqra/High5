@@ -65,7 +65,7 @@
 //	}
 //}
 //
-//int main() {
+//int mmain() {
 //	std::string first = "1pervrtfineld00000010,wfrr0jfw";  // type 1 byte  1
 //	// "Type=1|From=Bar|To=Bar|Length=255|hdfknfkjsf"
 //	//  1. Split into string arrays ... using | 

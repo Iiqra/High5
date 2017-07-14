@@ -5,8 +5,12 @@
 #include "ace/OS.h"
 #include <iostream>
 #include <string>
-#define SIZE 10
+#include "User.h"
+#include "MessageProtocol.h"
+
+#define SIZE 5
 using namespace std;
+ //static enum MessageType { Register = 1, Login, Message, Group, Broadcast, Image, File };
 int ACE_TMAIN(int, ACE_TCHAR *[])
 {
 	ACE_INET_Addr srvr(50009, ACE_LOCALHOST);
@@ -19,25 +23,38 @@ int ACE_TMAIN(int, ACE_TCHAR *[])
 	//char buff[BUFFER];
 	int bs, br;
 	char buff[SIZE] = {0};
-	// to send mxg 
-	//string cName;
-	//ACE_OS::printf("\n Give a Client Name\n");
-	//std::cin >> cName;
 	while (true)
 	{
-		//buff[SIZE] = { 0 };
-		ACE_OS::printf("\r\nEnter data to send ");
-		ACE_OS::read(ACE_STDIN, buff, sizeof(buff));
-
-		bs=peer.send(buff, sizeof(buff));
+    ACE_OS::printf("Enter 1 for login\r\n Enter 2 for Text Message\r\n");
+	char choice;
+	std::cin >>choice;
+	UserEntity *user = new UserEntity(); 
+	request *r = new request();
+	
+	switch (choice) {
+	case '1':
+	{
+		/*user->userName=  "someone";
+		user->password = "Password";*/
+		r->type = MessageType::Register;
+    	//const int size= r->length = 20;
+		char buffer[20];
+		r->buffer = "usernameeepassworddd"; 
+	}
+		break;
+	case '2':
+		r->type = MessageType::Message;
+		r->length = 10;
+		r->buffer = "heyyouten!";
+		break;
+	}
+	ACE_OS::read(ACE_STDIN, buff, 5);
+		bs=peer.send_n(buff, 5);
 		// to rcv from server 
-		br = peer.recv_n(buff, sizeof(buff));
+		br = peer.recv_n(buff, bs);
 		_write(1, buff, br);
 	}
-
 	peer.close();
-
-	system("pause");
 	return (0);
 }
 //   bc = peer.recv(buff, 6);

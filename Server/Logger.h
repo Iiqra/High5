@@ -10,11 +10,11 @@ inline std::string NowTime() {
 
 enum TLogLevel { logERROR, logWARNING, logINFO, logDEBUG };
 
-class Log
+class LogManager
 {
 public:
-	Log();
-	virtual ~Log();
+	LogManager();
+	virtual ~LogManager();
 	std::ostringstream& Get(TLogLevel level = logINFO);
 	void logger(TLogLevel level , int l, int ecode, time_t dt, std::string coninfo);
 	

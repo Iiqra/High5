@@ -1,35 +1,21 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
-  <Class Name="Service_Handler">
-    <Position X="2.75" Y="0.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAEAAAAAAAAAAAAAAABAIAAAAAIAAAABABQAAAAACA=</HashCode>
-      <FileName>Reactor.cpp</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="Accept_Handler">
-    <Position X="1" Y="0.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAEAAAAAAAAAAAAACAAQAAAAAAAAAAACABAAAAAAAA=</HashCode>
-      <FileName>Reactor.cpp</FileName>
-    </TypeIdentifier>
-  </Class>
   <Class Name="Connection">
-    <Position X="4.5" Y="0.5" Width="1.5" />
+    <Position X="3.5" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAACAAAAEAAAAAAAAAAAAAAAAAAAEAAAAAAgA=</HashCode>
       <FileName>C:\Users\iali\Documents\Visual Studio 2015\Projects\C++\ACE\High5\High5\Client\ClientManager.h</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="ClientManager">
-    <Position X="6.25" Y="0.5" Width="1.5" />
+    <Position X="5.25" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAIAAAAAAAAAAAAAAAAAAAIAAAAQAAIAAAAAAAAAA=</HashCode>
       <FileName>C:\Users\iali\Documents\Visual Studio 2015\Projects\C++\ACE\High5\High5\Client\ClientManager.h</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="DbConnection">
-    <Position X="6.5" Y="2.5" Width="1.5" />
+    <Position X="7" Y="0.5" Width="1.5" />
     <NestedTypes>
       <Enum Name="DbConnection::commandType" Collapsed="true">
         <TypeIdentifier>
@@ -42,53 +28,78 @@
       <FileName>C:\Users\iali\Documents\Visual Studio 2015\Projects\C++\ACE\High5\High5\Client\DBHelper.h</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Log">
-    <Position X="2.75" Y="3.25" Width="1.5" />
+  <Class Name="LogManager">
+    <Position X="8.75" Y="0.5" Width="1.25" />
     <TypeIdentifier>
-      <HashCode>AEEAAAAQAAAAAABCAAAAAAAAAAgAAIAAAAEAAAAAAAA=</HashCode>
+      <HashCode>AEEAAAAAAAAABABCAAAAAAAABAAAAAAIAAAAAAAgAAA=</HashCode>
       <FileName>Logger.h</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="MessageEntity">
-    <Position X="8.25" Y="0.5" Width="1.5" />
-    <Compartments>
-      <Compartment Name="Nested Types" Collapsed="false" />
-    </Compartments>
+  <Class Name="ProtocolManager">
+    <Position X="2" Y="0.5" Width="1.25" />
     <NestedTypes>
-      <Enum Name="MessageEntity::MessageType" Collapsed="true">
+      <Enum Name="ProtocolManager::MessageType" Collapsed="true">
         <TypeIdentifier>
-          <NewMemberFileName>Message.h</NewMemberFileName>
+          <NewMemberFileName>MessageProtocol.h</NewMemberFileName>
         </TypeIdentifier>
       </Enum>
     </NestedTypes>
     <TypeIdentifier>
-      <HashCode>AEgCAABAAAAAAQAAAMAAAAAACAABAAAAAAAAAAAEAAA=</HashCode>
-      <FileName>Message.h</FileName>
+      <HashCode>AGgCAABAAAQAEQAAAMAAAAAASAABAABAAAAIAAAMAAA=</HashCode>
+      <FileName>MessageProtocol.h</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="User">
-    <Position X="4.5" Y="2.75" Width="1.5" />
+  <Class Name="request">
+    <Position X="3.5" Y="2.5" Width="1.25" />
     <TypeIdentifier>
-      <HashCode>AAAABAAAAAAAAAAACAAAABAAAAAAIAAIEAAAAhEAAAQ=</HashCode>
+      <HashCode>AAgAAAAAAAAAAAAAAMAAAAAAAAABAAAAAABAAAAAAAA=</HashCode>
+      <FileName>MessageProtocol.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="response">
+    <Position X="4.75" Y="2.75" Width="1.25" />
+    <NestedTypes>
+      <Enum Name="response::ResponseType" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>MessageProtocol.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAACA=</HashCode>
+      <FileName>MessageProtocol.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="UserEntity">
+    <Position X="7.25" Y="4" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAACAAAABAAAAAAAAAAAAAAAgEAAAA=</HashCode>
       <FileName>User.h</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="MessageHelper">
-    <Position X="8.25" Y="4.5" Width="1.5" />
+  <Class Name="UserManager">
+    <Position X="5.75" Y="3.75" Width="1.25" />
     <TypeIdentifier>
-      <HashCode>AAAAAAQAAAABAAAAAAAAAAAAAAAAAAQAAAAAEBAAAAA=</HashCode>
-      <FileName>Message.h</FileName>
+      <HashCode>AAAABAAAAAAAAAAAAAAAAAAAAAAAIAAIEAAAABAAAAQ=</HashCode>
+      <FileName>User.h</FileName>
     </TypeIdentifier>
   </Class>
-  <Typedef Name="Acceptor" Collapsed="true">
-    <Position X="0.75" Y="3" Width="1.5" />
+  <Class Name="ServiceHandler">
+    <Position X="2.25" Y="2.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Reactor.cpp</FileName>
+      <HashCode>AAAEAAAAAAAAAAAAAAAAAAAAAAAIAAAABABQAAAAACA=</HashCode>
+      <FileName>C:\Users\iali\Documents\Visual Studio 2015\Projects\C++\ACE\High5\High5\Client\Server.h</FileName>
     </TypeIdentifier>
-  </Typedef>
+  </Class>
+  <Class Name="AcceptHandler">
+    <Position X="0.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAEAAAAAAIAAAAAACAAAAAAAAAAAAAAAABAAAAAAAA=</HashCode>
+      <FileName>C:\Users\iali\Documents\Visual Studio 2015\Projects\C++\ACE\High5\High5\Client\Server.h</FileName>
+    </TypeIdentifier>
+  </Class>
   <Enum Name="TLogLevel">
-    <Position X="0.5" Y="3.75" Width="1.5" />
+    <Position X="9" Y="3.5" Width="1.25" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAACAAAAAAAAAAAAAAAAACCAAAAAAAAAEAAAA=</HashCode>
       <FileName>Logger.h</FileName>
