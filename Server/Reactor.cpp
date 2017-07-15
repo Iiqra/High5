@@ -11,9 +11,11 @@ public:
 	}
 	int handle_input(ACE_HANDLE handle) override {
 		
-		bytereceived = get_stream().recv_n(data, 5);
+		bytereceived = get_stream().recv_n(data, 20); 
+		// rceived string from client now. encapsulate it into object.
 
-		bytesend = get_stream().send_n(data, bytereceived);
+
+		//bytesend = get_stream().send_n(data, bytereceived);
 		return 0;
 	}
 	ACE_HANDLE get_handle(void) const override
@@ -23,6 +25,10 @@ public:
 	ACE_SOCK_Stream &
 	get_stream() {
 		return this->peer_;
+	}
+
+	static void callfromprotocolhelper() {
+
 	}
 private:
 	ACE_SOCK_Stream peer_;
@@ -67,3 +73,5 @@ int main(int argc, char * argv[]) {
 	while (1)
 		ACE_Reactor::instance()->run_reactor_event_loop();
 }
+
+

@@ -25,34 +25,36 @@ int ACE_TMAIN(int, ACE_TCHAR *[])
 	char buff[SIZE] = {0};
 	while (true)
 	{
-    ACE_OS::printf("Enter 1 for login\r\n Enter 2 for Text Message\r\n");
-	char choice;
-	std::cin >>choice;
-	UserEntity *user = new UserEntity(); 
-	request *r = new request();
+		ACE_OS::printf("Enter 1 for login\r\n Enter 2 for Text Message\r\n");
+		char choice;
+		std::cin >>choice;
+		// UserEntity *user = new UserEntity(); 
 	
-	switch (choice) {
-	case '1':
-	{
-		/*user->userName=  "someone";
-		user->password = "Password";*/
-		r->type = MessageType::Register;
-    	//const int size= r->length = 20;
-		char buffer[20];
-		r->buffer = "usernameeepassworddd"; 
-	}
-		break;
-	case '2':
-		r->type = MessageType::Message;
-		r->length = 10;
-		r->buffer = "heyyouten!";
-		break;
-	}
-	ACE_OS::read(ACE_STDIN, buff, 5);
-		bs=peer.send_n(buff, 5);
-		// to rcv from server 
-		br = peer.recv_n(buff, bs);
-		_write(1, buff, br);
+		request r;
+		switch (choice) {
+			case '1':
+				/*user->userName=  "someone";
+				user->password = "Password";*/
+				r.type = MessageType::Register;
+    			//const int size= r->length = 20;
+				char buffer[20] = "0usernameepasswordd";
+				r.buffer = buffer;
+
+				// 10020usernameepassword
+
+				bs = peer.send_n("", 20);
+				break;
+			case '2':
+				r.type = MessageType::Message;
+				r.length = 10;
+				r.buffer = "heyyouten!";
+				break;
+		}
+		ACE_OS::read(ACE_STDIN, buff, 5);
+			bs=peer.send_n(buff, 5);
+			// to rcv from server 
+			br = peer.recv_n(buff, bs);
+			_write(1, buff, br);
 	}
 	peer.close();
 	return (0);
@@ -117,3 +119,9 @@ else break;
 //
 //	return (0);
 //}
+
+/*
+
+request(string) ---> server-- 1- encapsulate that string into object..... 
+
+*/

@@ -1,22 +1,24 @@
 #include<string>
 
-class UserEntity {
-public:
-	int userId;
-	std::string userName;
-	std::string password;
-	bool isactive;
-};
 
-class UserManager{
-public:
-	void registerUser(std::string, std::string password);
-	void authenticateUser();
-	void blockUser(std::string blockerId, std::string targetId);
-	void searchUser(std::string userId);
-	void deleteUser(std::string userId);
-	void updateProfile(std::string userId);
-};
+
+//class UserEntity {
+//public:
+//	int userId;
+//	std::string userName;
+//	std::string password;
+//	bool isactive;
+//};
+
+//class UserManager{
+//public:
+//	void registerUser(std::string, std::string password);
+//	void authenticateUser();
+//	void blockUser(std::string blockerId, std::string targetId);
+//	void searchUser(std::string userId);
+//	void deleteUser(std::string userId);
+//	void updateProfile(std::string userId);
+//};
 
 /*
 1- class diagram finishing.

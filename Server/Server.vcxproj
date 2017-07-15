@@ -163,7 +163,6 @@
     <ClInclude Include="..\Client\DBHelper.h" />
     <ClInclude Include="..\Client\Server.h" />
     <ClInclude Include="AllHeaders.h" />
-    <ClInclude Include="cm.h" />
     <ClInclude Include="Logger.h" />
     <ClInclude Include="MessageProtocol.h" />
     <ClInclude Include="User.h" />

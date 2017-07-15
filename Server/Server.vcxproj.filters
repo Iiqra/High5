@@ -56,9 +56,6 @@
     <ClInclude Include="AllHeaders.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="cm.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="User.h">
       <Filter>Header Files</Filter>
     </ClInclude>
