@@ -32,7 +32,9 @@ int ACE_TMAIN(int, ACE_TCHAR *[])
 	
 		request r;
 		switch (choice) {
-			case '1':
+			case '1': // 255
+
+				// char type = something; char type = "255"; --> char type = (char) 255; int typecode = (int) type;
 				/*user->userName=  "someone";
 				user->password = "Password";*/
 				r.type = MessageType::Register;

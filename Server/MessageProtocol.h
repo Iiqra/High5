@@ -4,6 +4,7 @@
 #include <string>
 #include <sstream>
 #include "User.h"
+// #include "ClientManager.h"
 
 
 class request;
@@ -82,15 +83,16 @@ public:
 	char* buffer;
 };
 class requesthelper {
+public:
+
+
 	static RequestStatus validate_request(request& r) {
-		
+		// if(r.length != r.buffer.size())  {}
 
 		return RequestStatus::OK;
 	}
 
-	static response* process_message(request& r, RequestStatus status) {
-		response *resp = responsehelper::createresponse(status);
-
+	static void process_message(request& r, RequestStatus status, response &resp) {
 		if (status == RequestStatus::OK) {
 			switch (r.type)
 			{
@@ -99,11 +101,43 @@ class requesthelper {
 				break;
 			case Login:
 				// UserHelper login
+			case Message:
+				auto cons = ClientMessage::connections;
+
+				for (auto con : cons) {
+					if (r.recipient == con.userid) {
+						auto str = responsehelper::parseresponse(resp);
+						con.socket.send_n(str, str.size());
+					}
+				}
+				break;
+			case Group: 
+				auto cons = ClientMessage::connections;
+
+				std::vector<User> users = DbHelper::groupclientinfo();
+				for (auto us : users) {
+					for (auto con : cons) {
+						if (us.userid == con.userid) {
+							auto str = responsehelper::parseresponse(resp);
+							con.socket.send_n(str, str.size());
+						}
+					}
+				}
+				break;
+			case Broadcast:
+				// 1. Get client sockets
+				// 2. Tell DbHelper to log all msgs -- broadcasts go to all
+				// 3. Send message to online people. 
+				auto cons = ClientManager::connections;
+				for (auto con : cons) {
+					con.stream.send_n();
+				}
 				break;
 				// Others
 			}
 		}
 		else if (status == RequestStatus::Blocked) {
+			resp.type == ResponseType::Blocked;
 		}
 		else if (status == RequestStatus::Invalid || status == RequestStatus::HeaderError) {
 			// LOg the information
@@ -111,8 +145,6 @@ class requesthelper {
 		else if (status == RequestStatus::Unauthorized) {
 			// Log unauth access
 		}
-
-		return resp;
 	}
 
 	static request* createrequest(MessageType type, std::string sender, std::string recipient) {
@@ -137,6 +169,24 @@ class requesthelper {
 		}
 	}
 
+	static RequestStatus parseheader(std::string str, request &r) {
+		int type = std::stoi(&str[0]);
+
+		// Register
+		if (type == 1) {
+			auto length = new char[4];
+			length[0] = str[1];
+			length[1] = str[2];
+			length[2] = str[3];
+			length[3] = str[4];
+
+			int _length = std::stoi(length);
+		} // else cases
+
+		// Check validations
+		return validate_request(r);
+	}
+
 	static std::string parserequest(request& r) {
 		std::stringstream str;
 		switch (r.type)
@@ -144,7 +194,6 @@ class requesthelper {
 		case Register:
 			str << "1";
 			str << "0020";
-
 			str << r.buffer;
 			break;
 		case Login:
@@ -220,6 +269,10 @@ public:
 			break;
 		}
 		return r;
+	}
+
+	static std::string parseresponse(response &r) {
+		// here.
 	}
 };
 

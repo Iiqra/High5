@@ -1,6 +1,8 @@
 #include "ace/Reactor.h"
 #include "ace/SOCK_Acceptor.h"
 #include "ace/Log_Msg.h"
+#include "MessageProtocol.h"
+
 #define SIZE 5
 typedef ACE_SOCK_Acceptor Acceptor;
 class Accept_Handler;
@@ -11,11 +13,31 @@ public:
 	}
 	int handle_input(ACE_HANDLE handle) override {
 		
-		bytereceived = get_stream().recv_n(data, 20); 
+		bytereceived = get_stream().recv_n(data, 17);
 		// rceived string from client now. encapsulate it into object.
 
+		request r;
+		requesthelper::parseheader(std::string(data), r);
+
+		r.buffer = new char[r.length];
+		get_stream().recv_n(r.buffer, r.length);
+
+		RequestStatus rStatus = requesthelper::validate_request(r);
+		response resp;
+		requesthelper::process_message(r, rStatus, resp);
+
+		std::string responseStr = responsehelper::parseresponse(resp);
+
+		// 1. Parse -- deserialize
+		// 2. Validate -- length fine? headers? banned?
+		// 3. Process the response.
+		// 4. Send the response.
+
+		
 
 		//bytesend = get_stream().send_n(data, bytereceived);
+		char* responseBuffer = responseStr;
+		get_stream().send_n(responseStr, responseStr.size());
 		return 0;
 	}
 	ACE_HANDLE get_handle(void) const override
@@ -27,12 +49,9 @@ public:
 		return this->peer_;
 	}
 
-	static void callfromprotocolhelper() {
-
-	}
 private:
 	ACE_SOCK_Stream peer_;
-	char data[5] = { 0 };
+	char data[17] = { 0 };
 	int bytesend=0, bytereceived=0;
 };
 class Accept_Handler : public ACE_Event_Handler {

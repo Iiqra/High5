@@ -13,10 +13,12 @@ enum TLogLevel { logERROR, logWARNING, logINFO, logDEBUG };
 class LogManager
 {
 public:
-	LogManager();
-	virtual ~LogManager();
-	std::ostringstream& Get(TLogLevel level = logINFO);
-	void logger(TLogLevel level , int l, int ecode, time_t dt, std::string coninfo);
+	std::ostringstream& Get(TLogLevel level = logINFO) {
+
+	}
+	void logger(TLogLevel level, int l, int ecode, time_t dt, std::string coninfo) {
+
+	}
 	
    private:
 	int line;
