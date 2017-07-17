@@ -12,15 +12,25 @@ public:
 		ACE_DEBUG((LM_DEBUG, "Input Handler Constructor\n"));
 	}
 	int handle_input(ACE_HANDLE handle) override {
-		
-		bytereceived = get_stream().recv_n(data, 17);
-		// rceived string from client now. encapsulate it into object.
+		spec= get_stream().recv_n(data, 17);
+		_write(1, data, 17);
+	//	spec = std::stoi(&data[0]);
+	//	if (spec== 1) {  // register or login request
+	//		printf("call login helper here");
+	//		// parse header -- validate header-- process request-- send response
+	//		_write(1, data, 17);
+	//	}
+	//	else if (spec==2){
+	//		printf("call message helper here ");
+	//	_write(1, data, 17);   // ill read jusr the header here and then pass it to get parsed 
+	//}
+	//	// rceived string from client now. encapsulate it into object.
 
 		request r;
 		requesthelper::parseheader(std::string(data), r);
-
-		r.buffer = new char[r.length];
-		get_stream().recv_n(r.buffer, r.length);
+		//
+		////r.buffer = new char[r.length];
+		spec= get_stream().recv_n(r.buffer, r.length);
 
 		RequestStatus rStatus = requesthelper::validate_request(r);
 		response resp;
@@ -28,7 +38,7 @@ public:
 
 		std::string responseStr = responsehelper::parseresponse(resp);
 
-		// 1. Parse -- deserialize
+		// 1. Parse -- deserialize - convert bytes into object instance.
 		// 2. Validate -- length fine? headers? banned?
 		// 3. Process the response.
 		// 4. Send the response.
@@ -36,8 +46,8 @@ public:
 		
 
 		//bytesend = get_stream().send_n(data, bytereceived);
-		char* responseBuffer = responseStr;
-		get_stream().send_n(responseStr, responseStr.size());
+		/*char* responseBuffer = responseStr;
+		get_stream().send_n(responseStr, responseStr.size());*/
 		return 0;
 	}
 	ACE_HANDLE get_handle(void) const override
@@ -51,8 +61,11 @@ public:
 
 private:
 	ACE_SOCK_Stream peer_;
-	char data[17] = { 0 };
-	int bytesend=0, bytereceived=0;
+	char data[100] = { 0 };
+	char specifier[1] = { 0 };
+	int bytesend = 0, bytereceived = 0;
+	int spec = 0; 
+
 };
 class Accept_Handler : public ACE_Event_Handler {
 public:

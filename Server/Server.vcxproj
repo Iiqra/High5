@@ -89,7 +89,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\ACE-6.4.0\ACE_wrappers;C:\ACE-6.4.3\ACE_wrappers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\iali\Documents\Visual Studio 2015\Projects\C++\ACE\High5\High5\Client;C:\ACE-6.4.0\ACE_wrappers;C:\ACE-6.4.3\ACE_wrappers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -155,7 +155,7 @@
     <ClCompile Include="..\Client\Server.cpp" />
     <ClCompile Include="Logger.cpp" />
     <ClCompile Include="Message.cpp" />
-    <ClCompile Include="Reactor.cpp" />
+    <ClCompile Include="MainServer.cpp" />
     <ClCompile Include="User.cpp" />
   </ItemGroup>
   <ItemGroup>

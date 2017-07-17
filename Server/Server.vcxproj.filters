@@ -30,10 +30,10 @@
     <ClCompile Include="Logger.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Reactor.cpp">
+    <ClCompile Include="..\Client\ClientManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\Client\ClientManager.cpp">
+    <ClCompile Include="MainServer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

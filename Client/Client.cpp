@@ -22,108 +22,37 @@ int ACE_TMAIN(int, ACE_TCHAR *[])
 			ACE_TEXT("connect")), 100);
 	//char buff[BUFFER];
 	int bs, br;
-	char buff[SIZE] = {0};
+	char buff[SIZE] = { 0 }; int send;
 	while (true)
 	{
 		ACE_OS::printf("Enter 1 for login\r\n Enter 2 for Text Message\r\n");
 		char choice;
-		std::cin >>choice;
-		// UserEntity *user = new UserEntity(); 
-	
-		request r;
+		std::cin >>choice;	
+		request r; //char buffer[20];
 		switch (choice) {
-			case '1': // 255
-
-				// char type = something; char type = "255"; --> char type = (char) 255; int typecode = (int) type;
-				/*user->userName=  "someone";
-				user->password = "Password";*/
+			case '1': // register and login
 				r.type = MessageType::Register;
-    			//const int size= r->length = 20;
-				char buffer[20] = "0usernameepasswordd";
-				r.buffer = buffer;
-
+				r.buffer = "1000000000000002000000000un00000000pw";
 				// 10020usernameepassword
-
-				bs = peer.send_n("", 20);
+				
+			send=peer.send_n(r.buffer, (unsigned)strlen(r.buffer));
 				break;
-			case '2':
+			case '2': // message 
 				r.type = MessageType::Message;
+				strcpy_s(r.sender, "sndrid");
+				strcpy_s(r.recipient, "recvid");
+				//r.recipient = "recepient";
 				r.length = 10;
-				r.buffer = "heyyouten!";
+				r.buffer = "2sndridrecvid0010heyyouten!";
+				peer.send_n(r.buffer, 27);
 				break;
 		}
-		ACE_OS::read(ACE_STDIN, buff, 5);
-			bs=peer.send_n(buff, 5);
-			// to rcv from server 
-			br = peer.recv_n(buff, bs);
-			_write(1, buff, br);
+		//ACE_OS::read(ACE_STDIN, buff, 5);
+		//	bs=peer.send_n(buff, 5);
+		//	// to rcv from server 
+		//	br = peer.recv_n(buff, bs);
+		//	_write(1, buff, br);
 	}
 	peer.close();
 	return (0);
 }
-//   bc = peer.recv(buff, 6);
-
-/*while (1){
-if(buff != '\0')
-strcpy_s(buff2, buff);
-else break;
-}*/
-
-//_write(1, buff,6);
-
-
-//#include "ace/INET_Addr.h"
-//#include "ace/SOCK_Stream.h"
-//#include "ace/SOCK_Connector.h"
-//#include "ace/Log_Msg.h"
-//
-//int ACE_TMAIN(int, ACE_TCHAR *[])
-//{
-//	ACE_INET_Addr srvr(50000, ACE_LOCALHOST);
-//	/*we need address to the server to whcih client has to establish a 
-//	connection with the server*/
-//	
-//	ACE_SOCK_Connector connector;
-//	/*When connection is established, its time to get your socket 
-//	connected using that address*/
-//	
-//	ACE_SOCK_Stream peer;
-//	/*ACE represents a connected TCP socket with the 
-//	ACE_SOCK_Stream object*/
-//
-//	/*so named because a TCP connection represents a virtual connection, 
-//	or "stream" of bytes, as opposed to the connectionless 
-//	datagrams you get with UDP sockets. In order to actively 
-//	connect an ACE_SOCK_Stream to a server, we use an ACE_SOCK_Connector 
-//	and the ACE_INET_Addr */
-//
-//	if (-1 == connector.connect(peer, srvr))
-//    /*The connect() method is provided with the stream object to connect 
-//	and the address to which it should be connected.*/
-//		ACE_ERROR_RETURN((LM_ERROR,
-//			ACE_TEXT("%p\n"),
-//			ACE_TEXT("connect")), 1);
-//	/*The method then attempts to establish that relationship
-//	If successful, the ACE_SOCK_Stream is placed into a connected state,
-//	and we can use it to communicate with the server. At this point, 
-//	we can begin communicating*/
-//
-//	int bc;
-//	char buf[64];
-//
-//	peer.send_n("uptime\n", 7);
-//	/*ACE_SOCK_Stream inherits from a number of classes that are part of ACE's 
-//	design to properly abstract behavior away in layers. Although send_n() is a 
-//	method defined on ACE_SOCK_Stream*/
-//	bc = peer.recv(buf, sizeof(buf));
-//	_write(1, buf, bc);
-//	peer.close();
-//
-//	return (0);
-//}
-
-/*
-
-request(string) ---> server-- 1- encapsulate that string into object..... 
-
-*/
