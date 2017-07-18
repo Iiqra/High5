@@ -1,3 +1,4 @@
+#pragma once
 #include<string>
 #include<vector>
 #include <ctime>
@@ -8,9 +9,9 @@
 
 class request;
 class response;
- enum MessageType { Register = 1, Login, Message, Group, Broadcast, Image, File };
- enum RequestStatus { Invalid, HeaderError, Blocked, Unauthorized, OK };
- enum ResponseType { Invalid1, HeaderError1, Blocked1, Unauthorized1, OK1 };
+ enum class MessageType { Register = 1, Login, Message, Group, Broadcast, Image, File };
+ enum class RequestStatus { InvalidPacketLength, InvalidSenderId, InvalidReceiverId, InvalidRequestSpecifier, BlockedSender, BlockedRecipient,Unauthorized, OK};
+ enum class ResponseType { Invalid, HeaderError, Blocked, Unauthorized, OK};
 
 
 
@@ -47,14 +48,27 @@ class requesthelper {
 public:
 
      static RequestStatus validate_request(request& r) {
-		// if(r.length != r.buffer.size())  {}
+		 if (r.type != MessageType::Login || r.type != MessageType::Register || r.type != MessageType::Message || r.type != MessageType::Broadcast || r.type != MessageType::Group)
+			 return RequestStatus::InvalidRequestSpecifier;
 
+		 if (r.length != (unsigned)strlen(r.buffer))
+			 return RequestStatus::InvalidPacketLength;
+		 
+		if ((unsigned)strlen(r.sender) != 6 /* or sender wont be in DB #DBCALL*/)
+			 return RequestStatus::InvalidSenderId;
+
+		 //if (r.sender is in blocked list maintained at clientmanager side then this )
+		 return RequestStatus::BlockedSender;
+
+		 //if (r.recepient is in blocked list maintained at clientmanager side then this )
+		 return RequestStatus::BlockedRecipient;
+
+		 return RequestStatus::Unauthorized;
 		return RequestStatus::OK;
 	}
 
-	static void process_message(request& r, RequestStatus status, response &resp) {
+	static void process_message(const request& r, RequestStatus status, response &resp) {
 		if (status == RequestStatus::OK) {
-				
 		}
 				// UserHelper login
 			//case Message:
@@ -92,19 +106,19 @@ public:
 			//	// Others		
 			
 	
-		else if (status == RequestStatus::Blocked) {
-			//resp.type == ResponseType::Blocked;
-		}
-		else if (status == RequestStatus::Invalid || status == RequestStatus::HeaderError) {
-			// LOg the information
-		}
-		else if (status == RequestStatus::Unauthorized) {
-			// Log unauth access
-		}
+		//else if (status == RequestStatus::BlockedSender) {
+		//	//resp.type == ResponseType::Blocked;
+		//}
+		//else if (status == RequestStatus::Invalid || status == RequestStatus::HeaderError) {
+		//	// LOg the information
+		//}
+		//else if (status == RequestStatus::Unauthorized) {
+		//	// Log unauth access
+		//}
 	}
 
-	static request* createrequest(MessageType type, std::string sender, std::string recipient) {
-		switch (type)
+	/*static request* createrequest(MessageType type, std::string sender, std::string recipient) {
+		// switch (type)
 		{
 		case Register:
 			break;
@@ -123,49 +137,61 @@ public:
 		default:
 			break;
 		}
-	}
+	}*/
 
-	static RequestStatus parseheader(std::string str, request &r) {
-		int type = std::stoi(&str[0]);
+//	static RequestStatus parseheader(std::string str, request &r) {
+	static request parseheader(char str[17], request &r) {
 
-		// Register
-		if (type == 1) {
-			auto length = new char[4];
-			length[0] = str[1];
-			length[1] = str[2];
-			length[2] = str[3];
-			length[3] = str[4];
+		//senderID
+		int hIndex = 1, vIndex = 0;
+		r.sender[vIndex++] = str[hIndex++];
+		r.sender[vIndex++] = str[hIndex++];
+		r.sender[vIndex++] = str[hIndex++];
+		r.sender[vIndex++] = str[hIndex++];
+		r.sender[vIndex++] = str[hIndex++];
+		r.sender[vIndex++] = str[hIndex++];
+		//RecipientID
+		vIndex = 0;
+		r.recipient[vIndex++] = str[hIndex++];
+		r.recipient[vIndex++] = str[hIndex++];
+		r.recipient[vIndex++] = str[hIndex++];
+		r.recipient[vIndex++] = str[hIndex++];
+		r.recipient[vIndex++] = str[hIndex++];
+		r.recipient[vIndex++] = str[hIndex++];
 
-			int _length = std::stoi(length);
-		} // else cases
-
-		// Check validations
-		return validate_request(r);
+		//length
+		auto length = new char[4];
+		length[0] = str[hIndex++]; // 13 ,14,15,16
+		length[1] = str[hIndex++];
+		length[2] = str[hIndex++];
+		length[3] = str[hIndex++];
+		r.length = std::stoi(length);
+		return r;
 	}
 
 	static std::string parserequest(request& r) {
 		std::stringstream str;
 		switch (r.type)
 		{
-		case Register:
+		case MessageType::Register:
 			str << "1";
 			str << "0020";
 			str << r.buffer;
 			break;
-		case Login:
+		case MessageType::Login:
 			str << "2";
 			str << "0020";
 
 			str << r.buffer;
 			break;
-		case Message:
+		case MessageType::Message:
 			str << "3";
 			str << r.sender;
 			str << r.recipient;
 			str << r.length;
 			str << r.buffer;
 			break;
-		case Group:
+		case MessageType::Group:
 
 			str << "4";
 			str << r.sender;
@@ -175,16 +201,16 @@ public:
 
 
 			break;
-		case Broadcast:
+		case MessageType::Broadcast:
 			str << "5";
 			str << r.sender;
 			str << r.recipient;
 			str << r.length;
 			str << r.buffer;
 			break;
-		case Image:
+		case MessageType::Image:
 			break;
-		case File:
+		case MessageType::File:
 			break;
 		default:
 			break;
@@ -197,32 +223,34 @@ public:
 class response {
 public:
 	ResponseType type;
+	char length[4];
+	char *buffer;
 };
 
 class responsehelper {
 public:
 	static response* createresponse(RequestStatus status) {
 		response *r = new response();
-		switch (status)
+		/*switch (status)
 		{
-		case Invalid:
-			r->type = ResponseType::Invalid1;
+		case RequestStatus::Invalid:
+			r->type = ResponseType::Invalid;
 			break;
-		case HeaderError:
-			r->type = ResponseType::HeaderError1;
+		case RequestStatus::HeaderError:
+			r->type = ResponseType::HeaderError;
 			break;
-		case Blocked:
-			r->type = ResponseType::Blocked1;
+		case RequestStatus::Blocked:
+			r->type = ResponseType::Blocked;
 			break;
-		case Unauthorized:
-			r->type = ResponseType::Unauthorized1;
+		case RequestStatus::Unauthorized:
+			r->type = ResponseType::Unauthorized;
 			break;
-		case OK:
-			r->type = ResponseType::OK1;
+		case RequestStatus::OK:
+			r->type = ResponseType::OK;
 			break;
 		default:
 			break;
-		}
+		}*/
 		return r;
 	}
 
@@ -234,3 +262,4 @@ public:
 };
 
 
+// 17, parse, validate, parse, install sql , separate project  -- output would be dll. connect,send request, and other client side functions, jjust taske input from cleint and how server will take it.

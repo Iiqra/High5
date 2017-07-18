@@ -89,7 +89,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\Users\iali\Documents\Visual Studio 2015\Projects\C++\ACE\High5\High5\Client;C:\ACE-6.4.0\ACE_wrappers;C:\ACE-6.4.3\ACE_wrappers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Iiqra\Source\Repos\High5FromGit\Client;C:\Users\iali\Documents\Visual Studio 2015\Projects\C++\ACE\High5\High5\Client;C:\ACE-6.4.0\ACE_wrappers;C:\ACE-6.4.3\ACE_wrappers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -157,6 +157,7 @@
     <ClCompile Include="Message.cpp" />
     <ClCompile Include="MainServer.cpp" />
     <ClCompile Include="User.cpp" />
+    <ClCompile Include="usermanager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Client\ClientManager.h" />
@@ -168,7 +169,9 @@
     <ClInclude Include="User.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="ClassDiagram.cd" />
+    <None Include="ClassDiagram.cd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="serverArchitecture2.cd" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

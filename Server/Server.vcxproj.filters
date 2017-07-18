@@ -36,6 +36,9 @@
     <ClCompile Include="MainServer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="usermanager.cpp">
+      <Filter>Header Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Client\Server.h">

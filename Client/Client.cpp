@@ -32,19 +32,21 @@ int ACE_TMAIN(int, ACE_TCHAR *[])
 		switch (choice) {
 			case '1': // register and login
 				r.type = MessageType::Register;
-				r.buffer = "1000000000000002000000000un00000000pw";
+				r.buffer = "100000000un00000000pw";
 				// 10020usernameepassword
 				
 			send=peer.send_n(r.buffer, (unsigned)strlen(r.buffer));
 				break;
 			case '2': // message 
 				r.type = MessageType::Message;
-				strcpy_s(r.sender, "sndrid");
-				strcpy_s(r.recipient, "recvid");
-				//r.recipient = "recepient";
-				r.length = 10;
-				r.buffer = "2sndridrecvid0010heyyouten!";
-				peer.send_n(r.buffer, 27);
+				//strcpy_s(r.sender, "sndrid");
+				//strcpy_s(r.recipient, "recvid");
+				////r.recipient = "recepient";
+				//r.length = 10;
+				r.buffer = "3XXXXXXYYYYYY0010";
+				//hicallme10
+			//	r.buffer = "2sndridrecvid0010heyyouten!";
+				peer.send_n(r.buffer, 17);
 				break;
 		}
 		//ACE_OS::read(ACE_STDIN, buff, 5);
