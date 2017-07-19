@@ -67,4 +67,7 @@
     <None Include="serverArchitecture2.cd" />
     <None Include="ClassDiagram.cd" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="190717- MainServer.txt" />
+  </ItemGroup>
 </Project>

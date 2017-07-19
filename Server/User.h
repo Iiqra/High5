@@ -1,6 +1,6 @@
 #pragma once
 #include<string>
-
+#include <map>
 
 class UserEntity {
 public:
@@ -10,19 +10,49 @@ public:
 	bool isactive;
 };
 
-enum userauthenticationstatus { OK, Exist, UsernamePasswordMismatch };
+enum userauthenticationstatus { OK, Exist, UsernamePasswordMismatch, UserNotfound };
+std::map<int, std::pair<std::string, std::string>> usertable;
+std::map<int, std::pair<std::string, std::string>>::iterator it;
+int id = 0;
 
 class UserManager {
 public:
-	static userauthenticationstatus registerUser(std::string, std::string password) {
-		// ok and exist cases implementation 
+	static userauthenticationstatus registerUser(std::string username, std::string password) {
+	
+		printf("\nInside register request!");
+		
+		
+		for (it = usertable.begin(); it != usertable.end(); it++)
+		{
+			if (username != it->second.first)
+			{
+				usertable.insert(std::make_pair(id++, std::make_pair(username, password)));
+			}
 
-		// #DBCALL 
+			else {
 
+				return userauthenticationstatus::Exist;
+			}
+		}
 		return userauthenticationstatus::OK;
 		// assign new id aftre checkig if already exists or not 
 	}
 	static userauthenticationstatus authenticateUser(std::string, std::string password) {
+		
+
+		//if (usertable.find(//id)!= 
+
+		for (it = usertable.begin(); it != usertable.end(); it++)
+		{
+			if (usertable.find(id) != usertable.end()) {
+				return userauthenticationstatus::UserNotfound;
+			}
+			//if (it->first !)
+		}
+
+
+
+
 		// it will check in the db againt the or the uname and pasword combination etc.. 
 		//#DBCALL
 		// ok and usernamepasswordmissmatch cases will be implemented here  

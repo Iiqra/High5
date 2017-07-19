@@ -48,8 +48,8 @@ class requesthelper {
 public:
 
      static RequestStatus validate_request(request& r) {
-		 if (r.type != MessageType::Login || r.type != MessageType::Register || r.type != MessageType::Message || r.type != MessageType::Broadcast || r.type != MessageType::Group)
-			 return RequestStatus::InvalidRequestSpecifier;
+		    //if (r.type != MessageType::Login || r.type != MessageType::Register || r.type != MessageType::Message || r.type != MessageType::Broadcast || r.type != MessageType::Group)
+			// return RequestStatus::InvalidRequestSpecifier;
 
 		 if (r.length != (unsigned)strlen(r.buffer))
 			 return RequestStatus::InvalidPacketLength;
@@ -58,16 +58,18 @@ public:
 			 return RequestStatus::InvalidSenderId;
 
 		 //if (r.sender is in blocked list maintained at clientmanager side then this )
-		 return RequestStatus::BlockedSender;
+		 //return RequestStatus::BlockedSender;
 
-		 //if (r.recepient is in blocked list maintained at clientmanager side then this )
-		 return RequestStatus::BlockedRecipient;
+		 ////if (r.recepient is in blocked list maintained at clientmanager side then this )
+		 //return RequestStatus::BlockedRecipient;
 
-		 return RequestStatus::Unauthorized;
+		 //return RequestStatus::Unauthorized;
 		return RequestStatus::OK;
 	}
 
 	static void process_message(const request& r, RequestStatus status, response &resp) {
+		printf("\nInside process message");
+		
 		if (status == RequestStatus::OK) {
 		}
 				// UserHelper login
@@ -140,10 +142,10 @@ public:
 	}*/
 
 //	static RequestStatus parseheader(std::string str, request &r) {
-	static request parseheader(char str[17], request &r) {
+	static request parseheader(char str[16], request &r) {
 
 		//senderID
-		int hIndex = 1, vIndex = 0;
+		int hIndex = 0, vIndex = 0;
 		r.sender[vIndex++] = str[hIndex++];
 		r.sender[vIndex++] = str[hIndex++];
 		r.sender[vIndex++] = str[hIndex++];
@@ -256,6 +258,7 @@ public:
 
 	static std::string parseresponse(response &r) {
 		// here.
+		printf("\nInside Parse Response!");
 
 		return "";
 	}
