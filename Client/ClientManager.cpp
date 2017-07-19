@@ -11,8 +11,8 @@ void ClientManager::removeconnection(int id) {
 	//remove
 }
 
-void ClientManager::getpeerinfo(std::string userid, Connection &connection) {
-	for (auto con : ClientManager::connections) {
-		if (con.userid == userid) { connection = con; }
-	}
-}
+//void ClientManager::getpeerinfo(std::string userid, Connection &connection) {
+//	for (auto con : ClientManager::connections) {
+//		if (con.userid == userid) { connection = con; }
+//	}
+//}

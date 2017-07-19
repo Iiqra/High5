@@ -1,7 +1,9 @@
 //#include<string>
 //#include<vector>
 //#include<iostream>
-//#include "User.h"
+
+#include "User.h"
+
 //
 //	void User::registerUser(std::string, std::string password){
 //		// take appropriate username and password then assign a unique ID
@@ -19,3 +21,6 @@
 //		// delete user in anycase
 //	}
 //
+
+std::vector<UserEntity> UserManager::users = std::vector<UserEntity>();
+int UserEntity::id = 1;

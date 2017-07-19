@@ -1,69 +1,74 @@
 #pragma once
-#include<string>
-#include <map>
+#include <string>
+#include <vector>
+#include <sstream>
+#include <iomanip>
 
 class UserEntity {
 public:
-	int userId;
+	static int id;
+	std::string userId;
 	std::string userName;
 	std::string password;
-	bool isactive;
+	
+	UserEntity(std::string u, std::string un, std::string p) : userId(u), userName(un), password(p) {}
 };
 
 enum userauthenticationstatus { OK, Exist, UsernamePasswordMismatch, UserNotfound };
-std::map<int, std::pair<std::string, std::string>> usertable;
-std::map<int, std::pair<std::string, std::string>>::iterator it;
-int id = 0;
+// int userIdGlobal = 0;
 
 class UserManager {
 public:
+	static std::vector<UserEntity> users;
+
 	static userauthenticationstatus registerUser(std::string username, std::string password) {
-	
-		printf("\nInside register request!");
-		
-		
-		for (it = usertable.begin(); it != usertable.end(); it++)
-		{
-			if (username != it->second.first)
-			{
-				usertable.insert(std::make_pair(id++, std::make_pair(username, password)));
-			}
-
-			else {
-
+		for (auto user : users) {
+			if (user.userName == username && user.password == password) {
 				return userauthenticationstatus::Exist;
 			}
 		}
+
+		// Create profile
+		std::string userId;
+		std::stringstream ss;
+		ss << "u" << std::setw(5) << std::setfill('0') << UserEntity::id++;
+		userId = ss.str();
+		UserEntity entity(userId, username, password);
+
+		users.push_back(entity);
+
+		// User with that username and password does not exist
 		return userauthenticationstatus::OK;
-		// assign new id aftre checkig if already exists or not 
 	}
-	static userauthenticationstatus authenticateUser(std::string, std::string password) {
-		
 
-		//if (usertable.find(//id)!= 
-
-		for (it = usertable.begin(); it != usertable.end(); it++)
-		{
-			if (usertable.find(id) != usertable.end()) {
-				return userauthenticationstatus::UserNotfound;
+	static userauthenticationstatus authenticateUser(std::string username, std::string password) {
+		for (auto user : users) {
+			if (user.userName == username) {
+				if (user.password == password) {
+					return userauthenticationstatus::OK;
+				}
+				else {
+					return userauthenticationstatus::UsernamePasswordMismatch;
+				}
 			}
-			//if (it->first !)
 		}
 
-
-
-
-		// it will check in the db againt the or the uname and pasword combination etc.. 
-		//#DBCALL
-		// ok and usernamepasswordmissmatch cases will be implemented here  
-		return userauthenticationstatus::OK;
+		// List had no user with that username
+		return userauthenticationstatus::UserNotfound;
 	}
-	static void blockUser(std::string blockerId, std::string targetId);
+
+	/*static void blockUser(std::string blockerId, std::string targetId);
 	static void searchUser(std::string userId);
 	static void deleteUser(std::string userId);
-	static void updateProfile(std::string userId);
-	static std::string getsenderId(std::string userId) {
-		return "u00001";
+	static void updateProfile(std::string userId);*/
+
+	static std::string getsenderId(std::string username) {
+		for (auto user : users) {
+			if (user.userName == username) {
+				return user.userId;
+			}
+		}
+		return "0000NA"; // User does not exist
 	}
 };
 

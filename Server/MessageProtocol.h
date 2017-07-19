@@ -142,7 +142,7 @@ public:
 	}*/
 
 //	static RequestStatus parseheader(std::string str, request &r) {
-	static request parseheader(char str[16], request &r) {
+	static void parseheader(char str[16], request &r) {
 
 		//senderID
 		int hIndex = 0, vIndex = 0;
@@ -168,7 +168,6 @@ public:
 		length[2] = str[hIndex++];
 		length[3] = str[hIndex++];
 		r.length = std::stoi(length);
-		return r;
 	}
 
 	static std::string parserequest(request& r) {
@@ -224,8 +223,8 @@ public:
 // make
 class response {
 public:
-	ResponseType type;
-	char length[4];
+	char type;
+	char *length;
 	char *buffer;
 };
 
@@ -258,9 +257,9 @@ public:
 
 	static std::string parseresponse(response &r) {
 		// here.
-		printf("\nInside Parse Response!");
-
-		return "";
+		std::stringstream ss;
+		ss << r.type << r.length << r.buffer;
+		return ss.str();
 	}
 };
 
