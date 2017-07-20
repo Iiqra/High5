@@ -1,59 +1,58 @@
-
 #include "ace/Reactor.h"
 #include "ace/SOCK_Acceptor.h"
 #include "ace/Log_Msg.h"
 #include "MessageProtocol.h"
 #include "User.h"
 #include "ace/OS.h"
-
-// MessageFormats
-// Request: ASIZEWhateverTheHellThatMessageHasToSay!--OnlyText,NoImages.
-// Response: SIZESent|Offl --> 4 bytes
-
-// Request: 1usendrurecvrSIZETheMainMessage--Ihateyou:-P
-// Response: 
-
-#define SIZE 5
+#include <cctype>
 
 int id = (int) 'A'; // Starting from A, then id++ --> 'B'
 
 typedef ACE_SOCK_Acceptor Acceptor;
 class Accept_Handler;
-
 class Service_Handler : public ACE_Event_Handler {
 public:
-	Service_Handler() {
-		//ACE_DEBUG((LM_DEBUG, "Input Handler Constructor\n"));
-	}
+		int handle_input(ACE_HANDLE handle) override {
 	
-	int handle_input(ACE_HANDLE handle) override {
-	
-#pragma region Testig 
-		// 
-		/*bytereceived = get_stream().recv_n(header,4);
-		printf("header=%s", header);
-		bytereceived = get_stream().recv_n(header1, 4);
-		printf("header=%s", header1);
-		bytereceived = get_stream().recv_n(header2, 2);
-		printf("header=%s", header2);
-		*/
-		//tcp cant read what it has rea'd once
-#pragma endregion  
+			response res1;
+			if (ClientManager::connections.size() > 0) {
+				std::stringstream clientBuffer;
+			//	clientBuffer << "Active clients: ";
+				for (auto con : ClientManager::connections) {
+					if (con.userid != res1.buffer)
+						clientBuffer << con.userid << "|";
+				}
+				this->peer_.send_n(clientBuffer.str().c_str(), clientBuffer.str().size());
+				_write(1, clientBuffer.str().c_str(), clientBuffer.str().size());
+			}
 
-#pragma region Your code, I am going to hide this for a while
-		char* type = new char;
-		request r;
-		 get_stream().recv_n(type, 1);
-		int _type = std::stoi(type);
-		if (_type == 1) printf("|Register Request|");
-		else if (_type == 2) printf("|Login Request|");
-		if (_type == 1|| _type==2) {
-			// Register	
+		char type[2] = { 0 };
+		request r; //int _type=0;
+		type[1] = '\0'; int _type;
+		get_stream().recv_n(type, 1);
+		//if (type != int('1') && type != '2' && type != '3')
+		 _type = std::stoi(type);
+		if (_type != 1 && _type != 2 && _type != 3 )
+		{
+			get_stream().send_n("Invalid Specifier", 17);
+			
+		}
+		if (_type == 1){
+			printf("|Register Request|");
 			r.type = MessageType::Register;
-			r.buffer = new char[20];
+		}
+		else if (_type == 2)
+		{
+			printf("|Login Request|");
+			r.type = MessageType::Login;
+		}
+		if (_type==1 || _type==2) {
+			// Register	
+			r.buffer = new char[21];
+			r.buffer[21] = '\0';
 			bytereceived= get_stream().recv_n(r.buffer, 20); // u12345
-			char username[10];
-			char password[10];
+			char username[11];
+			char password[11];
 			int bIndex = 0, vIndex = 0;
 			username[vIndex++] = r.buffer[bIndex++];// 0-1
 			username[vIndex++] = r.buffer[bIndex++];// 1-2
@@ -65,7 +64,7 @@ public:
 			username[vIndex++] = r.buffer[bIndex++];
 			username[vIndex++] = r.buffer[bIndex++];
 			username[vIndex++] = r.buffer[bIndex++];// 9-10
-
+			username[vIndex++] = '\0';
 			vIndex = 0;
 			password[vIndex++] = r.buffer[bIndex++];// 0-11
 			password[vIndex++] = r.buffer[bIndex++];// 1-12
@@ -77,7 +76,7 @@ public:
 			password[vIndex++] = r.buffer[bIndex++];
 			password[vIndex++] = r.buffer[bIndex++];
 			password[vIndex++] = r.buffer[bIndex++]; // 9- 20
-
+			password[vIndex++] = '\0';
 			userauthenticationstatus accountSts;
 			response res;
 			
@@ -90,13 +89,11 @@ public:
 					if (accountSts == userauthenticationstatus::OK) {
 						Connection con(id++, &this->peer_, UserManager::getsenderId(username));
 						ClientManager::addconnection(con);
-
 						// Send OK response
 						res.type = 1;
 						std::string userId = UserManager::getsenderId(username);
 						res.buffer = (char*)userId.c_str();
 						res.length = "0006";
-
 						std::string responseStr = responsehelper::parseresponse(res);
 						this->peer_.send_n(responseStr.c_str(), responseStr.size());
 
@@ -105,9 +102,11 @@ public:
 							std::stringstream clientBuffer;
 							clientBuffer << "Active clients: ";
 							for (auto con : ClientManager::connections) {
+								if (con.userid != res.buffer)
 								clientBuffer << con.userid << "|";
 							}
 							this->peer_.send_n(clientBuffer.str().c_str(), clientBuffer.str().size());
+							_write(1, clientBuffer.str().c_str(), clientBuffer.str().size());
 						}
 					}
 				}
@@ -158,84 +157,42 @@ public:
 					this->peer_.send_n(responseStr.c_str(), responseStr.size());
 				}
 			}
-			
-			// Send a request to UserCreateResponse UserHelper::createuser();
 		}
 		else if (_type == 3) {
-			auto initials = new char[16];
+			auto initials = new char[17];
+			initials[17] = '\0';
 			bytereceived = get_stream().recv_n(initials, 16);
 			requesthelper::parseheader(initials, r);
 			r.buffer = new char[r.length];
+			r.buffer[r.length++];
 			//r.buffer = { 0 };
 			//int l = r.length;
 			bytereceived = get_stream().recv_n(r.buffer, r.length);
 			RequestStatus rStatus = requesthelper::validate_request(r);
-
 			// Send the message
 			std::string rec = std::string(r.recipient);
 			for (auto con : ClientManager::connections) {
 				if (con.userid == rec) {
 					con.socket->send_n(r.buffer, r.length);
-
+					_write(1,r.buffer, r.length);
 					// Send Okay
 					response resp;
-					resp.type = 3;
+					resp.type = _type;
 					resp.length = "0004";
 					resp.buffer = "Okay";
 
 					std::string strRes = responsehelper::parseresponse(resp);
 					this->peer_.send_n(strRes.c_str(), strRes.size());
+					_write(1, strRes.c_str(), strRes.size());
 				}
 			}
-
 			this->peer_.send_n("Client Offline", 14);
+			_write(1, "Client Offline", 14);
 			// requesthelper::process_message(r, rStatus, resp);
 		}
-#pragma endregion
-		
-#pragma region My code
-		//// Check if the address exists
-		//ACE_INET_Addr a;
-		//if (this->get_stream().get_remote_addr(a) == 0) {
-		//	if (!ClientManager::clientexists(a)) {
-		//		ClientManager::addconnection(Connection(id++, &this->peer_));
 
-		//		// Say hello to the client
-		//		get_stream().send_n("Okay", 4);
-		//	}
-
-		//	// Read the initials
-		//	char* initials = new char[5];
-		//	get_stream().recv_n(initials, 5);
-
-		//	int _id = (int)initials[0];
-		//	char sizeBuffer[4];
-		//	sizeBuffer[0] = initials[1];
-		//	sizeBuffer[1] = initials[2];
-		//	sizeBuffer[2] = initials[3];
-		//	sizeBuffer[3] = initials[4];
-
-		//	// Read the message
-		//	int size = std::stoi(sizeBuffer);
-		//	char* messageBuffer = new char[size];
-
-		//	get_stream().recv_n(messageBuffer, size);
-
-		//	// Forward the message
-		//	for (auto con : ClientManager::connections) {
-		//		if (con.id == _id) {
-		//			con.socket->send_n(messageBuffer, size);
-
-		//			// Send "Sent" response
-		//			get_stream().send_n("Sent", 4);
-		//		}
-		//	}
-
-		//	// Send the "Offl" response
-		//	get_stream().send_n("Offl", 4);
-		//}
-
-#pragma endregion
+		//delete[] r.buffer;
+		//type[1] = 0;
 		return 0;
 	}
 	ACE_HANDLE get_handle(void) const override
@@ -248,13 +205,9 @@ public:
 	}
 private:
 	ACE_SOCK_Stream peer_;
-	char header[4] = { 0 };
-	char header1[4] = { 0 };
-	char header2[2] = { 0 };
-
-	char specifier[1] = { 0 };
+	
 	int bytesent = 0, bytereceived = 0;
-	int spec = 0; 
+	
 };
 class Accept_Handler : public ACE_Event_Handler {
 public:
@@ -299,9 +252,6 @@ private:
 	Acceptor peer_acceptor;
 };
 int main(int argc, char * argv[]) {
-
-
-	
 	system("pause");
 	ACE_INET_Addr addr(50009);
 	Accept_Handler *eh = new Accept_Handler(addr);

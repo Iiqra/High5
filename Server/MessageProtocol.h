@@ -41,7 +41,7 @@ public:
 	int length;
 	char* buffer;
 	// read this for issues with chars array
-};
+}; 
 
 
 class requesthelper {
