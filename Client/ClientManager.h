@@ -4,12 +4,27 @@
 
 class Connection {
 public:
-	int id; // (int)'A' 
+	int id; // (int)'A'  
 	ACE_SOCK_Stream *socket;
 	std::string userid; // Not needed now, right?
 
 	Connection(int i, ACE_SOCK_Stream *sock, std::string userid) : 
 		id(i), socket(sock), userid(userid) {}
+};
+
+class Group {
+public:
+	std::string name;
+	std::vector<Connection> connections;
+
+	Group(std::string n) : name(n), connections(std::vector<Connection>()) {}
+};
+
+class GroupManager {
+public:
+	static std::vector<Group> groups;
+	static void addconnection(std::string groupname, Connection& c);
+	static void addgroups();
 };
 
 class ClientManager {

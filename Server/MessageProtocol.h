@@ -167,9 +167,15 @@ public:
 		length[1] = str[hIndex++];
 		length[2] = str[hIndex++];
 		length[3] = str[hIndex++];
-		r.length = std::stoi(length);
+		try {
+			r.length = std::stoi(length);
+		}
+		catch (std::exception e){
+			// Setting the length to 0 --> other end will know 0 size means something went wrong.
+			r.length = 0;
+		}
 	}
-
+	// 2mnts plzz
 	static std::string parserequest(request& r) {
 		std::stringstream str;
 		switch (r.type)

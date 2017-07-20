@@ -16,3 +16,20 @@ void ClientManager::removeconnection(int id) {
 //		if (con.userid == userid) { connection = con; }
 //	}
 //}
+
+
+// Groups
+std::vector<Group> GroupManager::groups = std::vector<Group>();
+void GroupManager::addgroups() {
+	// 2 groups --> same pattern, g0000
+	groups.push_back(Group("g00odd"));
+	groups.push_back(Group("g0even"));
+}
+
+void GroupManager::addconnection(std::string name, Connection& c) {
+	for (auto group : groups) {
+		if (group.name == name) {
+			group.connections.push_back(c);
+		}
+	}
+}
