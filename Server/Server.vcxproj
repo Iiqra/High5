@@ -153,9 +153,14 @@
     <ClCompile Include="..\Client\ClientManager.cpp" />
     <ClCompile Include="..\Client\DbHelper.cpp" />
     <ClCompile Include="..\Client\Server.cpp" />
+    <ClCompile Include="AcceptorPattern.cpp" />
+    <ClCompile Include="Connector with 1 svc thread.cpp" />
+    <ClCompile Include="Connector- with 2 threads.cpp" />
+    <ClCompile Include="CoonectorPattern.cpp" />
     <ClCompile Include="Logger.cpp" />
+    <ClCompile Include="MainServer- reactor with threadpool.cpp" />
     <ClCompile Include="Message.cpp" />
-    <ClCompile Include="MainServer.cpp" />
+    <ClCompile Include="MainServer-simple reactor pattern.cpp" />
     <ClCompile Include="User.cpp" />
     <ClCompile Include="usermanager.cpp" />
   </ItemGroup>
