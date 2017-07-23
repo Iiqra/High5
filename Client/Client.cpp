@@ -17,7 +17,7 @@ void read_handler(ACE_SOCK_Stream& _peer) {
 }
 
 void register_handler(ACE_SOCK_Stream& _peer) {
-	char buffer[100] = {0}; 	
+	char buffer[10] = {0}; 	
 	int br;
 	printf("Let's break the 'Register Message'," "\n"
 		"[1] Correct Message| 1username01password01" "\n"
@@ -30,9 +30,9 @@ void register_handler(ACE_SOCK_Stream& _peer) {
 	switch (nestedChoice) {
 	case '1':
 		_peer.send_n("1username01password01", 21); // Perfect:correct message.
-												   br = _peer.recv_n(buffer, 100);
-												   buffer[br++] = '\0';
-												   _write(1, buffer, br);
+		br = _peer.recv_n(buffer, 5);
+		buffer[br++] = '\0';
+		_write(1, buffer, br);
 		break;
 	case '2':
 		_peer.send_n("1username02password02", 21); // Perfect: correct message for 2nd client
