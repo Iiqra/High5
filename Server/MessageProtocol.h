@@ -31,6 +31,8 @@ class response;
 
  };
  //enum MessageType { Register = 1, Login, Message, Group, Broadcast, Image, File };
+
+
 class request {
 public:
 	MessageType type;

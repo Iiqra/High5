@@ -105,7 +105,7 @@
 //
 ////class RecvSend1: public ACE_Task_Base {
 ////int open(void *args){
-////peer = (ACE_SOCK_Stream * ) args;
+////peer = (ACE_SOCK_Stream * ) args; 
 ////return activate();
 ////}
 ////int virtual svc() {
@@ -123,3 +123,4 @@
 ////handler.wait();
 ////return 0;
 ////}
+// coonectio acceptor, 
