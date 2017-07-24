@@ -48,8 +48,101 @@ public:
 
 class requesthelper {
 public:
-
-     static RequestStatus validate_request(request& r) {
+//	static int registerHandler(ACE_SOCK_Stream stream,request r) {
+//		printf("|Register Request|");
+//		r.type = MessageType::Register;
+//		r.buffer = new char[20];
+//		stream.recv_n(r.buffer, 20);
+//#pragma region parsingUsernamePassword
+//		char username[10];
+//		char password[10];
+//		int bIndex = 0, vIndex = 0;
+//		username[vIndex++] = r.buffer[bIndex++];// 0-1
+//		username[vIndex++] = r.buffer[bIndex++];// 1-2
+//		username[vIndex++] = r.buffer[bIndex++];
+//		username[vIndex++] = r.buffer[bIndex++];
+//		username[vIndex++] = r.buffer[bIndex++];
+//		username[vIndex++] = r.buffer[bIndex++];
+//		username[vIndex++] = r.buffer[bIndex++];
+//		username[vIndex++] = r.buffer[bIndex++];
+//		username[vIndex++] = r.buffer[bIndex++];
+//		username[vIndex++] = r.buffer[bIndex++];
+//		vIndex = 0;
+//		password[vIndex++] = r.buffer[bIndex++];
+//		password[vIndex++] = r.buffer[bIndex++];
+//		password[vIndex++] = r.buffer[bIndex++];
+//		password[vIndex++] = r.buffer[bIndex++];
+//		password[vIndex++] = r.buffer[bIndex++];
+//		password[vIndex++] = r.buffer[bIndex++];
+//		password[vIndex++] = r.buffer[bIndex++];
+//		password[vIndex++] = r.buffer[bIndex++];
+//		password[vIndex++] = r.buffer[bIndex++];
+//		password[vIndex++] = r.buffer[bIndex++]; 
+//		char u[11];
+//		char p[11];
+//		bIndex = 0, vIndex = 0;
+//		u[vIndex++] = username[bIndex++];// 0-11
+//		u[vIndex++] = username[bIndex++];// 1-12
+//		u[vIndex++] = username[bIndex++];// 2- 13
+//		u[vIndex++] = username[bIndex++];
+//		u[vIndex++] = username[bIndex++];
+//		u[vIndex++] = username[bIndex++];
+//		u[vIndex++] = username[bIndex++];
+//		u[vIndex++] = username[bIndex++];
+//		u[vIndex++] = username[bIndex++];
+//		u[vIndex++] = username[bIndex++]; // 9- 20
+//		u[vIndex++] = '\0';
+//		vIndex = 0; bIndex = 0;
+//		p[vIndex++] = password[bIndex++];// 0-1
+//		p[vIndex++] = password[bIndex++];// 1-2
+//		p[vIndex++] = password[bIndex++];
+//		p[vIndex++] = password[bIndex++];
+//		p[vIndex++] = password[bIndex++];
+//		p[vIndex++] = password[bIndex++];
+//		p[vIndex++] = password[bIndex++];
+//		p[vIndex++] = password[bIndex++];
+//		p[vIndex++] = password[bIndex++];
+//		p[vIndex++] = password[bIndex++];// 9-10
+//		p[vIndex++] = '\0';
+//		vIndex = 0;
+//
+//#pragma endregion
+//		userauthenticationstatus accountSts;
+//		response res;
+//		accountSts = UserManager::registerUser(std::string(u), std::string(p));
+//
+//		if (accountSts == userauthenticationstatus::OK) {
+//			// Login
+//			accountSts = UserManager::authenticateUser(std::string(u), std::string(p));
+//			if (accountSts == userauthenticationstatus::OK) {
+//				res.type = 1;
+//				std::string userId = UserManager::getsenderId(u);
+//				std::string message = userId + "Registered";
+//				//res.message = (char*)message.c_str();
+//				res.buffer = (char*)message.c_str();
+//				res.length = "0006";
+//				std::string responseStr = responsehelper::parseresponse(res);
+//
+//				readytowrite = true;
+//				buffer = responseStr;
+//			}
+//		}
+//		return 0;
+//	}
+//	static int loginHandler(int type, request r) {
+//			printf("|Login Request|");
+//			r.type = MessageType::Register;
+//		
+//		return 0;
+//		}
+//	static int messageHandler(int type, request r) {
+//			printf("|Message Request|");
+//			r.type = MessageType::Register;
+//		
+//		return 0;
+//	}
+//
+	static RequestStatus validate_request(request& r) {
 		    //if (r.type != MessageType::Login || r.type != MessageType::Register || r.type != MessageType::Message || r.type != MessageType::Broadcast || r.type != MessageType::Group)
 			// return RequestStatus::InvalidRequestSpecifier;
 
@@ -226,6 +319,8 @@ public:
 		}
 		return str.str();
 	}
+
+
 };
 
 // make
@@ -234,6 +329,7 @@ public:
 	char type;
 	char *length;
 	char *buffer;
+	char *message;
 };
 
 class responsehelper {

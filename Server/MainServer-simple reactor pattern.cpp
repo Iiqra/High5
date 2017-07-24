@@ -216,10 +216,10 @@
 //				// Send the message
 //				std::string rec = std::string(r.recipient);
 //				rec = rec.substr(0, 6);
-//				if (rec == "BRDCST") {
+//				if (rec == "BRDCST"){
 //					// BRDCST
-//					for (auto con : ClientManager::connections) {
-//						// We need to send it to all, go insane! :D 
+//					for (auto con : ClientManager::connections){
+//						
 //						con.socket->send_n(r.buffer, r.length);
 //						_write(1, r.buffer, r.length);
 //					}

@@ -57,11 +57,6 @@ public:
 		return userauthenticationstatus::UserNotfound;
 	}
 
-	/*static void blockUser(std::string blockerId, std::string targetId);
-	static void searchUser(std::string userId);
-	static void deleteUser(std::string userId);
-	static void updateProfile(std::string userId);*/
-
 	static std::string getsenderId(std::string username) {
 		for (auto user : users) {
 			if (user.userName == username) {
@@ -72,8 +67,3 @@ public:
 	}
 };
 
-/*
-1- class diagram finishing.
-2- sequence of functions and their structure.
-
-*/#pragma once

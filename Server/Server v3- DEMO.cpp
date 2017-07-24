@@ -17,12 +17,14 @@ typedef ACE_Acceptor<MyServiceHandler, ACE_SOCK_ACCEPTOR> Acceptor;
 char id = 'A';
 
 class MyServiceHandler : public ACE_Svc_Handler<ACE_SOCK_STREAM, ACE_MT_SYNCH> {
-	// The two thread names are kept here
+	
 	ACE_thread_t thread_names[2];
 
 public:
 	int open(void*) {
 		__peer = peer();
+		Connection con(id++, &__peer, std::string(""));
+		ClientManager::addconnection(con);
 	/*	Connection con(id++, &__peer, std::string(""));
 
 		ClientManager::addconnection(con);
@@ -39,8 +41,7 @@ public:
 			0,// don’t care about where stacks are created
 			0,//don’t care about stack sizes
 			thread_names); // keep identifiers in thread_names
-
-						   //keep the service handler registered with the acceptor.
+           //keep the service handler registered with the acceptor.
 		return 0;
 	}
 
@@ -51,10 +52,9 @@ public:
 		type[1] = '\0';
 		int _type;
 		//
-		__peer.recv_n(type, 1);
-		//if (type != int('1') && type != '2' && type != '3')
+		__peer.recv_n(type, 1);   // type= 1
 		if (type[0] != '1' && type[0] != '2' && type[0] != '3') {
-			__peer.send_n("Invalid Cpecifier", 17);
+			__peer.send_n("Invalid Specifier", 17);
 
 			return;
 		}
@@ -70,11 +70,12 @@ public:
 		}
 		if (_type == 1 || _type == 2) {
 			// Register	
-			r.buffer = new char[21];
-			r.buffer[21] = '\0';
-			__peer.recv_n(r.buffer, 20); // u12345
-			char username[11];
-			char password[11];
+			r.buffer = new char[20];
+		//	r.buffer[21] = '\0';
+			__peer.recv_n(r.buffer, 20); // username01password01
+#pragma region parsingUsernamePassword
+			char username[10];
+			char password[10];
 			int bIndex = 0, vIndex = 0;
 			username[vIndex++] = r.buffer[bIndex++];// 0-1
 			username[vIndex++] = r.buffer[bIndex++];// 1-2
@@ -86,7 +87,7 @@ public:
 			username[vIndex++] = r.buffer[bIndex++];
 			username[vIndex++] = r.buffer[bIndex++];
 			username[vIndex++] = r.buffer[bIndex++];// 9-10
-			username[vIndex++] = '\0';
+													//	username[vIndex++] = '\0';
 			vIndex = 0;
 			password[vIndex++] = r.buffer[bIndex++];// 0-11
 			password[vIndex++] = r.buffer[bIndex++];// 1-12
@@ -98,21 +99,55 @@ public:
 			password[vIndex++] = r.buffer[bIndex++];
 			password[vIndex++] = r.buffer[bIndex++];
 			password[vIndex++] = r.buffer[bIndex++]; // 9- 20
-			password[vIndex++] = '\0';
-			userauthenticationstatus accountSts;
-			response res;
+													 //	password[vIndex++] = '\0';
+													 /*r.buffer = new char[21];
+													 r.buffer[21] = '\0';*/
+
+			char u[11];
+			char p[11];
+			bIndex = 0, vIndex = 0;
+			u[vIndex++] = username[bIndex++];// 0-11
+			u[vIndex++] = username[bIndex++];// 1-12
+			u[vIndex++] = username[bIndex++];// 2- 13
+			u[vIndex++] = username[bIndex++];
+			u[vIndex++] = username[bIndex++];
+			u[vIndex++] = username[bIndex++];
+			u[vIndex++] = username[bIndex++];
+			u[vIndex++] = username[bIndex++];
+			u[vIndex++] = username[bIndex++];
+			u[vIndex++] = username[bIndex++]; // 9- 20
+			u[vIndex++] = '\0';
+
+			vIndex = 0; bIndex = 0;
+			p[vIndex++] = password[bIndex++];// 0-1
+			p[vIndex++] = password[bIndex++];// 1-2
+			p[vIndex++] = password[bIndex++];
+			p[vIndex++] = password[bIndex++];
+			p[vIndex++] = password[bIndex++];
+			p[vIndex++] = password[bIndex++];
+			p[vIndex++] = password[bIndex++];
+			p[vIndex++] = password[bIndex++];
+			p[vIndex++] = password[bIndex++];
+			p[vIndex++] = password[bIndex++];// 9-10
+			p[vIndex++] = '\0';
+			vIndex = 0;
+
+#pragma endregion
+			
+userauthenticationstatus accountSts;
+response res;
 
 			if (_type == 1) { // register
 
-				accountSts = UserManager::registerUser(std::string(username), std::string(password));
+				accountSts = UserManager::registerUser(std::string(u), std::string(p));
 				if (accountSts == userauthenticationstatus::OK) {
 					// Login
-					accountSts = UserManager::authenticateUser(std::string(username), std::string(password));
+					accountSts = UserManager::authenticateUser(std::string(u), std::string(p));
 					if (accountSts == userauthenticationstatus::OK) {
-						Connection con(id, &this->peer_, UserManager::getsenderId(username));
+						Connection con(id++, &this->peer_, UserManager::getsenderId(u));
 						ClientManager::addconnection(con);
-
-						if (id % 2 == 0) {
+#pragma region  groupLogic
+					if (id % 2 == 0) {
 							for (auto g : GroupManager::groups) {
 								if (g.name == "g0even") {
 									g.connections.push_back(con);
@@ -129,11 +164,13 @@ public:
 							}
 						}
 
-						id++;
+#pragma endregion 	
 						// Send OK response
 						res.type = 1;
-						std::string userId = UserManager::getsenderId(username);
-						res.buffer = (char*)userId.c_str();
+						std::string userId = UserManager::getsenderId(u);
+						std::string message = userId + "Registered";
+						//res.message = (char*)message.c_str();
+						res.buffer = (char*)message.c_str();
 						res.length = "0006";
 						std::string responseStr = responsehelper::parseresponse(res);
 						
@@ -142,35 +179,32 @@ public:
 						//this->peer_.send_n(responseStr.c_str(), responseStr.size());
 						//_write(1, responseStr.c_str(), responseStr.size());
 						// Send info to the client
-						if (ClientManager::connections.size() > 0) {
-							std::stringstream clientBuffer;
-							clientBuffer << "Active clients: ";
-							for (auto con : ClientManager::connections) {
-								if (con.userid != res.buffer)
-									clientBuffer << con.userid << "|";
-							}
-							std::string _buf = clientBuffer.str();
-							std::stringstream bufferStream;
+						//if (ClientManager::connections.size() > 0) {
+						//	std::stringstream clientBuffer;
+						//	clientBuffer << "Active clients: ";
+						//	for (auto con : ClientManager::connections) {
+						//		if (con.userid != res.buffer)
+						//			clientBuffer << con.userid << "|";
+						//	}
+						//	std::string _buf = clientBuffer.str();
+						//	std::stringstream bufferStream;
 
-							bufferStream << 9 << std::setw(4) << std::setfill('0') << _buf.size() << _buf;
-
-							readytowrite = true;
-							buffer = responseStr;
-							// this->peer_.send_n(bufferStream.str().c_str(), bufferStream.str().size());
-							//_write(1, bufferStream.str().c_str(), bufferStream.str().size());
-						}
+						//	bufferStream << 9 << std::setw(4) << std::setfill('0') << _buf.size() << _buf;
+						//	readytowrite = true;
+						//	buffer = bufferStream.str();
+						//	// this->peer_.send_n(bufferStream.str().c_str(), bufferStream.str().size());
+						//	_write(1, bufferStream.str().c_str(), bufferStream.str().size());
+						//}
 					}
 				}
 				else {
 					// Send cannot login response
 					res.type = 2;
-					std::string userId = UserManager::getsenderId(username);
+					std::string userId = UserManager::getsenderId(u);
 					res.buffer = "Cannot login";
 					res.length = "0012";
 
 					std::string responseStr = responsehelper::parseresponse(res);
-				
-
 					readytowrite = true;
 					buffer = responseStr;
 				//	this->peer_.send_n(responseStr.c_str(), responseStr.size());// lets suppose 20 - 1 type+ 4 length+ rest message buffer
@@ -178,10 +212,11 @@ public:
 				//
 				}
 			}
+		
 			else if (_type == 2) { // login
-				accountSts = UserManager::authenticateUser(std::string(username), std::string(password));
+				accountSts = UserManager::authenticateUser(std::string(u), std::string(p));
 				if (accountSts == userauthenticationstatus::OK) {
-					Connection con(id, &this->peer_, UserManager::getsenderId(username));
+					Connection con(id, &this->peer_, UserManager::getsenderId(u));
 					ClientManager::addconnection(con);
 
 					if (id % 2 == 0) {
@@ -204,31 +239,38 @@ public:
 					id++;
 					// Logged in
 					res.type = 1;
-					std::string userId = UserManager::getsenderId(username);
-					res.buffer = (char*)userId.c_str();
+					std::string userId = UserManager::getsenderId(u);
+					std::string message;
+					message =  userId+ "Logged In";
+					//res.buffer = (char*)userId.c_str();
+					res.buffer = (char*)message.c_str();
 					res.length = "0006";
-
-					std::string responseStr = responsehelper::parseresponse(res);
-					this->peer_.send_n(responseStr.c_str(), responseStr.size());
-					_write(1, responseStr.c_str(), responseStr.size());
-					// Send info to the client
-					if (ClientManager::connections.size() > 0) {
-						std::stringstream clientBuffer;
-						clientBuffer << "Active clients: ";
-						for (auto con : ClientManager::connections) {
-							clientBuffer << con.userid << "|";
-						}
-						std::string _buf = clientBuffer.str();
-						std::stringstream bufferStream;
-
-						bufferStream << 9 << std::setw(4) << std::setfill('0') << _buf.size() << _buf;
 					
+					
+					
+					std::string responseStr = responsehelper::parseresponse(res);
+					readytowrite = true;
+					buffer = responseStr;
+		/*			this->peer_.send_n(responseStr.c_str(), responseStr.size());
+					_write(1, responseStr.c_str(), responseStr.size());*/
+					// Send info to the client
+					//if (ClientManager::connections.size() > 0) {
+					//	std::stringstream clientBuffer;
+					//	clientBuffer << "Active clients: ";
+					//	for (auto con : ClientManager::connections) {
+					//		clientBuffer << con.userid << "|";
+					//	}
+					//	std::string _buf = clientBuffer.str();
+					//	std::stringstream bufferStream;
 
-						readytowrite = true;
-						buffer = bufferStream.str();
-						// this->peer_.send_n(bufferStream.str().c_str(), bufferStream.str().size());
-						//_write(1, bufferStream.str().c_str(), bufferStream.str().size());
-					}
+					//	bufferStream << 9 << std::setw(4) << std::setfill('0') << _buf.size() << _buf;
+					//	//this->peer_.send_n(bufferStream.str().c_str(), bufferStream.str().size());
+					//	_write(1, bufferStream.str().c_str(), bufferStream.str().size());
+					//	readytowrite = true;
+					//	buffer = bufferStream.str();
+
+
+					//}
 				}
 				else if (accountSts == userauthenticationstatus::UsernamePasswordMismatch ||
 					accountSts == userauthenticationstatus::UserNotfound) {
@@ -238,131 +280,39 @@ public:
 					res.length = "0012";
 
 					std::string responseStr = responsehelper::parseresponse(res);
-					this->peer_.send_n(responseStr.c_str(), responseStr.size());
-					_write(1, responseStr.c_str(), responseStr.size());
+					readytowrite = true;
+					buffer = responseStr;
+					//	this->peer_.send_n(responseStr.c_str(), responseStr.size());
+					//_write(1, responseStr.c_str(), responseStr.size());
 				}
 			}
 		}
 		else if (_type == 3) {
-			char* initials = new char[17];
-			initials[17] = '\0';
-			__peer.recv_n(initials, 16);
-			requesthelper::parseheader(initials, r);
-			if (r.length == 0) {
-				// There was something wrong.
-
-				this->peer_.send_n("Invalid Length", 15); // 00t6
-				_write(1, "Invalid Length", 15);
+			char input;
+			__peer.recv_n(&input, 1);
+		if (input == 'A' || input == 'B' || input == 'C'|| input == 'D' || input == 'E') {
+				for (auto con : ClientManager::connections) {
+					if (con.id == (int)input) {
+						//con.socket->send_n("HELLO FROM CLIENT", sizeof("HELLO FROM CLIENT"));
+						char buff[5] = {0};
+						/*printf("enter:_\n");*/
+						//ACE_OS::read(ACE_STDIN, buff, sizeof(buff));
+						__peer.recv_n(buff ,5);
+						con.socket->send_n(buff, 5);
+						break;
+					}
+				}
 			}
 			else {
-				r.buffer = new char[r.length];
-				r.buffer[r.length++];
-				//r.buffer = { 0 };
-				//int l = r.length;
-				__peer.recv_n(r.buffer, r.length);
-				RequestStatus rStatus = requesthelper::validate_request(r);
-				// Send the message
-				std::string rec = std::string(r.recipient);
-				rec = rec.substr(0, 6);
-				if (rec == "BRDCST") {
-					// BRDCST
-					for (auto con : ClientManager::connections) {
-						// We need to send it to all, go insane! :D 
-						con.socket->send_n(r.buffer, r.length);
-						_write(1, r.buffer, r.length);
-					}
-
-					// Send Okay, even if not one was there... We don't need to know who got the message, there was no list. 
-					response resp;
-					resp.type = _type;
-					resp.length = "0004";
-					resp.buffer = "Okay";
-
-					std::string strRes = responsehelper::parseresponse(resp);
-					this->peer_.send_n(strRes.c_str(), strRes.size());
-					_write(1, strRes.c_str(), strRes.size());
-				}
-				else if (rec[0] == 'g') {
-					// Group message
-					// Send Okay, even if not one was there... We don't need to know who got the message, there was no list. 
-					response resp;
-					resp.type = _type;
-					resp.length = "0015";
-					resp.buffer = "Group not found";
-
-					for (auto g : GroupManager::groups) {
-						if (g.name == rec) {
-							for (auto con : g.connections) {
-								con.socket->send_n(r.buffer, r.length);
-								_write(1, r.buffer, r.length);
-							}
-
-							// Send Okay
-							resp.type = _type;
-							resp.length = "0004";
-							resp.buffer = "Okay";
-							break;
-						}
-					}
-
-					std::string strRes = responsehelper::parseresponse(resp);
-
-
-					readytowrite = true;
-					buffer = strRes;
-			/*		this->peer_.send_n(strRes.c_str(), strRes.size());
-					_write(1, strRes.c_str(), strRes.size());
-			*/	}
-				else {
-
-					response resp;
-					resp.type = _type;
-					resp.length = "0015";
-					resp.buffer = "Client Offline";
-
-					for (auto con : ClientManager::connections) {
-						if (con.userid == rec) {
-							con.socket->send_n(r.buffer, r.length);
-							_write(1, r.buffer, r.length);
-							// Send Okay
-							response resp;
-							resp.type = _type;
-							resp.length = "0004";
-							resp.buffer = "Okay";
-
-							break;
-						}
-					}
-					std::string strRes = responsehelper::parseresponse(resp);
-					this->peer_.send_n(strRes.c_str(), strRes.size());
-					_write(1, strRes.c_str(), strRes.size());
-				}
-
-				char input;
-				__peer.recv_n(&input, 1);
-				printpeer(__peer);
-
-				if (input == 'A' || input == 'B' || input == 'C') {
-					for (auto con : ClientManager::connections) {
-						if (con.id == (int)input) {
-							con.socket->send_n("Hello from other side ", sizeof("Hello from other side "));
-							break;
-						}
-					}
-				}
-				else {
-					__peer.send_n("Client offline ", sizeof("Client offline "));
-				}
+				__peer.send_n("Client offline ", sizeof("Client offline "));
 			}
-		}
+		}		
 	}
-
 	int write(void) {
 		if (readytowrite) {
 			// WRite here
+			 //buffer.clear();
 			__peer.send_n(buffer.c_str(), buffer.length());
-			
-			buffer.clear();
 			readytowrite = false;
 		}
 		return 0;

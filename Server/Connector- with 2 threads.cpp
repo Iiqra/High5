@@ -77,17 +77,7 @@
 //		return 0; // keep the compiler happy.
 //	}
 //
-//	//int handle_input(ACE_HANDLE) override {
-//	//	ACE_DEBUG((LM_DEBUG, "(%t) Acceptor handle_input "));
-//	//	// Peer 
-//	//	printpeer(__peer);
-//	//	__peer.send_n("Hello ", sizeof("Hello "));
 //
-//	//	//keep yourself registered
-//	//	return 0;
-//	//}
-//
-//	// Why not just push the recent changes? even then ill make new cpp so i would have complete running thi file to match
 //	void printpeer(ACE_SOCK_Stream& p) { 
 //		ACE_TCHAR peer_name[MAXHOSTNAMELEN];
 //		ACE_INET_Addr peer_addr;

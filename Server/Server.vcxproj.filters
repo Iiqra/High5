@@ -54,7 +54,10 @@
     <ClCompile Include="Connector with 1 svc thread.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Server v3.cpp">
+    <ClCompile Include="Server v3- DEMO.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Server v4.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
