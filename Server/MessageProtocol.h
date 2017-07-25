@@ -326,10 +326,10 @@ public:
 // make
 class response {
 public:
+	ACE_SOCK_Stream* socket;
 	char type;
 	char *length;
 	char *buffer;
-	char *message;
 };
 
 class responsehelper {

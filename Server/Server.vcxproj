@@ -164,6 +164,7 @@
     <ClCompile Include="Server v3- DEMO.cpp" />
     <ClCompile Include="Server v4.cpp" />
     <ClCompile Include="server- dont touch its running one.cpp" />
+    <ClCompile Include="ServerWithQueue.cpp" />
     <ClCompile Include="User.cpp" />
     <ClCompile Include="usermanager.cpp" />
   </ItemGroup>
@@ -174,6 +175,7 @@
     <ClInclude Include="AllHeaders.h" />
     <ClInclude Include="Logger.h" />
     <ClInclude Include="MessageProtocol.h" />
+    <ClInclude Include="QueueManager.h" />
     <ClInclude Include="User.h" />
   </ItemGroup>
   <ItemGroup>
