@@ -33,3 +33,18 @@ void GroupManager::addconnection(std::string name, Connection& c) {
 		}
 	}
 }
+
+std::string GroupManager::getuserlist(std::string groupId) {
+	std::string conns; 
+	for (auto g : GroupManager::groups) {
+		// check if g ID is same as expected if (g.name == "g0food") {
+
+		if (g.name == groupId) {
+			for (auto c : g.connections) {
+				conns += c.userid + ", ";
+			}
+			break;
+		}
+	}
+	return conns;
+}

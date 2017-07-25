@@ -26,6 +26,8 @@ public:
 	static std::vector<Group> groups;
 	static void addconnection(std::string groupname, Connection& c);
 	static void addgroups();
+
+	static std::string getuserlist(std::string groupid);
 };
 
 class ClientManager {

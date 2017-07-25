@@ -223,10 +223,7 @@ public:
 			}
 			else if (input == 'g') {
 				// Send to a group
-				for (auto g : GroupManager::groups) {
-					// check if g ID is same as expected if (g.name == "g0food") {
-					
-				}
+				auto members = GroupManager::getuserlist("g0food");
 			}
 			else if (input == 'u') {
 				// Send to a user
@@ -261,6 +258,9 @@ public:
 
 				ACE_DEBUG((LM_DEBUG, "(%t) QueueThread \n"));
 			}
+
+			//Pause
+
 		}
 	}
 
