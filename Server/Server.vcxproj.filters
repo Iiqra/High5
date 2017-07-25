@@ -60,6 +60,9 @@
     <ClCompile Include="Server v4.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="server- dont touch its running one.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Client\Server.h">

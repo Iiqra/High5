@@ -1,7 +1,7 @@
 #pragma once
 #include "ace/SOCK_Stream.h"
 #include "ace/INET_Addr.h"
-
+#include <iostream>
 class Connection {
 public:
 	int id; // (int)'A'  
@@ -13,6 +13,7 @@ public:
 };
 
 class Group {
+//	friend ostream operator<<(const Group& obj);
 public:
 	std::string name;
 	std::vector<Connection> connections;
