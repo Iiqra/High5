@@ -20,6 +20,8 @@ void ClientManager::removeconnection(int id) {
 
 // Groups
 std::vector<Group> GroupManager::groups = std::vector<Group>();
+std::vector<Connection> Group::connections = std::vector<Connection>();
+
 void GroupManager::addgroups() {
 	// 2 groups --> same pattern, g0000
 	groups.push_back(Group("g00odd"));
@@ -33,12 +35,9 @@ void GroupManager::addconnection(std::string name, Connection& c) {
 		}
 	}
 }
-
-std::string GroupManager::getuserlist(std::string groupId) {
+std::string GroupManager::getuserlist(char groupId[6]) {
 	std::string conns; 
 	for (auto g : GroupManager::groups) {
-		// check if g ID is same as expected if (g.name == "g0food") {
-
 		if (g.name == groupId) {
 			for (auto c : g.connections) {
 				conns += c.userid + ", ";

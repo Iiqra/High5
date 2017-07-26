@@ -20,35 +20,22 @@ char id = 'A';
 
 class MyServiceHandler : public ACE_Svc_Handler<ACE_SOCK_STREAM, ACE_MT_SYNCH> {
 
-	ACE_thread_t thread_names[1]; // [1] and we spawned another thared instead of utilizing that previous spawned write thread
+	ACE_thread_t thread_names[1]; 
 
 public:
 	MyServiceHandler() {
-		// A separate thread that keeps writing.
+		// A separate thread that keeps writing. launches only when server is started.
 		ACE_Thread::spawn((ACE_THR_FUNC)write);
+		// Load the groups at the time server gets started.
+		GroupManager::addgroups();
 	}
 
 	int open(void*) {
 		__peer = peer();
-		Connection con(id++, &__peer, std::string("")); 
-		ClientManager::addconnection(con);
-		/*	Connection con(id++, &__peer, std::string(""));
-
-		ClientManager::addconnection(con);
-		*/
+	
 		ACE_DEBUG((LM_DEBUG, "Acceptor: ThreadID: (%t) open\n"));
-
 		activate(THR_NEW_LWP,
-			1, // 1 thread for reading.
-			1, //force active false, if already created don’t try again.
-			ACE_DEFAULT_THREAD_PRIORITY,//Use default thread priority
-			-1,
-			this,//Which ACE_Task object to create? In this case this one.
-			0,// don’t care about thread handles used
-			0,// don’t care about where stacks are created
-			0,//don’t care about stack sizes
-			thread_names); // keep identifiers in thread_names
-						   //keep the service handler registered with the acceptor.
+			1, 1, ACE_DEFAULT_THREAD_PRIORITY,-1,this,0,0,0,thread_names); 
 		return 0;
 	}
 
@@ -58,14 +45,11 @@ public:
 		request r; //int _type=0;
 		type[1] = '\0';
 		int _type;
-		//
 		__peer.recv_n(type, 1);   // type= 1
-		if (type[0] != '1' && type[0] != '2' && type[0] != '3') {
+		if (type[0] != '1' && type[0] != '2' && type[0] != '3' && type[0] != '4') {
 			__peer.send_n("Invalid Specifier", 17);
-
 			return;
 		}
-
 		_type = std::stoi(type);
 		if (_type == 1 || _type == 2) {
 			puts("|Authenication Request|");
@@ -137,10 +121,8 @@ public:
 
 			userauthenticationstatus accountSts;
 			response res;
-
 			if (_type == 1) {
 				accountSts = UserManager::registerUser(std::string(u), std::string(p));
-
 				if (accountSts != userauthenticationstatus::OK) {
 					// Something went wrong.
 					// Return invalid response
@@ -151,9 +133,10 @@ public:
 			// Login
 			accountSts = UserManager::authenticateUser(std::string(u), std::string(p));
 			if (accountSts == userauthenticationstatus::OK) {
-				Connection con(id, &this->peer_, UserManager::getsenderId(u));
+			/*	Connection con(id, &this->peer_, UserManager::getsenderId(u));
+				ClientManager::addconnection(con);*/
+				Connection con(id++, &__peer, UserManager::getsenderId(u));
 				ClientManager::addconnection(con);
-
 				if (id % 2 == 0) {
 					for (auto g : GroupManager::groups) {
 						if (g.name == "g0even") {
@@ -223,7 +206,7 @@ public:
 			}
 			else if (input == 'g') {
 				// Send to a group
-				auto members = GroupManager::getuserlist("g0food");
+				//auto members = GroupManager::getuserlist("g0food");
 			}
 			else if (input == 'u') {
 				// Send to a user
@@ -238,11 +221,22 @@ public:
 				QueueManager::responses.push(res);
 			}
 		}
+		else if (_type == 4) {
+			//give required user list to the requested client
+		//	std::string groupName;
+		 char groupName[7];
+		 groupName[6] = '\0';
+		  __peer.recv_n(groupName, 6);
+		
+			std::string members = GroupManager::getuserlist(groupName);
+			_write(1, members.c_str(), sizeof(members.c_str()));
+		}
 	}
 
 	// Write function follows static semantics; can be used in the thread spawning.
 	static void write(void) {
 		while (1) {
+			ACE_OS::sleep(25);
 			// Continue to loop
 			bool isEmpty = QueueManager::responses.empty();
 			if (!isEmpty) {
@@ -295,6 +289,7 @@ private:
 };
 
 int main(int argc, char* argv[]) {
+
 	ACE_INET_Addr addr(50009);
 	ACE_DEBUG((LM_DEBUG, "Thread: (%t) main \n"));
 	//Prepare to accept connections

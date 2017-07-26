@@ -164,6 +164,7 @@
     <ClCompile Include="Server v3- DEMO.cpp" />
     <ClCompile Include="Server v4.cpp" />
     <ClCompile Include="server- dont touch its running one.cpp" />
+    <ClCompile Include="server- group logic.cpp" />
     <ClCompile Include="ServerWithQueue.cpp" />
     <ClCompile Include="User.cpp" />
     <ClCompile Include="usermanager.cpp" />

@@ -15,19 +15,18 @@ public:
 class Group {
 //	friend ostream operator<<(const Group& obj);
 public:
-	std::string name;
-	std::vector<Connection> connections;
+	 std::string name;
+	static std::vector<Connection> connections;
 
-	Group(std::string n) : name(n), connections(std::vector<Connection>()) {}
+	Group(std::string n) : name(n) {}
 };
-
-class GroupManager {
+ class GroupManager {
 public:
 	static std::vector<Group> groups;
 	static void addconnection(std::string groupname, Connection& c);
 	static void addgroups();
 
-	static std::string getuserlist(std::string groupid);
+	static std::string getuserlist(char groupId[6]);
 };
 
 class ClientManager {
