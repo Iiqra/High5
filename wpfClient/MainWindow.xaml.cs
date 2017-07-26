@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -20,9 +22,17 @@ namespace wpfClient
     /// </summary>
     public partial class MainWindow : Window
     {
+        private TcpClient _client { get; set; }
         public MainWindow()
         {
             InitializeComponent();
+
+            _client = new TcpClient(IPAddress.Loopback.ToString(), 50009);
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            _client.GetStream().Write(null, 0, 0);
         }
     }
 }

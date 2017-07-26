@@ -191,14 +191,14 @@ public:
 						forward.buffer = new char[5];
 						forward.buffer = buff;
 						forward.socket = con.socket;
-						QueueManager::responses.push(forward);
+						QueueManager::addresponse(forward);
 
 						response resp;
 						resp.type = 5;
 						resp.length = "0004";
 						resp.buffer = "Okay";
 						resp.socket = &__peer;
-						QueueManager::responses.push(resp);
+						QueueManager::addresponse(resp);
 						printf("QueueManager has %d responses.\n", QueueManager::responses.size());
 						break;
 					}
@@ -218,7 +218,7 @@ public:
 				res.buffer = "Client offline ";
 				res.socket = &__peer;
 				res.type = 5;
-				QueueManager::responses.push(res);
+				QueueManager::addresponse(res);
 			}
 		}
 		else if (_type == 4) {
@@ -241,14 +241,14 @@ public:
 			bool isEmpty = QueueManager::responses.empty();
 			if (!isEmpty) {
 				// Take the first response
-				auto res = QueueManager::responses.front();
-				QueueManager::responses.pop(); // Remove it.
+				response r;
+				QueueManager::getresponse(r);
 
-				std::string responseBuffer = responsehelper::parseresponse(res);
+				std::string responseBuffer = responsehelper::parseresponse(r);
 
 				// But this function creates another problem
 				// It sends all the data, synch.
-				res.socket->send_n(responseBuffer.c_str(), responseBuffer.length());
+				r.socket->send_n(responseBuffer.c_str(), responseBuffer.length());
 
 				ACE_DEBUG((LM_DEBUG, "(%t) QueueThread \n"));
 			}
