@@ -36,14 +36,21 @@ void GroupManager::addconnection(std::string name, Connection& c) {
 	}
 }
 std::string GroupManager::getuserlist(char groupId[6]) {
-	std::string conns; 
+	std::string evens, odds;
 	for (auto g : GroupManager::groups) {
-		if (g.name == groupId) {
+		if (groupId == "g0even") {
 			for (auto c : g.connections) {
-				conns += c.userid + ", ";
+				evens += c.userid + ", ";
+				return evens;
 			}
-			break;
 		}
+		else if (groupId == "g00odd")
+		{
+			for (auto c : g.connections) {
+				evens += c.userid + ", ";
+				return odds;
+			}
+		}
+
 	}
-	return conns;
 }

@@ -9,7 +9,10 @@ public:
 	std::string userid; // Not needed now, right?
 
 	Connection(int i, ACE_SOCK_Stream *sock, std::string userid) : 
-		id(i), socket(sock), userid(userid) {}
+		id(i), socket(sock), userid(userid) {
+	
+		std::cout <<"CLIENT ID"<< i;
+	}
 };
 
 class Group {
