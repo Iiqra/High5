@@ -3,6 +3,7 @@
 #include <vector>
 #include <sstream>
 #include <iomanip>
+#include "MessageProtocol.h"
 
 class UserEntity {
 public:
@@ -21,13 +22,14 @@ class UserManager {
 public:
 	static std::vector<UserEntity> users;
 
+	static userauthenticationstatus uregister (ACE_SOCK_Stream peer, request &r, response &res);
+
 	static userauthenticationstatus registerUser(std::string username, std::string password) {
 		for (auto user : users) {
 			if (user.userName == username && user.password == password) {
 				return userauthenticationstatus::Exist;
 			}
 		}
-
 		// Create profile
 		std::string userId;
 		std::stringstream ss;
@@ -40,6 +42,9 @@ public:
 		// User with that username and password does not exist
 		return userauthenticationstatus::OK;
 	}
+
+	static userauthenticationstatus ulogin(ACE_SOCK_Stream peer, request &r, response &res);
+	
 
 	static userauthenticationstatus authenticateUser(std::string username, std::string password) {
 		for (auto user : users) {

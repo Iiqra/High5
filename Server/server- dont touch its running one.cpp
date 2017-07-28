@@ -55,7 +55,6 @@
 //		__peer.recv_n(type, 1);   // type= 1
 //		if (type[0] != '1' && type[0] != '2' && type[0] != '3') {
 //			__peer.send_n("Invalid Specifier", 17);
-//
 //			return;
 //		}
 //		_type = std::stoi(type);
@@ -133,7 +132,6 @@
 //			vIndex = 0;
 //
 //#pragma endregion
-//
 //			userauthenticationstatus accountSts;
 //			response res;
 //

@@ -24,9 +24,9 @@ std::vector<Group> GroupManager::groups = std::vector<Group>();
 
 void GroupManager::addgroups() {
 	// 2 groups --> same pattern, g0000
-	groups.push_back(Group("g00odd"));
-	groups.push_back(Group("g0even"));
-}
+	groups.push_back(Group("g1tech")); //techtalks  -- enter t
+	groups.push_back(Group("g2food")); //foodbar    -- entre f 
+} 
 
 std::map<Connection, std::string, ConnectionCompare> GroupManager::_allconnections =
 std::map<Connection, std::string, ConnectionCompare>();
@@ -34,7 +34,7 @@ std::map<Connection, std::string, ConnectionCompare>();
 void GroupManager::addconnection(std::string name, Connection& c) {
 	for (auto group : groups) {
 		GroupManager::_allconnections[c] = name;
-	}
+	} 
 }
 
 std::string GroupManager::getuserlist(char groupId[6]) {

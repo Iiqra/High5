@@ -45,7 +45,6 @@ public:
 	// read this for issues with chars array
 }; 
 
-
 class requesthelper {
 public:
 //	static int registerHandler(ACE_SOCK_Stream stream,request r) {
