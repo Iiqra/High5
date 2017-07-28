@@ -20,7 +20,7 @@ void ClientManager::removeconnection(int id) {
 
 // Groups
 std::vector<Group> GroupManager::groups = std::vector<Group>();
-std::vector<Connection> Group::connections = std::vector<Connection>();
+// std::vector<Connection> Group::connections = std::vector<Connection>();
 
 void GroupManager::addgroups() {
 	// 2 groups --> same pattern, g0000
@@ -28,29 +28,21 @@ void GroupManager::addgroups() {
 	groups.push_back(Group("g0even"));
 }
 
+std::map<Connection, std::string, ConnectionCompare> GroupManager::_allconnections =
+std::map<Connection, std::string, ConnectionCompare>();
+
 void GroupManager::addconnection(std::string name, Connection& c) {
 	for (auto group : groups) {
-		if (group.name == name) {
-			group.connections.push_back(c);
-		}
+		GroupManager::_allconnections[c] = name;
 	}
 }
-std::string GroupManager::getuserlist(char groupId[6]) {
-	std::string evens, odds;
-	for (auto g : GroupManager::groups) {
-		if (groupId == "g0even") {
-			for (auto c : g.connections) {
-				evens += c.userid + ", ";
-				return evens;
-			}
-		}
-		else if (groupId == "g00odd")
-		{
-			for (auto c : g.connections) {
-				evens += c.userid + ", ";
-				return odds;
-			}
-		}
 
+std::string GroupManager::getuserlist(char groupId[6]) {
+	std::string conns; 
+	for (auto c : GroupManager::_allconnections) {
+		if (c.second == std::string (groupId)) {
+			conns += c.first.userid + ", ";
+		}
 	}
+	return conns;
 }

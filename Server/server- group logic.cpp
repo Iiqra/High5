@@ -12,12 +12,12 @@
 #include "QueueManager.h"
 
 class MyServiceHandler; //forward declaration
+ACE_Thread_Mutex writeMutex;
 
 typedef ACE_Singleton<ACE_Reactor, ACE_Null_Mutex> Reactor;
 typedef ACE_Acceptor<MyServiceHandler, ACE_SOCK_ACCEPTOR> Acceptor;
 
-char id = 'A';
-//int ids = ;
+char id = 'A'; std::string ids= "A";
 
 class MyServiceHandler : public ACE_Svc_Handler<ACE_SOCK_STREAM, ACE_MT_SYNCH> {
 
@@ -26,42 +26,23 @@ class MyServiceHandler : public ACE_Svc_Handler<ACE_SOCK_STREAM, ACE_MT_SYNCH> {
 public:
 	MyServiceHandler() {
 		// A separate thread that keeps writing. launches only when server is started.
-		ACE_Thread::spawn((ACE_THR_FUNC)write);
+		// ACE_Thread::spawn((ACE_THR_FUNC)write);
 		// Load the groups at the time server gets started.
-		GroupManager::addgroups();
 	}
 
 	int open(void*) {
 		__peer = peer();
-	
-		Connection con(id++, &__peer,"A");
+		Connection con(id, &__peer, std::string(&id));
 		ClientManager::addconnection(con);
+
 		if (id % 2 == 0) {
-			
-	     GroupManager::addconnection("g0even", con);
-
-
-			/*for (auto g : GroupManager::groups) {
-				if (g.name == "g0even") {
-					g.connections.push_back(con);
-					std::cout << con.userid;
-					break;
-				}
-			}*/
+			GroupManager::addconnection("g0even", con);
 		}
 		else {
-
-			GroupManager::addconnection("g0odd", con);
-
-			//ACE_DEBUG((LM_DEBUG, ))
-			/*for (auto g : GroupManager::groups) {
-				if (g.name == "g00odd") {
-					g.connections.push_back(con);
-					std::cout << con.userid;
-					break;
-				}
-			}*/
+			GroupManager::addconnection("g00odd", con);
 		}
+
+		id++;
 		ACE_DEBUG((LM_DEBUG, "Acceptor: ThreadID: (%t) open\n"));
 		activate(THR_NEW_LWP,
 			1, 1, ACE_DEFAULT_THREAD_PRIORITY, -1, this, 0, 0, 0, thread_names);
@@ -89,6 +70,15 @@ public:
 			__peer.recv_n(groupName, 6);
 
 			std::string members = GroupManager::getuserlist(groupName);
+			response res;
+			res.type = 0;
+			res.buffer = (char*)members.c_str();
+			std::stringstream length;
+			length << std::setw(4) << std::setfill('0') << members.length();
+			res.length = (char*)length.str().c_str();
+
+			std::string respParsed = responsehelper::parseresponse(res);
+			__peer.send_n(respParsed.c_str(), respParsed.length());
 			_write(1, members.c_str(), sizeof(members));
 		}
 	}
@@ -96,8 +86,8 @@ public:
 	// Write function follows static semantics; can be used in the thread spawning.
 	static void write(void) {
 		while (1) {
-			ACE_OS::sleep(25);
 			// Continue to loop
+			writeMutex.acquire();
 			bool isEmpty = QueueManager::responses.empty();
 			if (!isEmpty) {
 				// Take the first response
@@ -113,7 +103,9 @@ public:
 				ACE_DEBUG((LM_DEBUG, "(%t) QueueThread \n"));
 			}
 
+			writeMutex.release();
 			//Pause
+			// ACE_OS::sleep(25); Questionable now.
 		}
 	}
 
@@ -125,8 +117,10 @@ public:
 			}
 		}
 	
-return 0; // keep the compiler happy.
+		return 0; // keep the compiler happy.
 	}
+
+
 private:
 	ACE_SOCK_Stream __peer;
 	bool readytowrite = false;
@@ -134,11 +128,14 @@ private:
 };
 
 int main(int argc, char* argv[]) {
-
 	ACE_INET_Addr addr(50009);
 	ACE_DEBUG((LM_DEBUG, "Thread: (%t) main \n"));
 	//Prepare to accept connections
 	Acceptor myacceptor(addr, Reactor::instance());
+
+	ACE_Thread::spawn((ACE_THR_FUNC)MyServiceHandler::write);
+	GroupManager::addgroups();
+
 	// wait for something to happen.
 	while (1)
 		Reactor::instance()->handle_events();

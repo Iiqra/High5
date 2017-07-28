@@ -184,9 +184,7 @@
 //					if (con.id == (int)input) {
 //						char buff[5] = { 0 };
 //						__peer.recv_n(buff, 5);
-//						//QueueManager qm;
-//						
-//					//	qm._mutex.acquire();
+//
 //						response forward;
 //						forward.type = 10;
 //						forward.length = "0005";
@@ -301,16 +299,3 @@
 //		Reactor::instance()->handle_events();
 //	return 0;
 //}
-//
-///*
-//
-//auto token_set = reinterpret_cast<std::vector<DataInterchangeFormatParser::Token>*>(mb->rd_ptr());
-//
-//syntax_parser_.Parse(*token_set);
-//auto protocol_object = syntax_parser_.protocol_object_;
-//ACE_DEBUG((LM_DEBUG, "\n%s \n", protocol_object->objects_.begin()->name_));
-//ACE_Message_Block* protocol_object_mblk;
-//ACE_NEW_RETURN(protocol_object_mblk, ACE_Message_Block(reinterpret_cast<char *>(&*protocol_object), sizeof(DataInterchangeFormatParser::ProtocolObject *)), -1);
-//
-//put_next(protocol_object_mblk);
-//*/

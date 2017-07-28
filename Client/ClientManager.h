@@ -2,6 +2,8 @@
 #include "ace/SOCK_Stream.h"
 #include "ace/INET_Addr.h"
 #include <iostream>
+#include <map>
+
 class Connection {
 public:
 	int id; // (int)'A'  
@@ -9,23 +11,32 @@ public:
 	std::string userid; // Not needed now, right?
 
 	Connection(int i, ACE_SOCK_Stream *sock, std::string userid) : 
-		id(i), socket(sock), userid(userid) {
-	
-		std::cout <<"CLIENT ID"<< i;
-	}
+		id(i), socket(sock), userid(userid) {}
 };
 
 class Group {
 //	friend ostream operator<<(const Group& obj);
 public:
-	 std::string name;
-	static std::vector<Connection> connections;
+	std::string name;
+	std::vector<Connection> connections;
 
-	Group(std::string n) : name(n) {}
+	Group(std::string n) : name(n) {
+		connections = std::vector<Connection>();
+	}
 };
+
+struct ConnectionCompare
+{
+	bool operator() (const Connection& lhs, const Connection& rhs) const
+	{
+		return lhs.userid < rhs.userid;
+	}
+};
+
  class GroupManager {
 public:
 	static std::vector<Group> groups;
+	static std::map<Connection, std::string, ConnectionCompare> _allconnections;
 	static void addconnection(std::string groupname, Connection& c);
 	static void addgroups();
 

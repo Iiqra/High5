@@ -27,22 +27,15 @@ namespace wpfClient
         {
             InitializeComponent();
 
-          //  _client = new TcpClient(IPAddress.Loopback.ToString(), 50009);
+           // _client = new TcpClient(IPAddress.Loopback.ToString(), 50009);
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
+            // var buffer = CppManagedFunction_ReturnBufferForMessage(msg);
             _client.GetStream().Write(null, 0, 0);
-        }
 
-        private void btnregister_Click(object sender, RoutedEventArgs e)
-        {
-            wrapper.SelectedItem = register;
-        }
-
-        private void btnlogin_Click(object sender, RoutedEventArgs e)
-        {
-            wrapper.SelectedItem = login;
+            // _client.GetStream().Read();
         }
     }
 }
