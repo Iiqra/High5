@@ -26,21 +26,25 @@ enum ActiveGroup { TechTalks = 1, Foodbar, CricketInsighter, Custom };
 
 class MyServiceHandler : public ACE_Svc_Handler<ACE_SOCK_STREAM, ACE_MT_SYNCH> {
 	ACE_thread_t thread_names[1];
-
 public:
-
 	int open(void*) {
 		__peer = peer();
 		ACE_DEBUG((LM_DEBUG, "Acceptor: ThreadID: (%t) open\n"));
 		activate(THR_NEW_LWP,1, 1, ACE_DEFAULT_THREAD_PRIORITY, -1, this, 0, 0, 0, thread_names);
+
+		peer().send_n("It works", sizeof("It works"));
 		return 0;
 	}
+
 	void read(void) {
 		std::string container; int status; request r;
 		std::vector<Connection> conVector;
 
 		status = requesthelper::request_reader(__peer, container, 1);
-		int _type = (int)container[1];
+		if (container == "") {
+			return;
+		}
+		int _type = std::stoi(&container[0]); // WTF BAARRRRRRR! why did you set, container[1] ... -_- >:(
 		response _response, _forward;
 		
 		userauthenticationstatus accountSts;
@@ -58,33 +62,29 @@ public:
 			status = requesthelper::request_reader(__peer, container, 10);
 			password= container;
 			//userauthenticationstatus accountSts; 	std::string username;
-			accountSts = UserManager::registerUser(buffer.substr(0, 9), buffer.substr(10, 19));
+
+			// You left one thing here as well. :| 
+			accountSts = UserManager::registerUser(username, password);
 			if (accountSts != userauthenticationstatus::OK) {
 				_response.type = (int)(ResponseMessage::ExistAlready);
 				responsehelper::parseresponse(_response, "", false);
 			}
 			else {
 				_response.type = (int)(ResponseMessage::RegisterOK);
-				responsehelper::parseresponse(_response, con.userid, false);
-
-				accountSts = UserManager::authenticateUser(buffer.substr(0, 9), buffer.substr(10, 19));
+				accountSts = UserManager::authenticateUser(username, password);
 				if (accountSts == userauthenticationstatus::OK) {
-					Connection con(id, &this->peer_, UserManager::getsenderId(buffer.substr(0, 9)));
+					Connection con(id, &this->peer_, UserManager::getsenderId(username));
 					ClientManager::addconnection(con);
 					_response.type = (int)(ResponseMessage::LoginOK);
 					responsehelper::parseresponse(_response, con.userid, false);
-
-				
-					//#HOWTOSENDIDANDSOCKETINFO 
-					// show dashboard
+					QueueManager::addresponse(_response);
 				}
 				else if (accountSts == userauthenticationstatus::UsernamePasswordMismatch)
 						 {
 						// User not found or password mismatch
 					_response.type= (int)(ResponseMessage::UsernamePasswordMismatch);
 					responsehelper::parseresponse(_response, "", false);
-
-				
+					QueueManager::addresponse(_response);
 				}
 				else if (accountSts == userauthenticationstatus::UserNotfound) {
 					_response.type = (int)(ResponseMessage::Notfound);
@@ -206,10 +206,3 @@ int main(int argc, char* argv[]) {
 	return 0;
 }
 
-
-
-/*
-that reader buffer not getting returned with value.
-what to show to users as a recipient id, use that too send message as well.
-how to tell user is client, as user, group are in enum how to have 3rd value whihc we wont get from user though. [offfline clinet. invalid recipiet] 
-*/

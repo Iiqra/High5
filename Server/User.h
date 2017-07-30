@@ -34,6 +34,7 @@ public:
 				return userauthenticationstatus::Exist;
 			}
 		}
+ 
 		// Create profile
 		std::string userId;
 		std::stringstream ss;
@@ -41,11 +42,12 @@ public:
 		userId = ss.str();
 		UserEntity entity(userId, username, password);
 
-	//	users.push_back(entity);
+		// You had commented this out as well. :| 
+		users.push_back(entity);
 
-	//	// User with that username and password does not exist
-	//	return userauthenticationstatus::OK;
-}
+		// User with that username and password does not exist
+		return userauthenticationstatus::OK;
+	}
 
 	//static userauthenticationstatus ulogin(ACE_SOCK_Stream peer, request &r, response &res);
 	

@@ -406,13 +406,17 @@ public:
 	}
 	
 	static std::string parseresponse(response &resp, std::string payload, bool string) {
-		std::stringstream ss; auto tempPayload = payload;
+		std::stringstream ss; 
+		std::stringstream length;
+		auto tempPayload = payload;
+		
 		if (!string) {
 			switch (ResponseMessage(resp.type))
 			{
 			case ResponseMessage::LoginOK:
 				resp.buffer = (char*)payload.c_str();
-				getlength(resp.length, sizeof(resp.buffer));
+				length << std::setw(4) << std::setfill('0') << payload.length();
+				resp.length = "0006";
 				break;
 			case ResponseMessage::CantLogin:
 				resp.buffer = "Cant login, Try Again!";
@@ -427,8 +431,8 @@ public:
 				getlength(resp.length, sizeof(resp.buffer));
 				break;
 			case ResponseMessage::RegisterOK:
-				resp.buffer = (char*)payload.c_str();
-				getlength(resp.length, sizeof(resp.buffer));
+				length << std::setw(4) << std::setfill('0') << payload.length();
+				resp.length = (char*)length.str().c_str();
 				break;
 			case ResponseMessage::Notfound:
 				resp.buffer = "User with credentials not found!";
@@ -443,8 +447,8 @@ public:
 			case ResponseMessage::UserMessage:
 			
 				payload = "u00001";
-				resp.buffer = (char*)payload.c_str();
-				getlength(resp.length, sizeof(resp.buffer));
+				length << std::setw(4) << std::setfill('0') << payload.length();
+				resp.length = (char*)length.str().c_str();
 				break;
 			case ResponseMessage::GroupMessage:
 				resp.buffer = "Recipient Is Offline!";

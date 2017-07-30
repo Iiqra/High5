@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26430.13
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Server", "Server\Server.vcxproj", "{F8A6C4AC-5821-4F57-AF1B-D30127FCEE90}"
 EndProject
@@ -9,7 +9,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Client", "Client\Client.vcx
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Working", "Working", "{859679F7-A891-4761-B0E1-BFECB909B879}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "wpfClient", "..\..\..\..\..\..\..\Desktop\wpfClient\wpfClient.csproj", "{0EA68CA2-C62F-414A-8EFD-3DE15F7C93BE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "wpfClient", "..\..\..\..\..\Desktop\wpfClient\wpfClient.csproj", "{0EA68CA2-C62F-414A-8EFD-3DE15F7C93BE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfClient2", "WpfClient2\WpfClient2.csproj", "{14A5E229-8F29-476A-B8F5-4C0C7C5669F7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -53,6 +55,18 @@ Global
 		{0EA68CA2-C62F-414A-8EFD-3DE15F7C93BE}.Release|x64.Build.0 = Release|Any CPU
 		{0EA68CA2-C62F-414A-8EFD-3DE15F7C93BE}.Release|x86.ActiveCfg = Release|Any CPU
 		{0EA68CA2-C62F-414A-8EFD-3DE15F7C93BE}.Release|x86.Build.0 = Release|Any CPU
+		{14A5E229-8F29-476A-B8F5-4C0C7C5669F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{14A5E229-8F29-476A-B8F5-4C0C7C5669F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{14A5E229-8F29-476A-B8F5-4C0C7C5669F7}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{14A5E229-8F29-476A-B8F5-4C0C7C5669F7}.Debug|x64.Build.0 = Debug|Any CPU
+		{14A5E229-8F29-476A-B8F5-4C0C7C5669F7}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{14A5E229-8F29-476A-B8F5-4C0C7C5669F7}.Debug|x86.Build.0 = Debug|Any CPU
+		{14A5E229-8F29-476A-B8F5-4C0C7C5669F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{14A5E229-8F29-476A-B8F5-4C0C7C5669F7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{14A5E229-8F29-476A-B8F5-4C0C7C5669F7}.Release|x64.ActiveCfg = Release|Any CPU
+		{14A5E229-8F29-476A-B8F5-4C0C7C5669F7}.Release|x64.Build.0 = Release|Any CPU
+		{14A5E229-8F29-476A-B8F5-4C0C7C5669F7}.Release|x86.ActiveCfg = Release|Any CPU
+		{14A5E229-8F29-476A-B8F5-4C0C7C5669F7}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -61,5 +75,6 @@ Global
 		{F8A6C4AC-5821-4F57-AF1B-D30127FCEE90} = {859679F7-A891-4761-B0E1-BFECB909B879}
 		{453F33D2-6784-4927-96B9-E928C433AECC} = {859679F7-A891-4761-B0E1-BFECB909B879}
 		{0EA68CA2-C62F-414A-8EFD-3DE15F7C93BE} = {859679F7-A891-4761-B0E1-BFECB909B879}
+		{14A5E229-8F29-476A-B8F5-4C0C7C5669F7} = {859679F7-A891-4761-B0E1-BFECB909B879}
 	EndGlobalSection
 EndGlobal
