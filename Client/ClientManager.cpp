@@ -24,10 +24,22 @@ std::vector<Group> GroupManager::groups = std::vector<Group>();
 
 void GroupManager::addgroups() {
 	// 2 groups --> same pattern, g0000
-	groups.push_back(Group("g1tech")); //techtalks  -- enter t
-	groups.push_back(Group("g2food")); //foodbar    -- entre f 
+	groups.push_back(Group("gtecht")); //techtalks  -- enter t
+	groups.push_back(Group("gfubar")); //foobar    -- entre f 
 } 
 
+void GroupManager::addgroup(std::string n) {
+	groups.push_back(n);
+}
+
+void GroupManager::getconnections(std::string groupId, std::vector<Connection>& connections) {
+	for (auto _ : _allconnections) {
+		if (_.second == groupId) {
+			connections.push_back(_.first);
+		}
+	}
+}
+ 
 std::map<Connection, std::string, ConnectionCompare> GroupManager::_allconnections =
 std::map<Connection, std::string, ConnectionCompare>();
 
@@ -40,6 +52,8 @@ void GroupManager::addconnection(std::string name, Connection& c) {
 std::string GroupManager::getuserlist(char groupId[6]) {
 	std::string conns; 
 	for (auto c : GroupManager::_allconnections) {
+		// first --> key
+		// second --> value
 		if (c.second == std::string (groupId)) {
 			conns += c.first.userid + ", ";
 		}

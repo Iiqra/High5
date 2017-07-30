@@ -6,12 +6,14 @@
 #include <sstream>
 #include "User.h"
 #include "ClientManager.h"
+#include "ace/SOCK_Acceptor.h"
 
 class request;
 class response;
  enum class MessageType { Register = 1, Login, Message, Group, Broadcast, Image, File };
  enum class RequestStatus { InvalidPacketLength, InvalidSenderId, InvalidReceiverId, InvalidRequestSpecifier, BlockedSender, BlockedRecipient,Unauthorized, OK};
  enum class ResponseType { Invalid, HeaderError, Blocked, Unauthorized, OK};
+ enum class ResponseMessage { CantLogin=1, ExistAlready, UsernamePasswordMismatch, Notfound, RegisterOK,LoginOK, ClientOffline, UserMessage, GroupMessage, Custom=255 };
 
 
 
@@ -141,6 +143,34 @@ public:
 //		return 0;
 //	}
 //
+
+	/*
+	char* buffer = new char[20];
+	buffer[20] = '\0';
+	request_reader(__peer, buffer, 10);
+
+	// parse username/password
+
+	*/
+
+	static int request_reader(ACE_SOCK_Stream& _peer, std::string & container, int len ){
+		char* buffer = new char[len];
+		container = "";
+		buffer[len] = '\0';
+		int read = _peer.recv_n(buffer, len);
+		if (read == len) {
+			container += buffer;
+			return 1;
+		} else{
+			return 0;
+		}
+	}
+
+
+	static void authentication_parser(char * buff, request & r) {
+
+		
+	}
 	static RequestStatus validate_request(request& r) {
 		    //if (r.type != MessageType::Login || r.type != MessageType::Register || r.type != MessageType::Message || r.type != MessageType::Broadcast || r.type != MessageType::Group)
 			// return RequestStatus::InvalidRequestSpecifier;
@@ -358,13 +388,79 @@ public:
 		return r;
 	}
 
-	static std::string parseresponse(response &r) {
-		// here.
+	static void getlength(char* buffer, int length) {
 		std::stringstream ss;
-		ss << r.type << r.length << r.buffer;
+		ss << std::setw(4) << std::setfill('0') << length;
+
+		buffer = (char*)ss.str().c_str();
+	}
+
+	static void generateFields(response& res, std::string payload) {
+		switch (ResponseMessage(res.type))
+		{
+		case ResponseMessage::LoginOK:
+			res.buffer = "OK";
+			getlength(res.length, sizeof(res.buffer));
+			break;
+		}
+	}
+	
+	static std::string parseresponse(response &resp, std::string payload, bool string) {
+		std::stringstream ss; auto tempPayload = payload;
+		if (!string) {
+			switch (ResponseMessage(resp.type))
+			{
+			case ResponseMessage::LoginOK:
+				resp.buffer = (char*)payload.c_str();
+				getlength(resp.length, sizeof(resp.buffer));
+				break;
+			case ResponseMessage::CantLogin:
+				resp.buffer = "Cant login, Try Again!";
+				getlength(resp.length, sizeof(resp.buffer));
+				break;
+			case ResponseMessage::ExistAlready:
+				resp.buffer = "This usernane already Exist, Try Somthing Else!";
+				getlength(resp.length, sizeof(resp.buffer));
+				break;
+			case ResponseMessage::UsernamePasswordMismatch:
+				resp.buffer = "Username & Password Dont Match, Think Again!";
+				getlength(resp.length, sizeof(resp.buffer));
+				break;
+			case ResponseMessage::RegisterOK:
+				resp.buffer = (char*)payload.c_str();
+				getlength(resp.length, sizeof(resp.buffer));
+				break;
+			case ResponseMessage::Notfound:
+				resp.buffer = "User with credentials not found!";
+				getlength(resp.length, sizeof(resp.buffer));
+				break;
+			case ResponseMessage::ClientOffline:
+				resp.buffer = "Recipient Is Offline!";
+				getlength(resp.length, sizeof(resp.buffer));
+				break;
+			case ResponseMessage::Custom:
+				break;
+			case ResponseMessage::UserMessage:
+			
+				payload = "u00001";
+				resp.buffer = (char*)payload.c_str();
+				getlength(resp.length, sizeof(resp.buffer));
+				break;
+			case ResponseMessage::GroupMessage:
+				resp.buffer = "Recipient Is Offline!";
+				getlength(resp.length, sizeof(resp.buffer));
+				break;
+			default:
+				break;
+			}
+		}
+		ss << resp.type << resp.length << resp.buffer;
 		return ss.str();
 	}
+
+	static void writer(ACE_SOCK_Stream & _peer, std::string response) {
+
+		_peer.send_n(response.c_str(), sizeof(response));
+	}
 };
-
-
-// 17, parse, validate, parse, install sql , separate project  -- output would be dll. connect,send request, and other client side functions, jjust taske input from cleint and how server will take it.
+// 1username33password55 --- 50006u00001 

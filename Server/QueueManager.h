@@ -2,29 +2,31 @@
 #include <queue>
 #include "MessageProtocol.h"
 #include "ace/Thread_Mutex.h"
+#include <mutex>
 
 //typedef ACE_Singleton<ACE_Mutex, ACE_Null_Mutex> MyMutex;
 
 class QueueManager {
 public:
-	static ACE_Thread_Mutex _pushMutex;
+	static std::mutex _pushMutex;
 	static std::queue<request> requests;   // <- Everything read.
 	static std::queue<response> responses; // <- Everything to write.
 
 public:
-	static void getresponse(response& r) {
+	static int getresponse(response& r) {
+		if (responses.empty()) { return 0; }
 		r = responses.front();
 		responses.pop();
+		return 1;
 	}
 
 	static void addresponse(response& r) {
-		//while (_pushMutex.instance->tryacquire() == -1) { /* wait(10); */ }
-		//// _pushMutex.acquire();
-		//responses.push(r);
-		//_pushMutex.instance->release();
+		_pushMutex.lock();
+		responses.push(r);
+		_pushMutex.unlock();
 	}
 };
 
 std::queue<request> QueueManager::requests = std::queue<request>();
 std::queue<response> QueueManager::responses = std::queue<response>();
-    ACE_Thread_Mutex QueueManager::_pushMutex;
+std::mutex QueueManager::_pushMutex;

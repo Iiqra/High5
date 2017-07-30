@@ -12,6 +12,7 @@ public:
 
 	Connection(int i, ACE_SOCK_Stream *sock, std::string userid) : 
 		id(i), socket(sock), userid(userid) {}
+	Connection() {}
 };
 
 class Group {
@@ -29,18 +30,23 @@ struct ConnectionCompare
 {
 	bool operator() (const Connection& lhs, const Connection& rhs) const
 	{
-		return lhs.userid < rhs.userid;
+		return lhs.id < rhs.id;
 	}
 };
 
  class GroupManager {
 public:
 	static std::vector<Group> groups;
+
+	std::map<std::string, int> ist;
+
 	static std::map<Connection, std::string, ConnectionCompare> _allconnections;
 	static void addconnection(std::string groupname, Connection& c);
 	static void addgroups();
+	static void addgroup(std::string);
 
 	static std::string getuserlist(char groupId[6]);
+	static void getconnections(std::string groupId, std::vector<Connection>& connections);
 };
 
 class ClientManager {

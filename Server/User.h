@@ -18,12 +18,16 @@ public:
 enum userauthenticationstatus { OK, Exist, UsernamePasswordMismatch, UserNotfound };
 // int userIdGlobal = 0;
 
+//void readMessage(ACE_SOCK_Stream &sock, char*& buffer, int length) {
+//	// read the sock
+//	// sock.recv_n(buffer, length);
+//}
+
 class UserManager {
 public:
 	static std::vector<UserEntity> users;
-
-	static userauthenticationstatus uregister (ACE_SOCK_Stream peer, request &r, response &res);
-
+	// static userauthenticationstatus uregister (ACE_SOCK_Stream peer, request &r, response &res);
+	///*static userauthenticationstatus register2(ACE_SOCK_Stream p, request r, response re);*/
 	static userauthenticationstatus registerUser(std::string username, std::string password) {
 		for (auto user : users) {
 			if (user.userName == username && user.password == password) {
@@ -37,15 +41,14 @@ public:
 		userId = ss.str();
 		UserEntity entity(userId, username, password);
 
-		users.push_back(entity);
+	//	users.push_back(entity);
 
-		// User with that username and password does not exist
-		return userauthenticationstatus::OK;
-	}
+	//	// User with that username and password does not exist
+	//	return userauthenticationstatus::OK;
+}
 
-	static userauthenticationstatus ulogin(ACE_SOCK_Stream peer, request &r, response &res);
+	//static userauthenticationstatus ulogin(ACE_SOCK_Stream peer, request &r, response &res);
 	
-
 	static userauthenticationstatus authenticateUser(std::string username, std::string password) {
 		for (auto user : users) {
 			if (user.userName == username) {

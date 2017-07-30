@@ -12,13 +12,15 @@
 //#include "QueueManager.h"
 //
 //class MyServiceHandler; //forward declaration
-//ACE_Thread_Mutex writeMutex;
-//char id = 'A'; std::string ids = "A";
+//
+//char id = 'A'; 
+//std::string ids = "A";
+//
 //typedef ACE_Singleton<ACE_Reactor, ACE_Null_Mutex> Reactor;
 //typedef ACE_Acceptor<MyServiceHandler, ACE_SOCK_ACCEPTOR> Acceptor;
 //
 //class MyServiceHandler : public ACE_Svc_Handler<ACE_SOCK_STREAM, ACE_MT_SYNCH> {
-//	ACE_thread_t thread_names[1];
+//ACE_thread_t thread_names[1];
 //
 //public:
 //	MyServiceHandler() {
@@ -33,10 +35,10 @@
 //		ClientManager::addconnection(con);
 //
 //		if (id % 2 == 0) {
-//			GroupManager::addconnection("g0even", con);
+//			GroupManager::addconnection("gtecht", con);
 //		}
 //		else {
-//			GroupManager::addconnection("g00odd", con);
+//			GroupManager::addconnection("gfubar", con);
 //		}
 //
 //		id++;
@@ -49,22 +51,53 @@
 //	void read(void) {
 //
 //		char type[2] = { 0 };
-//		request r; //int _type=0;
+//		request r; 
 //		type[1] = '\0';
 //		int _type;
-//		__peer.recv_n(type, 1);   // type= 1
+//		__peer.recv_n(type, 1);   
 //		if (type[0] != '1' && type[0] != '2' && type[0] != '3' && type[0] != '4') {
 //			__peer.send_n("Invalid Specifier", 17);
 //			return;
 //		}
 //		_type = std::stoi(type);
 //		
-//	      if (_type == 4) {
+//		if (_type == 1 || _type == 2) {
+//			// readBuffer(__peer, buf, 20);
+//			char t;
+//			__peer.recv_n(&t, 1);
+//
+//			std::vector<Connection> conVector;
+//			if (t == 't') {
+//				GroupManager::getconnections("gtecht", conVector);
+//			}
+//			else {
+//				GroupManager::getconnections("gfubar", conVector);
+//			}
+//
+//			__peer.send_n("Enter message to send to group: \n", 34);
+//
+//			char* msg = new char[5];
+//			msg[5] = '\0';
+//			__peer.recv_n(msg, 5);
+//			for (auto _ : conVector) {
+//				response res;
+//				res.type = 5;
+//				res.socket = _.socket;
+//				res.buffer = msg;
+//				res.length = "0005";
+//
+//				QueueManager::addresponse(res);
+//			}
+//
+//			return;
+//		} else if (_type == 4) {
 //			//give required user list to the requested client
 //			//	std::string groupName;
 //			char groupName[7];
 //			groupName[6] = '\0';
 //			__peer.recv_n(groupName, 6);
+//
+//			// readBuffer(__peer, groupName, 6);
 //
 //			std::string members = GroupManager::getuserlist(groupName);
 //			response res;
@@ -76,20 +109,19 @@
 //
 //			std::string respParsed = responsehelper::parseresponse(res);
 //			__peer.send_n(respParsed.c_str(), respParsed.length());
+//
+//			// sendBuffer(__peer, respParsed.c_str(), respParsed.length());
 //			_write(1, members.c_str(), sizeof(members));
-//		}
+//		} // type 4
 //	}
 //
 //	// Write function follows static semantics; can be used in the thread spawning.
 //	static void write(void) {
 //		while (1) {
 //			// Continue to loop
-//			writeMutex.acquire();
-//			bool isEmpty = QueueManager::responses.empty();
-//			if (!isEmpty) {
-//				// Take the first response
-//				auto res = QueueManager::responses.front();
-//				QueueManager::responses.pop(); // Remove it.
+//			response res;
+//			
+//			if (QueueManager::getresponse(res) == 1) {
 //				std::string responseBuffer = responsehelper::parseresponse(res);
 //				// But this function creates another problem
 //				// It sends all the data, synch.
@@ -97,9 +129,6 @@
 //
 //				ACE_DEBUG((LM_DEBUG, "(%t) QueueThread \n"));
 //			}
-//
-//			writeMutex.release();
-//			//Pause
 //			// ACE_OS::sleep(25); Questionable now.
 //		}
 //	}

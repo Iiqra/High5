@@ -12,7 +12,9 @@
 //#include "QueueManager.h"
 //
 //class MyServiceHandler; 
+//
 //ACE_Thread_Mutex writeMutex;
+//
 //char id = 'A'; std::string ids = "A";
 //typedef ACE_Singleton<ACE_Reactor, ACE_Null_Mutex> Reactor;
 //typedef ACE_Acceptor<MyServiceHandler, ACE_SOCK_ACCEPTOR> Acceptor;
@@ -43,7 +45,7 @@
 //			return;}
 //		_type = std::stoi(type);
 //	
-//		if (_type == 1) {
+//		if (_type == 1 || _type == 2) {
 //
 //			while(accountSts != userauthenticationstatus::OK) {
 //				accountSts = UserManager::uregister(__peer, r, res);
@@ -55,8 +57,8 @@
 //		} // type1 ends 
 //
 //		else if (_type == 2) {
-//		accountSts = UserManager::ulogin(__peer, r , res);
-//		else if (accountSts == userauthenticationstatus::OK) {
+//			accountSts = UserManager::ulogin(__peer, r, res);
+//		if (accountSts == userauthenticationstatus::OK) {
 //			Connection con(id++, &__peer, UserManager::getsenderId(u));
 //			ClientManager::addconnection(con);
 //			// select groups
@@ -72,21 +74,15 @@
 //			{
 //				GroupManager::addconnection("g2food", con);
 //			}
-//
-//			//else  user dont want to be the part of any group
-//			// call login directly with no group list added.
-//
-//			// Logged in
 //			res.type = 1;
 //			std::string userId = UserManager::getsenderId(u);
 //			res.buffer = (char*)userId.c_str();
 //			res.length = "0006";
-//
 //			std::string buff = responsehelper::parseresponse(res);
 //			__peer.send_n(buff.c_str(), buff.length());
 //		}
-//	}
-//	else if (accountSts == userauthenticationstatus::UsernamePasswordMismatch ||
+//	
+//		else if (accountSts == userauthenticationstatus::UsernamePasswordMismatch ||
 //		accountSts == userauthenticationstatus::UserNotfound) {
 //				// User not found or password mismatch
 //				res.type = 1;
@@ -96,7 +92,7 @@
 //				std::string buff = responsehelper::parseresponse(res);
 //				__peer.send_n(buff.c_str(), buff.length());
 //			}
-//		}
+//		
 //		else if (_type == 3) {
 //			//message
 //			char input;

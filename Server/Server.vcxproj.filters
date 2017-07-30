@@ -72,6 +72,9 @@
     <ClCompile Include="ServerPhase1Things.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Server-final.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Client\Server.h">
