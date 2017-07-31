@@ -8,6 +8,7 @@
 #include "ClientManager.h"
 #include "ace/SOCK_Acceptor.h"
 
+
 class request;
 class response;
  enum class MessageType { Register = 1, Login, Message, Group, Broadcast, Image, File };
@@ -357,8 +358,10 @@ class response {
 public:
 	ACE_SOCK_Stream* socket;
 	char type;
-	char *length;
-	char *buffer;
+     char *length;
+	 char *buffer;
+	//dont initialize char pointer with nullptr. instead try to use new keyword before using it 
+
 };
 
 class responsehelper {
@@ -388,14 +391,15 @@ public:
 		return r;
 	}
 
-	static void getlength(char* buffer, int length) {
+	static void getlength(char ** buffer, int length) {
 		std::stringstream ss;
 		ss << std::setw(4) << std::setfill('0') << length;
 
-		buffer = (char*)ss.str().c_str();
+		//buffer = (char*)ss.str().c_str();
+		*buffer = _strdup(ss.str().c_str());
 	}
 
-	static void generateFields(response& res, std::string payload) {
+	/*static void generateFields(response& res, std::string payload) {
 		switch (ResponseMessage(res.type))
 		{
 		case ResponseMessage::LoginOK:
@@ -404,55 +408,69 @@ public:
 			break;
 		}
 	}
-	
-	static std::string parseresponse(response &resp, std::string payload, bool string) {
-		std::stringstream ss; 
+	*/
+	static std::string parseresponse(response &r) {
+		// here.
+		std::stringstream ss;
+		ss << r.type << r.length << r.buffer;
+		return ss.str();
+	}
+	static std::string parseresponse(response &resp, std::string payload, bool string= true) {
+		std::stringstream ss;
 		std::stringstream length;
+		int size; std::string len;
 		auto tempPayload = payload;
-		
+		/*resp.buffer = new char;
+		resp.length = new char;*/
 		if (!string) {
 			switch (ResponseMessage(resp.type))
 			{
 			case ResponseMessage::LoginOK:
+
 				resp.buffer = (char*)payload.c_str();
 				length << std::setw(4) << std::setfill('0') << payload.length();
 				resp.length = "0006";
 				break;
 			case ResponseMessage::CantLogin:
 				resp.buffer = "Cant login, Try Again!";
-				getlength(resp.length, sizeof(resp.buffer));
+				getlength(&resp.length, sizeof(resp.buffer));
 				break;
 			case ResponseMessage::ExistAlready:
 				resp.buffer = "This usernane already Exist, Try Somthing Else!";
-				getlength(resp.length, sizeof(resp.buffer));
+				getlength(&resp.length, sizeof(resp.buffer));
 				break;
 			case ResponseMessage::UsernamePasswordMismatch:
 				resp.buffer = "Username & Password Dont Match, Think Again!";
-				getlength(resp.length, sizeof(resp.buffer));
+				getlength(&resp.length, sizeof(resp.buffer));
 				break;
 			case ResponseMessage::RegisterOK:
-				length << std::setw(4) << std::setfill('0') << payload.length();
-				resp.length = (char*)length.str().c_str();
+
+		     /*	resp.buffer = "successful registration!";
+				resp.length = "00006";*/
+				resp.buffer = _strdup(payload.c_str());
+				size = strlen(resp.buffer);
+				length << std::setw(4) << std::setfill('0') << size;				
+				getlength(&resp.length, sizeof(resp.buffer));
 				break;
 			case ResponseMessage::Notfound:
 				resp.buffer = "User with credentials not found!";
-				getlength(resp.length, sizeof(resp.buffer));
+				getlength(&resp.length, sizeof(resp.buffer));
 				break;
 			case ResponseMessage::ClientOffline:
 				resp.buffer = "Recipient Is Offline!";
-				getlength(resp.length, sizeof(resp.buffer));
+				getlength(&resp.length, sizeof(resp.buffer));
 				break;
 			case ResponseMessage::Custom:
 				break;
 			case ResponseMessage::UserMessage:
-			
-				payload = "u00001";
+
+				resp.buffer = (char*)payload.c_str();
 				length << std::setw(4) << std::setfill('0') << payload.length();
 				resp.length = (char*)length.str().c_str();
 				break;
 			case ResponseMessage::GroupMessage:
 				resp.buffer = "Recipient Is Offline!";
-				getlength(resp.length, sizeof(resp.buffer));
+				getlength(&resp.length, sizeof(resp.buffer));
 				break;
 			default:
 				break;
@@ -468,3 +486,6 @@ public:
 	}
 };
 // 1username33password55 --- 50006u00001 
+
+
+

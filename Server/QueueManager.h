@@ -16,6 +16,7 @@ public:
 	static int getresponse(response& r) {
 		if (responses.empty()) { return 0; }
 		r = responses.front();
+		int size = responses.size();
 		responses.pop();
 		return 1;
 	}
@@ -23,6 +24,7 @@ public:
 	static void addresponse(response& r) {
 		_pushMutex.lock();
 		responses.push(r);
+		int size = responses.size();
 		_pushMutex.unlock();
 	}
 };

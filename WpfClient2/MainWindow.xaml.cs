@@ -30,7 +30,9 @@ namespace WpfClient2
         {
             InitializeComponent();
 
-            _client = new TcpClient(IPAddress.Loopback.ToString(), 50009);
+            // _client = new TcpClient(IPAddress.Loopback.ToString(), 50009);
+
+            _client = new TcpClient("127.0.0.1", 50009);
             readThread = new Thread(new ThreadStart(read));
         }
 

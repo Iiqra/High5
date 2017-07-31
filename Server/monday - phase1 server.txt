@@ -74,7 +74,6 @@ public:
 				Connection con(id, &this->peer_, UserManager::getsenderId(username));
 				ClientManager::addconnection(con);
 				buffResp=responsehelper::parseresponse(_response, con.userid, false);
-				_response.socket = con.socket;
 				QueueManager::addresponse(_response);
 			/*	accountSts = UserManager::authenticateUser(username, password);
 				if (accountSts == userauthenticationstatus::OK) {
@@ -171,7 +170,6 @@ public:
 			response res;
 			if (QueueManager::getresponse(res) == 1) {
 				std::string responseBuffer = responsehelper::parseresponse(res, "", true);
-				printf("%s", responseBuffer);
 				res.socket->send_n(responseBuffer.c_str(), responseBuffer.length());
 				
 				//__peer.send_n(responseBuffer.c_str(), 3);

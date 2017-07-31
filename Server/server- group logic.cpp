@@ -40,7 +40,6 @@
 //		else {
 //			GroupManager::addconnection("gfubar", con);
 //		}
-//
 //		id++;
 //		ACE_DEBUG((LM_DEBUG, "Acceptor: ThreadID: (%t) open\n"));
 //		activate(THR_NEW_LWP,
@@ -49,7 +48,6 @@
 //	}
 //
 //	void read(void) {
-//
 //		char type[2] = { 0 };
 //		request r; 
 //		type[1] = '\0';
@@ -60,12 +58,10 @@
 //			return;
 //		}
 //		_type = std::stoi(type);
-//		
 //		if (_type == 1 || _type == 2) {
 //			// readBuffer(__peer, buf, 20);
 //			char t;
 //			__peer.recv_n(&t, 1);
-//
 //			std::vector<Connection> conVector;
 //			if (t == 't') {
 //				GroupManager::getconnections("gtecht", conVector);
@@ -73,22 +69,23 @@
 //			else {
 //				GroupManager::getconnections("gfubar", conVector);
 //			}
-//
 //			__peer.send_n("Enter message to send to group: \n", 34);
 //
 //			char* msg = new char[5];
+//			std::string  __response;
 //			msg[5] = '\0';
 //			__peer.recv_n(msg, 5);
 //			for (auto _ : conVector) {
-//				response res;
-//				res.type = 5;
-//				res.socket = _.socket;
-//				res.buffer = msg;
-//				res.length = "0005";
-//
-//				QueueManager::addresponse(res);
+//			response res;
+//			res.type = 5;
+//			res.socket = _.socket;
+//			res.buffer = msg;
+//			res.length = "0005";
+//				
+//			__response =	responsehelper::parseresponse(res);
+//			res.socket->send_n(__response.c_str(),sizeof(__response));
+//				//QueueManager::addresponse(res);
 //			}
-//
 //			return;
 //		} else if (_type == 4) {
 //			//give required user list to the requested client
@@ -107,7 +104,7 @@
 //			length << std::setw(4) << std::setfill('0') << members.length();
 //			res.length = (char*)length.str().c_str();
 //
-//			std::string respParsed = responsehelper::parseresponse(res);
+//			std::string respParsed = responsehelper::parseresponse(res, "", true);
 //			__peer.send_n(respParsed.c_str(), respParsed.length());
 //
 //			// sendBuffer(__peer, respParsed.c_str(), respParsed.length());
@@ -115,18 +112,15 @@
 //		} // type 4
 //	}
 //
-//	// Write function follows static semantics; can be used in the thread spawning.
 //	static void write(void) {
 //		while (1) {
 //			// Continue to loop
 //			response res;
 //			
 //			if (QueueManager::getresponse(res) == 1) {
+//				res.type= (int)ResponseMessage::GroupMessage;
 //				std::string responseBuffer = responsehelper::parseresponse(res);
-//				// But this function creates another problem
-//				// It sends all the data, synch.
 //				res.socket->send_n(responseBuffer.c_str(), responseBuffer.length());
-//
 //				ACE_DEBUG((LM_DEBUG, "(%t) QueueThread \n"));
 //			}
 //			// ACE_OS::sleep(25); Questionable now.
