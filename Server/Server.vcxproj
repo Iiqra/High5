@@ -168,6 +168,7 @@
     <ClCompile Include="Server-final.cpp" />
     <ClCompile Include="ServerPhase1Things.cpp" />
     <ClCompile Include="ServerWithQueue.cpp" />
+    <ClCompile Include="Source.cpp" />
     <ClCompile Include="User.cpp" />
     <ClCompile Include="usermanager.cpp" />
   </ItemGroup>

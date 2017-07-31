@@ -427,50 +427,49 @@ public:
 			{
 			case ResponseMessage::LoginOK:
 
-				resp.buffer = (char*)payload.c_str();
-				length << std::setw(4) << std::setfill('0') << payload.length();
-				resp.length = "0006";
+				resp.buffer = _strdup(payload.c_str());
+				size = strlen(resp.buffer);
+				getlength(&resp.length, size);
 				break;
 			case ResponseMessage::CantLogin:
 				resp.buffer = "Cant login, Try Again!";
-				getlength(&resp.length, sizeof(resp.buffer));
+				getlength(&resp.length, strlen(resp.buffer));
 				break;
 			case ResponseMessage::ExistAlready:
 				resp.buffer = "This usernane already Exist, Try Somthing Else!";
-				getlength(&resp.length, sizeof(resp.buffer));
+				getlength(&resp.length, strlen(resp.buffer));
 				break;
 			case ResponseMessage::UsernamePasswordMismatch:
 				resp.buffer = "Username & Password Dont Match, Think Again!";
-				getlength(&resp.length, sizeof(resp.buffer));
+				getlength(&resp.length, strlen(resp.buffer));
 				break;
 			case ResponseMessage::RegisterOK:
 
 		     /*	resp.buffer = "successful registration!";
 				resp.length = "00006";*/
 				resp.buffer = _strdup(payload.c_str());
-				size = strlen(resp.buffer);
-				length << std::setw(4) << std::setfill('0') << size;				
-				getlength(&resp.length, sizeof(resp.buffer));
+				size = strlen(resp.buffer);				
+				getlength(&resp.length, size);
 				break;
 			case ResponseMessage::Notfound:
 				resp.buffer = "User with credentials not found!";
-				getlength(&resp.length, sizeof(resp.buffer));
+				getlength(&resp.length, strlen(resp.buffer));
 				break;
 			case ResponseMessage::ClientOffline:
 				resp.buffer = "Recipient Is Offline!";
-				getlength(&resp.length, sizeof(resp.buffer));
+				getlength(&resp.length, strlen(resp.buffer));
 				break;
 			case ResponseMessage::Custom:
 				break;
 			case ResponseMessage::UserMessage:
-
-				resp.buffer = (char*)payload.c_str();
-				length << std::setw(4) << std::setfill('0') << payload.length();
-				resp.length = (char*)length.str().c_str();
+				resp.buffer = _strdup(payload.c_str());
+				size = strlen(resp.buffer);
+				getlength(&resp.length, size);
 				break;
 			case ResponseMessage::GroupMessage:
-				resp.buffer = "Recipient Is Offline!";
-				getlength(&resp.length, sizeof(resp.buffer));
+				resp.buffer = _strdup(payload.c_str());
+				size = strlen(resp.buffer);
+				getlength(&resp.length, size);
 				break;
 			default:
 				break;

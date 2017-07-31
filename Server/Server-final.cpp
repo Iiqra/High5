@@ -26,6 +26,7 @@ enum ActiveGroup { TechTalks = 1, Foodbar, CricketInsighter, Custom };
 
 class MyServiceHandler : public ACE_Svc_Handler<ACE_SOCK_STREAM, ACE_MT_SYNCH> {
 	ACE_thread_t thread_names[1];
+	Connection con;
 public:
 	int open(void*) {
 		__peer = peer();
@@ -52,7 +53,6 @@ public:
 		std::string __response = "";
 		std::string buffer = "";
 		std::string content; // buffer for user and group message
-		Connection con; 
 		std::string username, password;
 		std::string sender = "", recipient = "";
 		std::string buffResp;
@@ -67,7 +67,9 @@ public:
 			accountSts = UserManager::registerUser(username, password);
 			if (accountSts != userauthenticationstatus::OK) {
 				_response.type = (int)(ResponseMessage::ExistAlready);
+				_response.socket = &__peer;
 				responsehelper::parseresponse(_response, "", false);
+				QueueManager::addresponse(_response);
 			}
 			else {
 				_response.type = (int)(ResponseMessage::RegisterOK);
@@ -76,25 +78,6 @@ public:
 				buffResp=responsehelper::parseresponse(_response, con.userid, false);
 				_response.socket = con.socket;
 				QueueManager::addresponse(_response);
-			/*	accountSts = UserManager::authenticateUser(username, password);
-				if (accountSts == userauthenticationstatus::OK) {
-					Connection con(id, &this->peer_, UserManager::getsenderId(username));
-					ClientManager::addconnection(con);
-					_response.type = (int)(ResponseMessage::LoginOK);
-					responsehelper::parseresponse(_response, con.userid, false);
-					QueueManager::addresponse(_response);
-				}
-				else if (accountSts == userauthenticationstatus::UsernamePasswordMismatch)
-						 {
-					
-					_response.type= (int)(ResponseMessage::UsernamePasswordMismatch);
-					responsehelper::parseresponse(_response, "", false);
-					QueueManager::addresponse(_response);
-				}
-				else if (accountSts == userauthenticationstatus::UserNotfound) {
-					_response.type = (int)(ResponseMessage::Notfound);
-					responsehelper::parseresponse(_response, "", false);
-				}	*/
 			}
 			break;
 		case Login:
@@ -106,22 +89,27 @@ public:
 			//accountSts = UserManager::authenticateUser(buffer.substr(0, 9), buffer.substr(10, 19));
 			accountSts = UserManager::authenticateUser(username,password);
 			if (accountSts == userauthenticationstatus::OK){
-				con = Connection(id, &this->peer_, UserManager::getsenderId(buffer.substr(0, 9)));
+				_response.type = (int)ResponseMessage::LoginOK;
+				con = Connection(id, &this->peer_, UserManager::getsenderId(username));
 				ClientManager::addconnection(con);
+				_response.socket = con.socket;
 				responsehelper::parseresponse(_response, con.userid, false);
+				
 			}
 			else if (accountSts == userauthenticationstatus::UsernamePasswordMismatch)
 			{
 				// User not found or password mismatch
 				_response.type = (int)(ResponseMessage::UsernamePasswordMismatch);
+				_response.socket = &__peer;
 				responsehelper::parseresponse(_response, "", false);
 
-				
 			}
 			else if (accountSts == userauthenticationstatus::UserNotfound) {
 			_response.type = (int)(ResponseMessage::Notfound);
+			_response.socket = &__peer;
 			responsehelper::parseresponse(_response, "", false);
 			}
+			QueueManager::addresponse(_response);
 			break;// 3Amessage
 		case Message: 
 			requesthelper::request_reader(__peer, container, 6);
@@ -131,17 +119,21 @@ public:
 			if (container[0] == 'u' || container[0] == 'U') {
 				// username = content;
 				_response.type = (int)(ResponseMessage::UserMessage);
+				_forward.type = (int)(ResponseMessage::UserMessage);
 				requesthelper::request_reader(__peer, container, 4);
 				char* msgLength = (char*)container.c_str();
 				int length = std::stoi(msgLength);
 				for (auto _con : ClientManager::connections) {
-					if (_con.userid == username.c_str()) {
+					if (_con.userid == recipient.c_str()) {
 						requesthelper::request_reader(__peer, container, length); // limit of a text
 						content += container;
 						///send call
 						_forward.socket = _con.socket;
+						_response.socket = &__peer;
 						responsehelper::parseresponse(_forward, content, false);
+						responsehelper::parseresponse(_response, "Okay", false);
 						QueueManager::addresponse(_forward);
+						QueueManager::addresponse(_response);
 						break;
 					}
 				}
@@ -171,7 +163,7 @@ public:
 			response res;
 			if (QueueManager::getresponse(res) == 1) {
 				std::string responseBuffer = responsehelper::parseresponse(res, "", true);
-				printf("%s", responseBuffer);
+			//	printf("%s", responseBuffer);
 				res.socket->send_n(responseBuffer.c_str(), responseBuffer.length());
 				
 				//__peer.send_n(responseBuffer.c_str(), 3);
