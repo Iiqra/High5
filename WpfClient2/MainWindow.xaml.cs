@@ -34,6 +34,7 @@ namespace WpfClient2
 
             _client = new TcpClient("127.0.0.1", 50009);
             readThread = new Thread(new ThreadStart(read));
+            readThread.Start();
         }
 
         private async void write(string content)
@@ -42,7 +43,6 @@ namespace WpfClient2
             {
                 var buffer = Encoding.ASCII.GetBytes(content);
                 await _client.GetStream().WriteAsync(buffer, 0, buffer.Length);
-                MessageBox.Show($"Client connected. Tried sending \"{content}\" in byte[] of size {buffer.Length}.");
             }
             else
             {
@@ -58,22 +58,21 @@ namespace WpfClient2
                 byte[] buffer = new byte[1];
                 await _client.GetStream().ReadAsync(buffer, 0, 1);
 
-                if(BitConverter.ToInt32(buffer, 0) == 1)
-                {
-                    buffer = new byte[4];
-                    await _client.GetStream().ReadAsync(buffer, 0, 4);
+                // 16 -> 0x10 (16, 0) -> \u0010
+                var str = Encoding.ASCII.GetString(buffer);
+                int type = Convert.ToInt32(str);
+                
+                // Read further
+                buffer = new byte[4];
+                await _client.GetStream().ReadAsync(buffer, 0, 4);
 
-                    int length = BitConverter.ToInt32(buffer, 0);
-                    buffer = new byte[length];
+                Encoding.ASCII.GetString(buffer);
+                int length = Convert.ToInt32(str);
+                buffer = new byte[length];
+                await _client.GetStream().ReadAsync(buffer, 0, length);
 
-                    await _client.GetStream().ReadAsync(buffer, 0, length);
-
-                    // Payload
-                    MessageBox.Show(BitConverter.ToString(buffer));
-                } else 
-                {
-                    MessageBox.Show("Initial was not a 1.");
-                }
+                // Payload
+                MessageBox.Show(Encoding.ASCII.GetString(buffer));
             }
         }
 

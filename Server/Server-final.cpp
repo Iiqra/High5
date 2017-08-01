@@ -33,7 +33,7 @@ public:
 		ACE_DEBUG((LM_DEBUG, "Acceptor: ThreadID: (%t) open\n"));
 		activate(THR_NEW_LWP,1, 1, ACE_DEFAULT_THREAD_PRIORITY, -1, this, 0, 0, 0, thread_names);
 
-		peer().send_n("It works", sizeof("It works"));
+		// peer().send_n("It works", sizeof("It works"));
 		return 0;
 	}
 
@@ -80,7 +80,7 @@ public:
 				_response.type = (int)(ResponseMessage::RegisterOK);
 				Connection con(id, &this->peer_, UserManager::getsenderId(username));
 				ClientManager::addconnection(con);
-				buffResp=responsehelper::parseresponse(_response, con.userid, false);
+				responsehelper::parseresponse(_response, con.userid, false);
 				_response.socket = con.socket;
 				QueueManager::addresponse(_response);
 			}
