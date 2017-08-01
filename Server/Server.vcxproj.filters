@@ -113,5 +113,8 @@
     <Text Include="190717- MainServer.txt" />
     <Text Include="20170720-Main server.txt" />
     <Text Include="monday - phase1 server.txt" />
+    <Text Include="MessageProtocol.txt">
+      <Filter>Header Files</Filter>
+    </Text>
   </ItemGroup>
 </Project>

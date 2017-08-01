@@ -191,6 +191,7 @@
   <ItemGroup>
     <Text Include="190717- MainServer.txt" />
     <Text Include="20170720-Main server.txt" />
+    <Text Include="MessageProtocol.txt" />
     <Text Include="monday - phase1 server.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

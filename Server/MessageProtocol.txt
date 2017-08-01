@@ -14,8 +14,7 @@ class response;
  enum class MessageType { Register = 1, Login, Message, Group, Broadcast, Image, File };
  enum class RequestStatus { InvalidPacketLength, InvalidSenderId, InvalidReceiverId, InvalidRequestSpecifier, BlockedSender, BlockedRecipient,Unauthorized, OK};
  enum class ResponseType { Invalid, HeaderError, Blocked, Unauthorized, OK};
- enum class ResponseMessage { CantLogin=1, ExistAlready, UsernamePasswordMismatch, Notfound, RegisterOK,LoginOK, 
-	GroupCreated, AddedInGroup,MemberList,GroupNotFound, NoMembers, ClientOffline, UserMessage, GroupMessage, Custom=255 };
+ enum class ResponseMessage { CantLogin=1, ExistAlready, UsernamePasswordMismatch, Notfound, RegisterOK,LoginOK, ClientOffline, UserMessage, GroupMessage, Custom=255 };
 
 
 
@@ -65,7 +64,101 @@ public:
 	}
 
 
+	static RequestStatus validate_request(request& r) {
+		    //if (r.type != MessageType::Login || r.type != MessageType::Register || r.type != MessageType::Message || r.type != MessageType::Broadcast || r.type != MessageType::Group)
+			// return RequestStatus::InvalidRequestSpecifier;
 
+		 if (r.length != (unsigned)strlen(r.buffer))
+			 return RequestStatus::InvalidPacketLength;
+		 
+		if ((unsigned)strlen(r.sender) != 6 /* or sender wont be in DB #DBCALL*/)
+			 return RequestStatus::InvalidSenderId;
+
+		 //if (r.sender is in blocked list maintained at clientmanager side then this )
+		 //return RequestStatus::BlockedSender;
+
+		 ////if (r.recepient is in blocked list maintained at clientmanager side then this )
+		 //return RequestStatus::BlockedRecipient;
+
+		 //return RequestStatus::Unauthorized;
+		return RequestStatus::OK;
+	}
+
+	static void process_message(const request& r, RequestStatus status, response &resp) {
+		printf("\nInside process message");
+		
+		if (status == RequestStatus::OK) {
+		}
+				// UserHelper login
+			//case Message:
+			//	auto cons = ClientManager::connections;
+
+			//	for (auto con : cons) {
+			//		if (r.recipient == con.userid) {
+			//			auto str = responsehelper::parseresponse(resp);
+			//			con.socket.send_n(str, str.size());
+			//		}
+			//	}
+			//	break;
+			//case Group: 
+			//	auto cons = ClientManager::connections;
+
+			//	std::vector<User> users = DbHelper::groupclientinfo();
+			//	for (auto us : users) {
+			//		for (auto con : cons) {
+			//			if (us.userid == con.userid) {
+			//				auto str = responsehelper::parseresponse(resp);
+			//				con.socket.send_n(str, str.size());
+			//			}
+			//		}
+			//	}
+			//	break;
+			//case Broadcast:
+			//	// 1. Get client sockets
+			//	// 2. Tell DbHelper to log all msgs -- broadcasts go to all
+			//	// 3. Send message to online people. 
+			//	auto cons = ClientManager::connections;
+			//	for (auto con : cons) {
+			//		con.stream.send_n();
+			//	}
+			//	break;
+			//	// Others		
+			
+	
+		//else if (status == RequestStatus::BlockedSender) {
+		//	//resp.type == ResponseType::Blocked;
+		//}
+		//else if (status == RequestStatus::Invalid || status == RequestStatus::HeaderError) {
+		//	// LOg the information
+		//}
+		//else if (status == RequestStatus::Unauthorized) {
+		//	// Log unauth access
+		//}
+	}
+
+	/*static request* createrequest(MessageType type, std::string sender, std::string recipient) {
+		// switch (type)
+		{
+		case Register:
+			break;
+		case Login:
+			break;
+		case Message:
+			break;
+		case Group:
+			break;
+		case Broadcast:
+			break;
+		case Image:
+			break;
+		case File:
+			break;
+		default:
+			break;
+		}
+	}*/
+
+//	static RequestStatus parseheader(std::string str, request &r) {
 	static void parseheader(char str[16], request &r) {
 
 		//senderID
@@ -99,6 +192,7 @@ public:
 			r.length = 0;
 		}
 	}
+	// 2mnts plzz
 	static std::string parserequest(request& r) {
 		std::stringstream str;
 		switch (r.type)
@@ -164,7 +258,31 @@ public:
 
 class responsehelper {
 public:
-	
+	static response* createresponse(RequestStatus status) {
+		response *r = new response();
+		/*switch (status)
+		{
+		case RequestStatus::Invalid:
+			r->type = ResponseType::Invalid;
+			break;
+		case RequestStatus::HeaderError:
+			r->type = ResponseType::HeaderError;
+			break;
+		case RequestStatus::Blocked:
+			r->type = ResponseType::Blocked;
+			break;
+		case RequestStatus::Unauthorized:
+			r->type = ResponseType::Unauthorized;
+			break;
+		case RequestStatus::OK:
+			r->type = ResponseType::OK;
+			break;
+		default:
+			break;
+		}*/
+		return r;
+	}
+
 	static void getlength(char ** buffer, int length) {
 		std::stringstream ss;
 		ss << std::setw(4) << std::setfill('0') << length;
@@ -173,12 +291,22 @@ public:
 		*buffer = _strdup(ss.str().c_str());
 	}
 
-	//static std::string parseresponse1(response &r) {
-	//	// here.
-	//	std::stringstream ss;
-	//	ss << r.type << r.length << r.buffer;
-	//	return ss.str();
-	//}
+	/*static void generateFields(response& res, std::string payload) {
+		switch (ResponseMessage(res.type))
+		{
+		case ResponseMessage::LoginOK:
+			res.buffer = "OK";
+			getlength(res.length, sizeof(res.buffer));
+			break;
+		}
+	}
+	*/
+	static std::string parseresponse(response &r) {
+		// here.
+		std::stringstream ss;
+		ss << r.type << r.length << r.buffer;
+		return ss.str();
+	}
 	static std::string parseresponse(response &resp, std::string payload, bool string= true) {
 		std::stringstream ss;
 		std::stringstream length;
@@ -200,7 +328,7 @@ public:
 				getlength(&resp.length, strlen(resp.buffer));
 				break;
 			case ResponseMessage::ExistAlready:
-				resp.buffer = "This usernane or group  already Exist, Try Somthing Better!";
+				resp.buffer = "This usernane already Exist, Try Somthing Else!";
 				getlength(&resp.length, strlen(resp.buffer));
 				break;
 			case ResponseMessage::UsernamePasswordMismatch:
@@ -223,14 +351,6 @@ public:
 				resp.buffer = "Recipient Is Offline!";
 				getlength(&resp.length, strlen(resp.buffer));
 				break;
-			case ResponseMessage::GroupNotFound:
-				resp.buffer = "Group not found!";
-				getlength(&resp.length, strlen(resp.buffer));
-				break;
-			case ResponseMessage::NoMembers:
-				resp.buffer = "No members yet!";
-				getlength(&resp.length, strlen(resp.buffer));
-				break;
 			case ResponseMessage::Custom:
 				break;
 			case ResponseMessage::UserMessage:
@@ -238,22 +358,7 @@ public:
 				size = strlen(resp.buffer);
 				getlength(&resp.length, size);
 				break;
-			case ResponseMessage::GroupCreated:
-				resp.buffer = _strdup(payload.c_str()); // how send the paylload -groupid
-				size = strlen(resp.buffer);
-				getlength(&resp.length, size);
-				break;
-			case ResponseMessage::AddedInGroup:
-				resp.buffer = _strdup(payload.c_str());
-				size = strlen(resp.buffer);
-				getlength(&resp.length, size);
-				break;
 			case ResponseMessage::GroupMessage:
-				resp.buffer = _strdup(payload.c_str());
-				size = strlen(resp.buffer);
-				getlength(&resp.length, size);
-				break;
-			case ResponseMessage::MemberList:
 				resp.buffer = _strdup(payload.c_str());
 				size = strlen(resp.buffer);
 				getlength(&resp.length, size);

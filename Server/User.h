@@ -75,5 +75,6 @@ public:
 		}
 		return "0000NA"; // User does not exist
 	}
+
 };
 

@@ -35,10 +35,10 @@
 //		ClientManager::addconnection(con);
 //
 //		if (id % 2 == 0) {
-//			GroupManager::addconnection("gtecht", con);
+//			GroupManager::joinGroup("gtecht", con);
 //		}
 //		else {
-//			GroupManager::addconnection("gfubar", con);
+//			GroupManager::joinGroup("gfubar", con);
 //		}
 //		id++;
 //		ACE_DEBUG((LM_DEBUG, "Acceptor: ThreadID: (%t) open\n"));

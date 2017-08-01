@@ -20,8 +20,8 @@ std::string ids = "A";
 typedef ACE_Singleton<ACE_Reactor, ACE_Null_Mutex> Reactor;
 typedef ACE_Acceptor<MyServiceHandler, ACE_SOCK_ACCEPTOR> Acceptor;
 
-enum RequestTypes {Register=1, Login, Message, CreateGroup, AddtoGroup, Broadcast };
-enum ActiveGroup { TechTalks = 1, Foodbar, CricketInsighter, Custom };
+enum RequestTypes {Register=1, Login, Message, CreateGroup, MyGroupList, JoinGroup, MemberList, Broadcast };
+//enum ActiveGroup { TechTalks = 1, Foodbar, CricketInsighter, Custom };
 //enum MessageReceiver { User=1, Group, Offline, Unknown };
 
 class MyServiceHandler : public ACE_Svc_Handler<ACE_SOCK_STREAM, ACE_MT_SYNCH> {
@@ -50,12 +50,15 @@ public:
 		response _forward;
 		
 		userauthenticationstatus accountSts;
+		groupauthentication groupSts;
 		std::string __response = "";
 		std::string buffer = "";
 		std::string content; // buffer for user and group message
-		std::string username, password;
-		std::string sender = "", recipient = "";
+		std::string username, password, groupname;
+		std::string sender = "", recipient = ""; 
 		std::string buffResp;
+		std::string members;
+	//	std::vector<Connection> conVector;
 		switch ((RequestTypes)_type)
 		{
 		case Register:
@@ -138,24 +141,112 @@ public:
 					}
 				}
 			}
-			else if (container[0] == 'g' || container[0] == 'G') {
-				_forward.type = (int)(ResponseMessage::GroupMessage);
-				content += container.substr(1, 5);
+			else if (container[0] == 'g' || container[0] == 'G') { // 3u00001g
+				
+				requesthelper::request_reader(__peer, container, 4);
+				requesthelper::request_reader(__peer, container, std::stoi(container));
+				
+				if (!GroupManager::groupExists(recipient))
+				{
+					_response.type = (int)(ResponseMessage::GroupNotFound);
+					_response.socket = &__peer;
+					responsehelper::parseresponse(_response, "", false);
+					QueueManager::addresponse(_response);
+					return;
+				}
+				GroupManager::getconnections(recipient, conVector);
+				for (auto s : conVector) {
+					_forward.type = (int)(ResponseMessage::GroupMessage);
+					_forward.socket = s.socket;
+					responsehelper::parseresponse(_forward, container, false);
+					QueueManager::addresponse(_forward);
 
-				requesthelper::request_reader(__peer, container, 1000); // limit of a text
-				content += container;
-				for (auto _ : conVector) {  
-					_forward.socket = _.socket;
-					
-				responsehelper::parseresponse(_forward, content, false);
-			}	}
+				}
+				_response.socket = &__peer;
+				_response.type = (int)(ResponseMessage::GroupMessage);
+				responsehelper::parseresponse(_response, "Message Sent to Group", false);
+				QueueManager::addresponse(_response);
+
+					}
 			break;
+		case CreateGroup: 
+			// 4u00001gtecht (do something that useer wont need to wrte this first g instead we can embed it ourselves)
+			// 40010somename
+			requesthelper::request_reader(__peer, container, 4);
+			buffer = container;
+			requesthelper::request_reader(__peer, container, std::stoi(buffer)); // u00001
+			groupname = container;
+			groupSts = GroupManager::creategroup(groupname);
 
+			if (groupSts == groupauthentication::Exist){
+				_response.type = (int)(ResponseMessage::ExistAlready);
+				_response.socket = &__peer;
+				buffer = "Group already exists.";
+			}
+			else if (groupSts == groupauthentication::Created) {
+				_response.type = (int)(ResponseMessage::GroupCreated);
+				_response.socket = &__peer;
+				
+				buffer = GroupManager::getGroupId(groupname);
+		}
+			responsehelper::parseresponse(_response, buffer, false);
+			QueueManager::addresponse(_response);
+			break;
+		case JoinGroup: // 6u00001gtecht
+			requesthelper::request_reader(__peer, container, 6);
+			sender = container;
+			requesthelper::request_reader(__peer, container, 6); // u00001
+			groupname = container;
+		    groupSts = GroupManager::joinGroup(groupname, con); // all  connections 
+			if (groupSts == groupauthentication::Added) {
+				_response.type = (int)(ResponseMessage::AddedInGroup);
+				_response.socket = &__peer;
+				buffer = "Okay- You Added";
+			 }
+			else if (groupSts == groupauthentication::Exist) {
+				// you are already part of it 
+				_response.type = (int)(ResponseMessage::ExistAlready);
+				buffer = "Already exists.";
+			}
+			responsehelper::parseresponse(_response, buffer, false);
+			QueueManager::addresponse(_response);
+			break;
+		case MemberList: // show active clients in this group.      7gtecht
+			requesthelper::request_reader(__peer, container, 6); // u00001
+			groupname = container;
+
+			if (!GroupManager::groupExists(groupname)) {
+				_response.type = (int)(ResponseMessage::GroupNotFound);
+				_response.socket = &__peer;
+				buffer = "Group not found";
+				responsehelper::parseresponse(_response, buffer, false);
+				QueueManager::addresponse(_response);
+
+				return;
+			}
+			GroupManager::getconnections(groupname, conVector);
+			if (conVector.size() == 0) {
+
+			//	buffer = "no members!";
+				_response.type = (int)(ResponseMessage::NoMembers);
+				_response.socket = &__peer;
+				buffer = members;
+				responsehelper::parseresponse(_response, "", false);
+				QueueManager::addresponse(_response);
+				return;
+			}
+			for (auto _ : conVector) {
+				members += _.userid + ",";
+			}
+			_response.type = (int)(ResponseMessage::MemberList);
+			_response.socket = &__peer;
+			buffer = members;
+			responsehelper::parseresponse(_response, buffer, false);
+				QueueManager::addresponse(_response);
+			break;
 		default:
 			break;
 		}
-		//responsehelper::parseresponse(_response,, true);
-		// push into queueu	
 	}
 	static void write(void) {
 		while (1) {
@@ -164,6 +255,7 @@ public:
 			if (QueueManager::getresponse(res) == 1) {
 				std::string responseBuffer = responsehelper::parseresponse(res, "", true);
 			//	printf("%s", responseBuffer);
+
 				res.socket->send_n(responseBuffer.c_str(), responseBuffer.length());
 				
 				//__peer.send_n(responseBuffer.c_str(), 3);
@@ -188,15 +280,29 @@ private:
 	std::string buffer;
 };
 
+// Helper function
+void addData() {
+	UserManager::registerUser("username00", "password00");
+	UserManager::registerUser("username11", "password11");
+	UserManager::registerUser("username22", "password22");
+	UserManager::registerUser("username33", "password33");
+	
+	GroupManager::creategroup("FFooBBar");
+	GroupManager::creategroup("Fruits");
+	GroupManager::creategroup("Cars");
+
+
+}
+
 int main(int argc, char* argv[]) {
 	ACE_INET_Addr addr(50009);
 	ACE_DEBUG((LM_DEBUG, "Thread: (%t) main \n"));
 	
 	Acceptor myacceptor(addr, Reactor::instance());
 	ACE_Thread::spawn((ACE_THR_FUNC)MyServiceHandler::write);
-	GroupManager::addgroups();
+	GroupManager::defaultgroups(); /// will load default groups
 
-	
+	addData();
 	while (1)
 		Reactor::instance()->handle_events();
 	return 0;
