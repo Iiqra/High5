@@ -20,7 +20,7 @@ std::string ids = "A";
 typedef ACE_Singleton<ACE_Reactor, ACE_Null_Mutex> Reactor;
 typedef ACE_Acceptor<MyServiceHandler, ACE_SOCK_ACCEPTOR> Acceptor;
 
-enum RequestTypes {Register=1, Login, Message, CreateGroup, MyGroupList, JoinGroup, MemberList, Broadcast };
+enum RequestTypes {Register=1, Login, Message, CreateGroup, MyGroupList, JoinGroup, MemberList, ActiveUsers, Broadcast, Logout=100 };
 //enum ActiveGroup { TechTalks = 1, Foodbar, CricketInsighter, Custom };
 //enum MessageReceiver { User=1, Group, Offline, Unknown };
 
@@ -45,7 +45,9 @@ public:
 		if (container == "") {
 			return;
 		}
-		int _type = std::stoi(&container[0]);
+		// int -> 0-255 (ALT + 1)
+		// char -> 0-9 
+		int _type = (int)container[0]; // char - unsigned char
 		response _response; 
 		response _forward;
 		
@@ -115,6 +117,14 @@ public:
 			QueueManager::addresponse(_response);
 			break;// 3Amessage
 		case Message: 
+			if (con.userid == "") {
+				_response.type = (int)ResponseMessage::Unauthorized;
+				_response.socket = &__peer;
+				responsehelper::parseresponse(_response, "", false);
+				QueueManager::addresponse(_response);
+				return;
+			}
+
 			requesthelper::request_reader(__peer, container, 6);
 			sender = container;
 			requesthelper::request_reader(__peer, container, 6); // u00001
@@ -172,6 +182,13 @@ public:
 		case CreateGroup: 
 			// 4u00001gtecht (do something that useer wont need to wrte this first g instead we can embed it ourselves)
 			// 40010somename
+			if (con.userid == "") {
+				_response.type = (int)ResponseMessage::Unauthorized;
+				_response.socket = &__peer;
+				responsehelper::parseresponse(_response, "", false);
+				QueueManager::addresponse(_response);
+				return;
+			}
 			requesthelper::request_reader(__peer, container, 4);
 			buffer = container;
 			requesthelper::request_reader(__peer, container, std::stoi(buffer)); // u00001
@@ -193,6 +210,13 @@ public:
 			QueueManager::addresponse(_response);
 			break;
 		case JoinGroup: // 6u00001gtecht
+			if (con.userid == "") {
+				_response.type = (int)ResponseMessage::Unauthorized;
+				_response.socket = &__peer;
+				responsehelper::parseresponse(_response, "", false);
+				QueueManager::addresponse(_response);
+				return;
+			}
 			requesthelper::request_reader(__peer, container, 6);
 			sender = container;
 			requesthelper::request_reader(__peer, container, 6); // u00001
@@ -212,6 +236,13 @@ public:
 			QueueManager::addresponse(_response);
 			break;
 		case MemberList: // show active clients in this group.      7gtecht
+			if (con.userid == "") {
+				_response.type = (int)ResponseMessage::Unauthorized;
+				_response.socket = &__peer;
+				responsehelper::parseresponse(_response, "", false);
+				QueueManager::addresponse(_response);
+				return;
+			}
 			requesthelper::request_reader(__peer, container, 6); // u00001
 			groupname = container;
 
@@ -244,7 +275,42 @@ public:
 			responsehelper::parseresponse(_response, buffer, false);
 				QueueManager::addresponse(_response);
 			break;
+
+		case ActiveUsers: // 8 --> ?0050hefriowejrwoimc
+			if (con.userid == "") {
+				_response.type = (int)ResponseMessage::Unauthorized;
+				_response.socket = &__peer;
+				responsehelper::parseresponse(_response, "", false);
+				QueueManager::addresponse(_response);
+				return;
+			}
+			buffer = "";
+			for (auto _ : ClientManager::connections) {
+				buffer += _.userid + ",";
+			}
+
+			_response.type = (int)ResponseMessage::ActiveUsers;
+			_response.socket = &__peer;
+			responsehelper::parseresponse(_response, buffer, false);
+			QueueManager::addresponse(_response);
+			break;
+		case Logout:
+			con.userid = "";
+			ClientManager::removeconnection(con.id);
+			GroupManager::removeFromAll(con.userid);
+			_response.socket = &__peer;
+			_response.type = (int)ResponseMessage::Logout;
+			responsehelper::parseresponse(_response, "", false);
+			QueueManager::addresponse(_response);
+			
+			ACE_OS::sleep(3);
+			con.socket = nullptr;
+			break;
 		default:
+			_response.type = (int)ResponseMessage::InvalidSpecifier;
+			_response.socket = &__peer;
+			responsehelper::parseresponse(_response, "", false);
+			QueueManager::addresponse(_response);
 			break;
 		}
 	}

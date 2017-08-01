@@ -15,7 +15,8 @@ class response;
  enum class RequestStatus { InvalidPacketLength, InvalidSenderId, InvalidReceiverId, InvalidRequestSpecifier, BlockedSender, BlockedRecipient,Unauthorized, OK};
  enum class ResponseType { Invalid, HeaderError, Blocked, Unauthorized, OK};
  enum class ResponseMessage { CantLogin=1, ExistAlready, UsernamePasswordMismatch, Notfound, RegisterOK,LoginOK, 
-	GroupCreated, AddedInGroup,MemberList,GroupNotFound, NoMembers, ClientOffline, UserMessage, GroupMessage, Custom=255 };
+	GroupCreated, AddedInGroup,MemberList,GroupNotFound, NoMembers, ClientOffline, UserMessage, GroupMessage, ActiveUsers, 
+	 InvalidSpecifier, Unauthorized, Logout, Custom=255 };
 
 
 
@@ -231,6 +232,18 @@ public:
 				resp.buffer = "No members yet!";
 				getlength(&resp.length, strlen(resp.buffer));
 				break;
+			case ResponseMessage::InvalidSpecifier:
+				resp.buffer = "Invalid Specifier";
+				getlength(&resp.length, strlen(resp.buffer));
+				break;
+			case ResponseMessage::Unauthorized:
+				resp.buffer = "Unauthorized";
+				getlength(&resp.length, strlen(resp.buffer));
+				break;
+			case ResponseMessage::Logout:
+				resp.buffer = "Your session will be closed in 1-4 seconds.";
+				getlength(&resp.length, strlen(resp.buffer));
+				break;
 			case ResponseMessage::Custom:
 				break;
 			case ResponseMessage::UserMessage:
@@ -254,6 +267,11 @@ public:
 				getlength(&resp.length, size);
 				break;
 			case ResponseMessage::MemberList:
+				resp.buffer = _strdup(payload.c_str());
+				size = strlen(resp.buffer);
+				getlength(&resp.length, size);
+				break;
+			case ResponseMessage::ActiveUsers:
 				resp.buffer = _strdup(payload.c_str());
 				size = strlen(resp.buffer);
 				getlength(&resp.length, size);

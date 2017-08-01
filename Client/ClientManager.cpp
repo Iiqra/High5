@@ -11,7 +11,14 @@ void ClientManager::addconnection(Connection conn) {
 }
 
 void ClientManager::removeconnection(int id) {
-	//remove
+	int index = 0;
+	for (auto _ : connections) {
+		if (_.id == id) {
+			connections.erase(connections.begin() + index);
+			return;
+		}
+		index++;
+	}
 }
 
 int GroupManager::mapId = 0;
@@ -73,6 +80,14 @@ groupauthentication GroupManager::creategroup(std::string groupname) {
 	groupid = ss.str();
 	GroupManager::groups.push_back(Group(groupid, groupname));
 	return  groupauthentication::Created;
+}
+
+void GroupManager::removeFromAll(std::string username) {
+	for (auto _ : _allconnections) {
+		if (_.second.first.userid == username) {
+			_allconnections.erase(_.first);
+		}
+	}
 }
 
 std::string GroupManager::getGroupId(std::string groupname) {

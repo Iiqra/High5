@@ -49,6 +49,8 @@ public:
 	static std::string getuserlist(char groupId[6]);
 	static void getconnections(std::string groupId, std::vector<Connection>& connections);
 	static bool groupExists(std::string groupname);
+
+	static void removeFromAll(std::string username);
 };
 
 class ClientManager {
