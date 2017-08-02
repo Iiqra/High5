@@ -20,9 +20,9 @@ std::string ids = "A";
 typedef ACE_Singleton<ACE_Reactor, ACE_Null_Mutex> Reactor;
 typedef ACE_Acceptor<MyServiceHandler, ACE_SOCK_ACCEPTOR> Acceptor;
 
-enum RequestTypes {Register=1, Login, Message, CreateGroup, MyGroupList, JoinGroup, MemberList, ActiveUsers, Broadcast, Logout=100 };
-//enum ActiveGroup { TechTalks = 1, Foodbar, CricketInsighter, Custom };
-//enum MessageReceiver { User=1, Group, Offline, Unknown };
+//enum RequestTypes {Register=1, Login, Message, CreateGroup, MyGroupList, JoinGroup, MemberList, ActiveUsers, Broadcast, Logout=100 };
+enum RequestTypes { Register = 1, Login, Message, CreateGroup, JoinGroup, MemberList, ActiveUsers, Broadcast, Logout };
+
 
 class MyServiceHandler : public ACE_Svc_Handler<ACE_SOCK_STREAM, ACE_MT_SYNCH> {
 	ACE_thread_t thread_names[1];
@@ -33,21 +33,21 @@ public:
 		ACE_DEBUG((LM_DEBUG, "Acceptor: ThreadID: (%t) open\n"));
 		activate(THR_NEW_LWP,1, 1, ACE_DEFAULT_THREAD_PRIORITY, -1, this, 0, 0, 0, thread_names);
 
-		// peer().send_n("It works", sizeof("It works"));
+		peer().send_n("It works", sizeof("It works"));
 		return 0;
 	}
 
-	void read(void) {
+	void read(int t) {
 		std::string container; int status; request r;
 		std::vector<Connection> conVector;
-
 		status = requesthelper::request_reader(__peer, container, 1);
 		if (container == "") {
 			return;
 		}
 		// int -> 0-255 (ALT + 1)
 		// char -> 0-9 
-		int _type = (int)container[0]; // char - unsigned char
+	//	int _type = (int)container[0]; // char - unsigned char
+		int _type = std::stoi(container);
 		response _response; 
 		response _forward;
 		
@@ -82,6 +82,7 @@ public:
 				ClientManager::addconnection(con);
 				responsehelper::parseresponse(_response, con.userid, false);
 				_response.socket = con.socket;
+				
 				QueueManager::addresponse(_response);
 			}
 			break;
@@ -180,7 +181,6 @@ public:
 					}
 			break;
 		case CreateGroup: 
-			// 4u00001gtecht (do something that useer wont need to wrte this first g instead we can embed it ourselves)
 			// 40010somename
 			if (con.userid == "") {
 				_response.type = (int)ResponseMessage::Unauthorized;
@@ -288,7 +288,6 @@ public:
 			for (auto _ : ClientManager::connections) {
 				buffer += _.userid + ",";
 			}
-
 			_response.type = (int)ResponseMessage::ActiveUsers;
 			_response.socket = &__peer;
 			responsehelper::parseresponse(_response, buffer, false);
@@ -302,9 +301,11 @@ public:
 			_response.type = (int)ResponseMessage::Logout;
 			responsehelper::parseresponse(_response, "", false);
 			QueueManager::addresponse(_response);
-			
 			ACE_OS::sleep(3);
-			con.socket = nullptr;
+			con.socket->close();
+			ACE_Thread::cancel(t);
+			ACE_Thread::testcancel();
+		      
 			break;
 		default:
 			_response.type = (int)ResponseMessage::InvalidSpecifier;
@@ -316,7 +317,7 @@ public:
 	}
 	static void write(void) {
 		while (1) {
-			// Continue to loop
+			ACE_OS::sleep(3);
 			response res;
 			if (QueueManager::getresponse(res) == 1) {
 				std::string responseBuffer = responsehelper::parseresponse(res, "", true);
@@ -331,13 +332,17 @@ public:
 	}
 
 	int svc(void) {
+		ACE_thread_t tid = ACE_OS::thr_self();
+
+
 		ACE_DEBUG((LM_DEBUG, "(%t) Svc thread \n"));
-		if (ACE_Thread::self() == thread_names[0]) {
+		//if (ACE_Thread::self() == thread_names[0]) {
 			while (1) {
-				read();
+				ACE_OS::sleep(3);
+				read(tid);
 			}
-		}
-		return 0; // keep the compiler happy.
+		//}
+		return 0; 
 	}
 
 private:

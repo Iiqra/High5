@@ -19,6 +19,7 @@ void ClientManager::removeconnection(int id) {
 		}
 		index++;
 	}
+
 }
 
 int GroupManager::mapId = 0;
