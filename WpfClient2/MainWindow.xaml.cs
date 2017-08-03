@@ -21,7 +21,7 @@ namespace WpfClient2
 
             // _client = new TcpClient(IPAddress.Loopback.ToString(), 50009);
 
-            _client = new TcpClient("127.0.0.1", 50009);
+             _client = new TcpClient("127.0.0.1", 50009);
             readThread = new Thread(new ThreadStart(read));
             readThread.Start();
         }
@@ -29,7 +29,7 @@ namespace WpfClient2
         private async void write(string content)
         {
             if (_client.Connected)
-            {
+            { //001 1 byte 0-255// '1' alt 001   // 1uaername34password67 --0001000 0000000001
                 var buffer = Encoding.ASCII.GetBytes(content);
                 await _client.GetStream().WriteAsync(buffer, 0, buffer.Length);
             }
@@ -47,7 +47,7 @@ namespace WpfClient2
                 byte[] buffer = new byte[1];
                 await _client.GetStream().ReadAsync(buffer, 0, 1);
 
-                // 16 -> 0x10 (16, 0) -> \u0010
+                // 16 -> 0x10 (16, 0) -> \u0010  1
                 var str = Encoding.ASCII.GetString(buffer);
                 int type = Convert.ToInt32(str);
                 

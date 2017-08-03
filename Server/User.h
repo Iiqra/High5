@@ -4,6 +4,7 @@
 #include <sstream>
 #include <iomanip>
 #include "MessageProtocol.h"
+#include "ClientManager.h"
 
 class UserEntity {
 public:
@@ -15,7 +16,7 @@ public:
 	UserEntity(std::string u, std::string un, std::string p) : userId(u), userName(un), password(p) {}
 };
 
-enum userauthenticationstatus { OK, Exist, UsernamePasswordMismatch, UserNotfound };
+enum userauthenticationstatus { OK, Exist, UsernamePasswordMismatch, UserNotfound, AlreadyLoggedIn };
 // int userIdGlobal = 0;
 
 //void readMessage(ACE_SOCK_Stream &sock, char*& buffer, int length) {
@@ -61,7 +62,15 @@ public:
 					return userauthenticationstatus::UsernamePasswordMismatch;
 				}
 			}
+			}
+
+		for (auto con : ClientManager::connections) {
+			  
+			if (con.userid == UserManager::getsenderId(username))
+				return userauthenticationstatus::AlreadyLoggedIn;
 		}
+
+
 
 		// List had no user with that username
 		return userauthenticationstatus::UserNotfound;

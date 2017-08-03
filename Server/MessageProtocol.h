@@ -14,8 +14,9 @@ class response;
  enum class MessageType { Register = 1, Login, Message, Group, Broadcast, Image, File };
  enum class RequestStatus { InvalidPacketLength, InvalidSenderId, InvalidReceiverId, InvalidRequestSpecifier, BlockedSender, BlockedRecipient,Unauthorized, OK};
  enum class ResponseType { Invalid, HeaderError, Blocked, Unauthorized, OK};
- enum class ResponseMessage { CantLogin=1, ExistAlready, UsernamePasswordMismatch, Notfound, RegisterOK,LoginOK, 
-	GroupCreated, AddedInGroup,MemberList,GroupNotFound, NoMembers, ClientOffline, UserMessage, GroupMessage, ActiveUsers, 
+ enum class ResponseMessage {
+	 CantLogin=1, ExistAlready, UsernamePasswordMismatch, Notfound, RegisterOK,LoginOK, 
+	  GroupCreated, AddedInGroup,MemberList,GroupNotFound, NoMembers, ClientOffline, UserMessage, GroupMessage, ActiveUsers, 
 	 InvalidSpecifier, Unauthorized, Logout, Custom=255 };
 
 
@@ -48,19 +49,26 @@ public:
 	int length;
 	char* buffer;
 	// read this for issues with chars array
+
+	~request() {
+
+		//delete buffer;
+	}
 }; 
 
 class requesthelper {
 public:
-	static int request_reader(ACE_SOCK_Stream& _peer, std::string & container, int len ){
+	static int request_reader(ACE_SOCK_Stream& _peer, std::string & container, int len){
 		char* buffer = new char[len];
 		container = "";
 		buffer[len] = '\0';
 		int read = _peer.recv_n(buffer, len);
 		if (read == len) {
 			container += buffer;
+			//delete buffer;
 			return 1;
 		} else{
+			//delete buffer;
 			return 0;
 		}
 	}
@@ -221,7 +229,7 @@ public:
 				getlength(&resp.length, strlen(resp.buffer));
 				break;
 			case ResponseMessage::ClientOffline:
-				resp.buffer = "Recipient Is Offline!";
+				resp.buffer = "Ahh, You're late, This user has just gone!";
 				getlength(&resp.length, strlen(resp.buffer));
 				break;
 			case ResponseMessage::GroupNotFound:

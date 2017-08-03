@@ -15,14 +15,13 @@
 class MyServiceHandler; //forward declaration
 
 char id = 'A';
-std::string ids = "A";
-
+static bool logout= false;
+static int instance = 1;
 typedef ACE_Singleton<ACE_Reactor, ACE_Null_Mutex> Reactor;
 typedef ACE_Acceptor<MyServiceHandler, ACE_SOCK_ACCEPTOR> Acceptor;
 
 //enum RequestTypes {Register=1, Login, Message, CreateGroup, MyGroupList, JoinGroup, MemberList, ActiveUsers, Broadcast, Logout=100 };
 enum RequestTypes { Register = 1, Login, Message, CreateGroup, JoinGroup, MemberList, ActiveUsers, Broadcast, Logout };
-
 
 class MyServiceHandler : public ACE_Svc_Handler<ACE_SOCK_STREAM, ACE_MT_SYNCH> {
 	ACE_thread_t thread_names[1];
@@ -31,35 +30,44 @@ public:
 	int open(void*) {
 		__peer = peer();
 		ACE_DEBUG((LM_DEBUG, "Acceptor: ThreadID: (%t) open\n"));
-		activate(THR_NEW_LWP,1, 1, ACE_DEFAULT_THREAD_PRIORITY, -1, this, 0, 0, 0, thread_names);
+		activate(THR_NEW_LWP,1, 1, ACE_DEFAULT_THREAD_PRIORITY, -1, this,
+			0, 0, 0, thread_names);
+	int a=	instance++;
+	peer().send_n(std::to_string(a).c_str(), 1);
+	//	peer().send_n("It works\n ", sizeof("It works\n")); 
+	
 
-		peer().send_n("It works", sizeof("It works"));
 		return 0;
 	}
+	int read(int t) {
 
-	void read(int t) {
+#pragma region initialization
+
 		std::string container; int status; request r;
 		std::vector<Connection> conVector;
-		status = requesthelper::request_reader(__peer, container, 1);
-		if (container == "") {
-			return;
-		}
-		// int -> 0-255 (ALT + 1)
-		// char -> 0-9 
-	//	int _type = (int)container[0]; // char - unsigned char
-		int _type = std::stoi(container);
-		response _response; 
+		response _response;
 		response _forward;
-		
 		userauthenticationstatus accountSts;
 		groupauthentication groupSts;
 		std::string __response = "";
 		std::string buffer = "";
 		std::string content; // buffer for user and group message
 		std::string username, password, groupname;
-		std::string sender = "", recipient = ""; 
+		std::string sender = "", recipient = "";
 		std::string buffResp;
 		std::string members;
+#pragma endregion 
+		std::string type;
+		status = requesthelper::request_reader(__peer, type, 1);
+		if (type == "" || (type < "1" || type > "9")) {
+	//		__peer.send_n("Try something useful", sizeof ("Try something useful"));
+			return 0;
+		}
+		// int -> 0-255 (ALT + 1)
+		// char -> 0-9 
+	//	int _type = (int)container[0]; // char - unsigned char
+		int _type = std::stoi(type);
+		
 	//	std::vector<Connection> conVector;
 		switch ((RequestTypes)_type)
 		{
@@ -88,7 +96,8 @@ public:
 			break;
 		case Login:
 			status = requesthelper::request_reader(__peer, container, 10);
-			username= container;
+			//username= container;
+			username = container;
 			status = requesthelper::request_reader(__peer, container, 10);
 			password= container;
 			//userauthenticationstatus accountSts;
@@ -123,7 +132,7 @@ public:
 				_response.socket = &__peer;
 				responsehelper::parseresponse(_response, "", false);
 				QueueManager::addresponse(_response);
-				return;
+				return 0;
 			}
 
 			requesthelper::request_reader(__peer, container, 6);
@@ -148,9 +157,20 @@ public:
 						responsehelper::parseresponse(_response, "Okay", false);
 						QueueManager::addresponse(_forward);
 						QueueManager::addresponse(_response);
-						break;
+						
 					}
-				}
+				
+				}	break;
+		
+						_response.type = (int)(ResponseMessage::ClientOffline);
+						_response.socket = &__peer;
+						 responsehelper::parseresponse(_response, "", false);
+						 QueueManager::addresponse(_response);
+						 return 0;
+					
+					break;
+					
+				
 			}
 			else if (container[0] == 'g' || container[0] == 'G') { // 3u00001g
 				
@@ -163,7 +183,7 @@ public:
 					_response.socket = &__peer;
 					responsehelper::parseresponse(_response, "", false);
 					QueueManager::addresponse(_response);
-					return;
+					return 0;
 				}
 				GroupManager::getconnections(recipient, conVector);
 				for (auto s : conVector) {
@@ -187,7 +207,7 @@ public:
 				_response.socket = &__peer;
 				responsehelper::parseresponse(_response, "", false);
 				QueueManager::addresponse(_response);
-				return;
+				return 0;
 			}
 			requesthelper::request_reader(__peer, container, 4);
 			buffer = container;
@@ -209,13 +229,13 @@ public:
 			responsehelper::parseresponse(_response, buffer, false);
 			QueueManager::addresponse(_response);
 			break;
-		case JoinGroup: // 6u00001gtecht
+		case JoinGroup: // 5u00001gtecht
 			if (con.userid == "") {
 				_response.type = (int)ResponseMessage::Unauthorized;
 				_response.socket = &__peer;
 				responsehelper::parseresponse(_response, "", false);
 				QueueManager::addresponse(_response);
-				return;
+				return 0;
 			}
 			requesthelper::request_reader(__peer, container, 6);
 			sender = container;
@@ -235,13 +255,13 @@ public:
 			responsehelper::parseresponse(_response, buffer, false);
 			QueueManager::addresponse(_response);
 			break;
-		case MemberList: // show active clients in this group.      7gtecht
+		case MemberList: // show active clients in this group.      6gtecht
 			if (con.userid == "") {
 				_response.type = (int)ResponseMessage::Unauthorized;
 				_response.socket = &__peer;
 				responsehelper::parseresponse(_response, "", false);
 				QueueManager::addresponse(_response);
-				return;
+				return 0;
 			}
 			requesthelper::request_reader(__peer, container, 6); // u00001
 			groupname = container;
@@ -253,7 +273,7 @@ public:
 				responsehelper::parseresponse(_response, buffer, false);
 				QueueManager::addresponse(_response);
 
-				return;
+				return 0;
 			}
 			GroupManager::getconnections(groupname, conVector);
 			if (conVector.size() == 0) {
@@ -264,7 +284,7 @@ public:
 				buffer = members;
 				responsehelper::parseresponse(_response, "", false);
 				QueueManager::addresponse(_response);
-				return;
+				return 0;
 			}
 			for (auto _ : conVector) {
 				members += _.userid + ",";
@@ -276,13 +296,13 @@ public:
 				QueueManager::addresponse(_response);
 			break;
 
-		case ActiveUsers: // 8 --> ?0050hefriowejrwoimc
+		case ActiveUsers: // 7 --> ?0050hefriowejrwoimc
 			if (con.userid == "") {
 				_response.type = (int)ResponseMessage::Unauthorized;
 				_response.socket = &__peer;
 				responsehelper::parseresponse(_response, "", false);
 				QueueManager::addresponse(_response);
-				return;
+				return 0;
 			}
 			buffer = "";
 			for (auto _ : ClientManager::connections) {
@@ -293,7 +313,7 @@ public:
 			responsehelper::parseresponse(_response, buffer, false);
 			QueueManager::addresponse(_response);
 			break;
-		case Logout:
+		case Logout:  // 9
 			con.userid = "";
 			ClientManager::removeconnection(con.id);
 			GroupManager::removeFromAll(con.userid);
@@ -303,8 +323,10 @@ public:
 			QueueManager::addresponse(_response);
 			ACE_OS::sleep(3);
 			con.socket->close();
-			ACE_Thread::cancel(t);
-			ACE_Thread::testcancel();
+			ACE_Thread::cancel(t); // cancel the thread
+			ACE_Thread::exit();
+			logout = true;
+			return -1; // deregister from reactor
 		      
 			break;
 		default:
@@ -314,10 +336,11 @@ public:
 			QueueManager::addresponse(_response);
 			break;
 		}
+		return 0;
 	}
 	static void write(void) {
 		while (1) {
-			ACE_OS::sleep(3);
+			ACE_OS::sleep(2);
 			response res;
 			if (QueueManager::getresponse(res) == 1) {
 				std::string responseBuffer = responsehelper::parseresponse(res, "", true);
@@ -332,13 +355,12 @@ public:
 	}
 
 	int svc(void) {
+	
 		ACE_thread_t tid = ACE_OS::thr_self();
-
-
 		ACE_DEBUG((LM_DEBUG, "(%t) Svc thread \n"));
 		//if (ACE_Thread::self() == thread_names[0]) {
 			while (1) {
-				ACE_OS::sleep(3);
+			 ACE_OS::sleep(1);
 				read(tid);
 			}
 		//}

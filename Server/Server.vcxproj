@@ -161,6 +161,7 @@
     <ClCompile Include="MainServer- reactor with threadpool.cpp" />
     <ClCompile Include="Message.cpp" />
     <ClCompile Include="MainServer-simple reactor pattern.cpp" />
+    <ClCompile Include="MessageProtocol.cpp" />
     <ClCompile Include="Server v3- DEMO.cpp" />
     <ClCompile Include="Server v4.cpp" />
     <ClCompile Include="server- dont touch its running one.cpp" />
