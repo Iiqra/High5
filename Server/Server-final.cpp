@@ -15,7 +15,7 @@
 class MyServiceHandler; //forward declaration
 
 char id = 'A';
-static bool logout= false;
+static bool logout = false;
 static int instance = 1;
 typedef ACE_Singleton<ACE_Reactor, ACE_Null_Mutex> Reactor;
 typedef ACE_Acceptor<MyServiceHandler, ACE_SOCK_ACCEPTOR> Acceptor;
@@ -30,15 +30,14 @@ public:
 	int open(void*) {
 		__peer = peer();
 		ACE_DEBUG((LM_DEBUG, "Acceptor: ThreadID: (%t) open\n"));
-		activate(THR_NEW_LWP,1, 1, ACE_DEFAULT_THREAD_PRIORITY, -1, this,
+		activate(THR_NEW_LWP, 1, 1, ACE_DEFAULT_THREAD_PRIORITY, -1, this,
 			0, 0, 0, thread_names);
-	int a=	instance++;
-	peer().send_n(std::to_string(a).c_str(), 1);
-	//	peer().send_n("It works\n ", sizeof("It works\n")); 
-	
-
+		int a = instance++;
+		peer().send_n(std::to_string(a).c_str(), 1);
+		// peer().send_n("It works\n ", sizeof("It works\n")); 
 		return 0;
 	}
+
 	int read(int t) {
 
 #pragma region initialization
@@ -56,27 +55,29 @@ public:
 		std::string sender = "", recipient = "";
 		std::string buffResp;
 		std::string members;
+		bool isPrivate;
+		std::string grpadminid;
 #pragma endregion 
 		std::string type;
 		status = requesthelper::request_reader(__peer, type, 1);
 		if (type == "" || (type < "1" || type > "9")) {
-	//		__peer.send_n("Try something useful", sizeof ("Try something useful"));
+			// __peer.send_n("Try something useful", sizeof ("Try something useful")); cus of telnet single packet reading behaviour em niot orintnig this message here....
 			return 0;
+		
 		}
 		// int -> 0-255 (ALT + 1)
 		// char -> 0-9 
-	//	int _type = (int)container[0]; // char - unsigned char
+		// int _type = (int)container[0]; // char - unsigned char
 		int _type = std::stoi(type);
-		
-	//	std::vector<Connection> conVector;
+		// std::vector<Connection> conVector;
 		switch ((RequestTypes)_type)
 		{
 		case Register:
 			status = requesthelper::request_reader(__peer, container, 10);
-			username= container;
+			username = container;
 			status = requesthelper::request_reader(__peer, container, 10);
-			password= container;
-			//userauthenticationstatus accountSts; 	std::string username;
+			password = container;
+			//userauthenticationstatus accountSts; std::string username;
 			accountSts = UserManager::registerUser(username, password);
 			if (accountSts != userauthenticationstatus::OK) {
 				_response.type = (int)(ResponseMessage::ExistAlready);
@@ -86,30 +87,38 @@ public:
 			}
 			else {
 				_response.type = (int)(ResponseMessage::RegisterOK);
-				Connection con(id, &this->peer_, UserManager::getsenderId(username));
+				con = Connection(id, &this->peer_, UserManager::getsenderId(username));
 				ClientManager::addconnection(con);
+				// here.
 				responsehelper::parseresponse(_response, con.userid, false);
 				_response.socket = con.socket;
-				
 				QueueManager::addresponse(_response);
 			}
 			break;
 		case Login:
+			if (con.userid != "") {
+				// send the response
+
+				_response.type = (int)ResponseMessage::AlreadyLoggedIn;
+				_response.socket = &__peer;
+				responsehelper::parseresponse(_response, "", false);
+				QueueManager::addresponse(_response);
+				return 0;
+			}
 			status = requesthelper::request_reader(__peer, container, 10);
 			//username= container;
 			username = container;
 			status = requesthelper::request_reader(__peer, container, 10);
-			password= container;
+			password = container;
 			//userauthenticationstatus accountSts;
 			//accountSts = UserManager::authenticateUser(buffer.substr(0, 9), buffer.substr(10, 19));
-			accountSts = UserManager::authenticateUser(username,password);
-			if (accountSts == userauthenticationstatus::OK){
+			accountSts = UserManager::authenticateUser(username, password);
+			if (accountSts == userauthenticationstatus::OK) {
 				_response.type = (int)ResponseMessage::LoginOK;
 				con = Connection(id, &this->peer_, UserManager::getsenderId(username));
 				ClientManager::addconnection(con);
 				_response.socket = con.socket;
 				responsehelper::parseresponse(_response, con.userid, false);
-				
 			}
 			else if (accountSts == userauthenticationstatus::UsernamePasswordMismatch)
 			{
@@ -120,13 +129,13 @@ public:
 
 			}
 			else if (accountSts == userauthenticationstatus::UserNotfound) {
-			_response.type = (int)(ResponseMessage::Notfound);
-			_response.socket = &__peer;
-			responsehelper::parseresponse(_response, "", false);
+				_response.type = (int)(ResponseMessage::Notfound);
+				_response.socket = &__peer;
+				responsehelper::parseresponse(_response, "", false);
 			}
 			QueueManager::addresponse(_response);
 			break;// 3Amessage
-		case Message: 
+		case Message:
 			if (con.userid == "") {
 				_response.type = (int)ResponseMessage::Unauthorized;
 				_response.socket = &__peer;
@@ -157,26 +166,18 @@ public:
 						responsehelper::parseresponse(_response, "Okay", false);
 						QueueManager::addresponse(_forward);
 						QueueManager::addresponse(_response);
-						
 					}
-				
-				}	break;
-		
-						_response.type = (int)(ResponseMessage::ClientOffline);
-						_response.socket = &__peer;
-						 responsehelper::parseresponse(_response, "", false);
-						 QueueManager::addresponse(_response);
-						 return 0;
-					
-					break;
-					
-				
+				} break;
+				_response.type = (int)(ResponseMessage::ClientOffline);
+				_response.socket = &__peer;
+				responsehelper::parseresponse(_response, "", false);
+				QueueManager::addresponse(_response);
+				return 0;
+				break;
 			}
 			else if (container[0] == 'g' || container[0] == 'G') { // 3u00001g
-				
 				requesthelper::request_reader(__peer, container, 4);
 				requesthelper::request_reader(__peer, container, std::stoi(container));
-				
 				if (!GroupManager::groupExists(recipient))
 				{
 					_response.type = (int)(ResponseMessage::GroupNotFound);
@@ -187,6 +188,9 @@ public:
 				}
 				GroupManager::getconnections(recipient, conVector);
 				for (auto s : conVector) {
+					if (s.userid == con.userid) {
+						continue;
+					}
 					_forward.type = (int)(ResponseMessage::GroupMessage);
 					_forward.socket = s.socket;
 					responsehelper::parseresponse(_forward, container, false);
@@ -197,11 +201,10 @@ public:
 				_response.type = (int)(ResponseMessage::GroupMessage);
 				responsehelper::parseresponse(_response, "Message Sent to Group", false);
 				QueueManager::addresponse(_response);
-
-					}
+			}
 			break;
-		case CreateGroup: 
-			// 40010somename
+		case CreateGroup:
+			// 410010somename // create specifier|private or public| len|groupname
 			if (con.userid == "") {
 				_response.type = (int)ResponseMessage::Unauthorized;
 				_response.socket = &__peer;
@@ -209,23 +212,24 @@ public:
 				QueueManager::addresponse(_response);
 				return 0;
 			}
+			// Read if private or public group
+			requesthelper::request_reader(__peer, container, 1);
+			isPrivate =std::stoi(container);
 			requesthelper::request_reader(__peer, container, 4);
 			buffer = container;
 			requesthelper::request_reader(__peer, container, std::stoi(buffer)); // u00001
 			groupname = container;
-			groupSts = GroupManager::creategroup(groupname);
-
-			if (groupSts == groupauthentication::Exist){
+			groupSts = GroupManager::creategroup(groupname, con.userid, isPrivate); // 
+			if (groupSts == groupauthentication::Exist) {
 				_response.type = (int)(ResponseMessage::ExistAlready);
 				_response.socket = &__peer;
-				buffer = "Group already exists.";
+				
 			}
 			else if (groupSts == groupauthentication::Created) {
 				_response.type = (int)(ResponseMessage::GroupCreated);
 				_response.socket = &__peer;
-				
 				buffer = GroupManager::getGroupId(groupname);
-		}
+			}
 			responsehelper::parseresponse(_response, buffer, false);
 			QueueManager::addresponse(_response);
 			break;
@@ -237,22 +241,30 @@ public:
 				QueueManager::addresponse(_response);
 				return 0;
 			}
+
 			requesthelper::request_reader(__peer, container, 6);
 			sender = container;
 			requesthelper::request_reader(__peer, container, 6); // u00001
 			groupname = container;
-		    groupSts = GroupManager::joinGroup(groupname, con); // all  connections 
+			groupSts = GroupManager::joinGroup(groupname, con, sender); // all  connections 
 			if (groupSts == groupauthentication::Added) {
 				_response.type = (int)(ResponseMessage::AddedInGroup);
 				_response.socket = &__peer;
-				buffer = "Okay- You Added";
-			 }
+			
+			}
 			else if (groupSts == groupauthentication::Exist) {
 				// you are already part of it 
 				_response.type = (int)(ResponseMessage::ExistAlready);
-				buffer = "Already exists.";
+				_response.socket = &__peer;
+				
 			}
-			responsehelper::parseresponse(_response, buffer, false);
+			else if (groupSts == groupauthentication::Private) {
+				// you are already part of it 
+				_response.type = (int)(ResponseMessage::PrivateGroup);
+				_response.socket = &__peer;
+
+			}
+			responsehelper::parseresponse(_response, "", false);
 			QueueManager::addresponse(_response);
 			break;
 		case MemberList: // show active clients in this group.      6gtecht
@@ -278,7 +290,7 @@ public:
 			GroupManager::getconnections(groupname, conVector);
 			if (conVector.size() == 0) {
 
-			//	buffer = "no members!";
+				// buffer = "no members!";
 				_response.type = (int)(ResponseMessage::NoMembers);
 				_response.socket = &__peer;
 				buffer = members;
@@ -293,7 +305,7 @@ public:
 			_response.socket = &__peer;
 			buffer = members;
 			responsehelper::parseresponse(_response, buffer, false);
-				QueueManager::addresponse(_response);
+			QueueManager::addresponse(_response);
 			break;
 
 		case ActiveUsers: // 7 --> ?0050hefriowejrwoimc
@@ -327,7 +339,7 @@ public:
 			ACE_Thread::exit();
 			logout = true;
 			return -1; // deregister from reactor
-		      
+
 			break;
 		default:
 			_response.type = (int)ResponseMessage::InvalidSpecifier;
@@ -340,14 +352,13 @@ public:
 	}
 	static void write(void) {
 		while (1) {
-			ACE_OS::sleep(2);
+			ACE_OS::sleep(0.3);
 			response res;
 			if (QueueManager::getresponse(res) == 1) {
 				std::string responseBuffer = responsehelper::parseresponse(res, "", true);
-			//	printf("%s", responseBuffer);
+				// printf("%s", responseBuffer);
 
 				res.socket->send_n(responseBuffer.c_str(), responseBuffer.length());
-				
 				//__peer.send_n(responseBuffer.c_str(), 3);
 				ACE_DEBUG((LM_DEBUG, "(%t) QueueThread \n"));
 			}
@@ -355,16 +366,15 @@ public:
 	}
 
 	int svc(void) {
-	
 		ACE_thread_t tid = ACE_OS::thr_self();
 		ACE_DEBUG((LM_DEBUG, "(%t) Svc thread \n"));
 		//if (ACE_Thread::self() == thread_names[0]) {
-			while (1) {
-			 ACE_OS::sleep(1);
-				read(tid);
-			}
+		while (1) {
+			ACE_OS::sleep(0.1);
+			read(tid);
+		}
 		//}
-		return 0; 
+		return 0;
 	}
 
 private:
@@ -379,10 +389,10 @@ void addData() {
 	UserManager::registerUser("username11", "password11");
 	UserManager::registerUser("username22", "password22");
 	UserManager::registerUser("username33", "password33");
-	
-	GroupManager::creategroup("FFooBBar");
-	GroupManager::creategroup("Fruits");
-	GroupManager::creategroup("Cars");
+
+	GroupManager::creategroup("FFooBBar","u00001",1);
+	GroupManager::creategroup("Fruits", "u00001", 1);
+	GroupManager::creategroup("Cars", "u00001", 1);
 
 
 }
@@ -390,7 +400,6 @@ void addData() {
 int main(int argc, char* argv[]) {
 	ACE_INET_Addr addr(50009);
 	ACE_DEBUG((LM_DEBUG, "Thread: (%t) main \n"));
-	
 	Acceptor myacceptor(addr, Reactor::instance());
 	ACE_Thread::spawn((ACE_THR_FUNC)MyServiceHandler::write);
 	GroupManager::defaultgroups(); /// will load default groups
@@ -401,3 +410,25 @@ int main(int argc, char* argv[]) {
 	return 0;
 }
 
+
+/*
+
+
+char *a = new char[13];
+char *a = new char[1024 * 1024];
+
+delete[] a;
+
+
+char *i= new char(5);
+response obj;
+
+delete i;
+
+response* obj = new response;
+response^ obj = gcnew response;
+response& obj = *(new response);
+
+response, response& -> gc.
+
+*/

@@ -157,6 +157,7 @@
     <ClCompile Include="Connector with 1 svc thread.cpp" />
     <ClCompile Include="Connector- with 2 threads.cpp" />
     <ClCompile Include="CoonectorPattern.cpp" />
+    <ClCompile Include="createthreadafterlogin.cpp" />
     <ClCompile Include="Logger.cpp" />
     <ClCompile Include="MainServer- reactor with threadpool.cpp" />
     <ClCompile Include="Message.cpp" />

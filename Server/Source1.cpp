@@ -80,7 +80,6 @@ std::cout <<"Before deleting "<< *ii << std::endl;
 
 delete ii;
 std::cout << *ii << std::endl;
-*/
 
 return 0;
 }

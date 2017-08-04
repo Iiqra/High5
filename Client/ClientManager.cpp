@@ -38,8 +38,8 @@ std::vector<Group> GroupManager::groups = std::vector<Group>();
 
 void GroupManager::defaultgroups() {
 	// 2 groups --> same pattern, g0000
-	groups.push_back(Group("g00001", "Tech Talks")); //techtalks  -- enter t
-	groups.push_back(Group("g00002", "Foooobaaar")); //foobar    -- entre f 
+	groups.push_back(Group("g00001", "Tech Talks", "u00001", true)); //techtalks  -- enter t
+	groups.push_back(Group("g00002", "Foooobaaar", "u00002", false)); //foobar    -- entre f 
 } 
 
 bool GroupManager::groupExists(std::string groupname) {
@@ -66,7 +66,7 @@ void GroupManager::getconnections(std::string groupId, std::vector<Connection>& 
 std::map<int, std::pair<Connection, std::string>> GroupManager::_allconnections =
 std::map<int, std::pair<Connection, std::string>>();
 
-groupauthentication GroupManager::creategroup(std::string groupname) {
+groupauthentication GroupManager::creategroup(std::string groupname, std::string adminid, bool _p) {
 	// if group already exist?
 	for (auto _g : GroupManager::groups) {
 		if (_g.friendly_name == groupname) {
@@ -79,7 +79,7 @@ groupauthentication GroupManager::creategroup(std::string groupname) {
 	std::stringstream ss;
 	ss << "g" << std::setw(5) << std::setfill('0') << Group::getId();
 	groupid = ss.str();
-	GroupManager::groups.push_back(Group(groupid, groupname));
+	GroupManager::groups.push_back(Group(groupid, groupname, adminid, _p));
 	return  groupauthentication::Created;
 }
 
@@ -100,20 +100,36 @@ std::string GroupManager::getGroupId(std::string groupname) {
 	return "g0ERROR";
 }
 
-groupauthentication GroupManager::joinGroup(std::string name, Connection& c) {
+groupauthentication GroupManager::joinGroup(std::string groupname, Connection& c , std::string memberid) {
 	// If pair exists
 	std::pair<Connection, std::string> mypair = std::pair<Connection, std::string>();
-	mypair.first = c;
-	mypair.second = name;
+	mypair.first = c; // connection id
+	mypair.second = groupname;
+	std::string requesterid = c.userid;
+	c.userid = memberid; // i have to add requested member not the connection one. so im changing this 
+	mypair.first = c;   // same purpose as above
 	for (auto _ : _allconnections) {
 		if (_.second == mypair) {
 			// Connection exists in group
 			return groupauthentication::Exist;
 		}
 	}
-
-	GroupManager::_allconnections[GroupManager::mapId++] = mypair;
-	return groupauthentication::Added;
+	std::string adminid;
+	// group is private ask admin to add you
+	for (auto _g : GroupManager::groups) {
+		if (_g.name == groupname && _g._private== true && _g.adminid == requesterid)
+		{
+			   adminid = requesterid;
+		}
+		}
+	//return groupauthentication::Private;
+	
+	if (adminid != "") {
+		GroupManager::_allconnections[GroupManager::mapId++] = mypair;
+		mypair.first.userid = requesterid;
+		return groupauthentication::Added;
+	}
+	else return groupauthentication::Private;
 }
 
 std::string GroupManager::getuserlist(char groupId[6]) {

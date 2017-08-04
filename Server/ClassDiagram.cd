@@ -3,21 +3,14 @@
   <Class Name="Connection">
     <Position X="3.5" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAACAAAAEAAAAAAAAAAAAAAAAAAAEAAAAAAgA=</HashCode>
-      <FileName>C:\Users\iali\Documents\Visual Studio 2015\Projects\C++\ACE\High5\High5\Client\ClientManager.h</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="ClientManager">
-    <Position X="5.25" Y="0.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAIAAAAAAAAAAAAAAAAAAAIAAAAQAAIAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAACAAAAEAAAAAAQAAAAAAAAAAAAEAAAAAAgA=</HashCode>
       <FileName>C:\Users\iali\Documents\Visual Studio 2015\Projects\C++\ACE\High5\High5\Client\ClientManager.h</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="DbConnection">
     <Position X="7" Y="0.5" Width="1.5" />
     <NestedTypes>
-      <Enum Name="DbConnection::commandType" Collapsed="true">
+      <Enum Name="DbConnection::CommandType" Collapsed="true">
         <TypeIdentifier>
           <NewMemberFileName>C:\Users\iali\Documents\Visual Studio 2015\Projects\C++\ACE\High5\High5\Client\DBHelper.h</NewMemberFileName>
         </TypeIdentifier>
@@ -31,56 +24,21 @@
   <Class Name="LogManager">
     <Position X="8.75" Y="0.5" Width="1.25" />
     <TypeIdentifier>
-      <HashCode>AEEAAAAAAAAABABCAAAAAAAABAAAAAAIAAAAAAAgAAA=</HashCode>
+      <HashCode>AEEAAAAAAAAAAABCAAAAAAAABAAAAAAIAAAAAAAAAAA=</HashCode>
       <FileName>Logger.h</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="ProtocolManager">
-    <Position X="2" Y="0.5" Width="1.25" />
-    <NestedTypes>
-      <Enum Name="ProtocolManager::MessageType" Collapsed="true">
-        <TypeIdentifier>
-          <NewMemberFileName>MessageProtocol.h</NewMemberFileName>
-        </TypeIdentifier>
-      </Enum>
-    </NestedTypes>
-    <TypeIdentifier>
-      <HashCode>AGgCAABAAAQAEQAAAMAAAAAASAABAABAAAAIAAAMAAA=</HashCode>
-      <FileName>MessageProtocol.h</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="request">
-    <Position X="3.5" Y="2.5" Width="1.25" />
-    <TypeIdentifier>
-      <HashCode>AAgAAAAAAAAAAAAAAMAAAAAAAAABAAAAAABAAAAAAAA=</HashCode>
-      <FileName>MessageProtocol.h</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="response">
-    <Position X="4.75" Y="2.75" Width="1.25" />
-    <NestedTypes>
-      <Enum Name="response::ResponseType" Collapsed="true">
-        <TypeIdentifier>
-          <NewMemberFileName>MessageProtocol.h</NewMemberFileName>
-        </TypeIdentifier>
-      </Enum>
-    </NestedTypes>
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAACA=</HashCode>
-      <FileName>MessageProtocol.h</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="UserEntity">
     <Position X="7.25" Y="4" Width="1.25" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAACAAAABAAAAAAAAAAAAAAAgEAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAACAAAAAAAAgAAAAAAAAAAAgEAAgA=</HashCode>
       <FileName>User.h</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="UserManager">
     <Position X="5.75" Y="3.75" Width="1.25" />
     <TypeIdentifier>
-      <HashCode>AAAABAAAAAAAAAAAAAAAAAAAAAAAIAAIEAAAABAAAAQ=</HashCode>
+      <HashCode>IAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAIAAAAABAAAAA=</HashCode>
       <FileName>User.h</FileName>
     </TypeIdentifier>
   </Class>
@@ -96,6 +54,13 @@
     <TypeIdentifier>
       <HashCode>AAAEAAAAAAIAAAAAACAAAAAAAAAAAAAAAABAAAAAAAA=</HashCode>
       <FileName>C:\Users\iali\Documents\Visual Studio 2015\Projects\C++\ACE\High5\High5\Client\Server.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ClientManager">
+    <Position X="5.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAIAAAAAAAAAAAABAAAAAAAAAAAQAAIAAAAAAAAAA=</HashCode>
+      <FileName>C:\Users\iali\Documents\Visual Studio 2015\Projects\C++\ACE\High5\High5\Client\ClientManager.h</FileName>
     </TypeIdentifier>
   </Class>
   <Enum Name="TLogLevel">
