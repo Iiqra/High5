@@ -100,36 +100,58 @@ std::string GroupManager::getGroupId(std::string groupname) {
 	return "g0ERROR";
 }
 
-groupauthentication GroupManager::joinGroup(std::string groupname, Connection& c , std::string memberid) {
+groupauthentication GroupManager::joinGroup(std::string groupname,  Connection& c, std::string memberid) {
 	// If pair exists
-	std::pair<Connection, std::string> mypair = std::pair<Connection, std::string>();
-	mypair.first = c; // connection id
-	mypair.second = groupname;
 	std::string requesterid = c.userid;
-	c.userid = memberid; // i have to add requested member not the connection one. so im changing this 
-	mypair.first = c;   // same purpose as above
-	for (auto _ : _allconnections) {
+
+	Connection con;
+	for (auto _ : ClientManager::connections) {
+		if (_.userid == memberid) {
+			con = _;
+			break;
+		}
+	}
+
+	if (con.userid == "") {
+		// User does not exist
+		// return
+	}
+	std::pair<Connection, std::string> mypair = std::pair<Connection, std::string>();
+	mypair.second = groupname;
+	mypair.first = con;   // same purpose 8s above 
+					
+	for (auto _ : _allconnections) {  ///
 		if (_.second == mypair) {
 			// Connection exists in group
 			return groupauthentication::Exist;
 		}
 	}
+
 	std::string adminid;
 	// group is private ask admin to add you
 	for (auto _g : GroupManager::groups) {
-		if (_g.name == groupname && _g._private== true && _g.adminid == requesterid)
+		if (_g.name == groupname)
 		{
-			   adminid = requesterid;
+			if (!_g._private) {
+				// Public
+				GroupManager::_allconnections[GroupManager::mapId++] = mypair;    // u1  ,,, sender u3
+
+				return groupauthentication::Added;
+			}
+			else {
+				if (_g.adminid == requesterid) {
+					GroupManager::_allconnections[GroupManager::mapId++] = mypair;    // u1  ,,, sender u3
+		
+					return groupauthentication::Added;
+				} 
+
+				//return groupauthentication::Private;
+				return groupauthentication::Private;
+			}
 		}
-		}
-	//return groupauthentication::Private;
-	
-	if (adminid != "") {
-		GroupManager::_allconnections[GroupManager::mapId++] = mypair;
-		mypair.first.userid = requesterid;
-		return groupauthentication::Added;
 	}
-	else return groupauthentication::Private;
+
+	// Group not found.
 }
 
 std::string GroupManager::getuserlist(char groupId[6]) {
