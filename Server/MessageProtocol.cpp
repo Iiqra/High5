@@ -7,11 +7,11 @@
 	int read = _peer.recv_n(buffer, len);
 	if (read == len) {
 		container += buffer;
-		//delete buffer;
+		delete[] buffer;
 		return 1;
 	}
 	else {
-	  //delete buffer;
+	  delete[] buffer;
 		return 0;
 	}
 }

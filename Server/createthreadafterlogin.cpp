@@ -38,9 +38,9 @@ public:
 			Reactor::instance()->register_handler(this, ACE_Event_Handler::READ_MASK);
 		int a = instance++;
 		peer().send_n(std::to_string(a).c_str(), 1);
-		 peer().send_n("It works\n ", sizeof("It works\n")); 
 		return 0;
 	}
+
 	int _type;
     int handle_input(ACE_HANDLE)
 	{
@@ -82,10 +82,10 @@ public:
 				}
 				else {
 					_response.type = (int)(ResponseMessage::RegisterOK);
-					con = Connection(id, &this->peer_, UserManager::getsenderId(username));
-					ClientManager::addconnection(con);
+					/*con = Connection(id, &this->peer_, UserManager::getsenderId(username));
+					ClientManager::addconnection(con);*/
 					// here.
-					responsehelper::parseresponse(_response, con.userid, false);
+					responsehelper::parseresponse(_response, UserManager::getsenderId(username), false);
 					_response.socket = con.socket;
 					QueueManager::addresponse(_response);
 				}
@@ -135,6 +135,14 @@ public:
 		} //end of if 1 or 2 
 
 		else { // any other request
+			if (con.userid == "") {
+				// return, unauthorized
+				_response.type = (int)ResponseMessage::Unauthorized;
+				_response.socket = &__peer;
+				responsehelper::parseresponse(_response, "", false);
+				QueueManager::addresponse(_response);
+				return 0;
+			}
 			activate(THR_NEW_LWP, 1, 1, ACE_DEFAULT_THREAD_PRIORITY, -1, this,
 				0, 0, 0, thread_names);
 		}
@@ -145,7 +153,7 @@ public:
 	int read(int t) {
 
 #pragma region initialization
-
+		
 		std::string container2; int status; request r;
 		std::vector<Connection> conVector;
 		response _response;
@@ -160,7 +168,20 @@ public:
 		std::string buffResp;
 		std::string members;
 		bool isPrivate;
+		std::string type;
 		std::string grpadminid;
+
+		if (_type == -1) {
+			status = requesthelper::request_reader(__peer, type, 1);
+			if (type == "" || (type < "1" || type > "9")) {
+				// __peer.send_n("Try something useful", sizeof ("Try something useful")); cus of telnet single packet reading behaviour em niot orintnig this message here....
+				return 0;
+			}
+
+			// 1,2,3,4,5,6 = 1,2 let handle inp hadle it ... 
+
+			_type = std::stoi(type);
+		}
 #pragma endregion 
 		
 		switch ((RequestTypes)_type)
@@ -366,8 +387,8 @@ public:
 			responsehelper::parseresponse(_response, "", false);
 			QueueManager::addresponse(_response);
 			ACE_OS::sleep(3);
-			con.socket->close();
-			ACE_Thread::cancel(t); // cancel the thread
+			// con.socket->close();
+			//ACE_Thread::cancel(t); // cancel the thread
 			ACE_Thread::exit();
 			logout = true;
 			return -1; // deregister from reactor
@@ -380,8 +401,11 @@ public:
 			QueueManager::addresponse(_response);
 			break;
 		}
+
+		_type = -1;
 		return 0;
 	}
+
 	static void write(void) {
 		while (1) {
 			ACE_OS::sleep(0.3);

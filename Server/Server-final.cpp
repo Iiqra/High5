@@ -87,10 +87,11 @@
 //			}
 //			else {
 //				_response.type = (int)(ResponseMessage::RegisterOK);
-//				con = Connection(id, &this->peer_, UserManager::getsenderId(username));
-//				ClientManager::addconnection(con);
+//				// con = Connection(id, &this->peer_, UserManager::getsenderId(username));
+//				// ClientManager::addconnection(con);
 //				// here.
-//				responsehelper::parseresponse(_response, con.userid, false);
+//				responsehelper::parseresponse(_response, 
+//					UserManager::getsenderId(username) + "\nAccount created. Login to continue.", false);
 //				_response.socket = con.socket;
 //				QueueManager::addresponse(_response);
 //			}
@@ -135,6 +136,22 @@
 //			}
 //			QueueManager::addresponse(_response);
 //			break;// 3Amessage
+//		case Logout:  // 9
+//			con.userid = "";
+//			ClientManager::removeconnection(con.id);
+//			GroupManager::removeFromAll(con.userid);
+//			_response.socket = &__peer;
+//			_response.type = (int)ResponseMessage::Logout;
+//			responsehelper::parseresponse(_response, "", false);
+//			QueueManager::addresponse(_response);
+//			ACE_OS::sleep(3);
+//			con.socket->close();
+//			ACE_Thread::cancel(t); // cancel the thread
+//			ACE_Thread::exit();
+//			logout = true;
+//			return -1; // deregister from reactor
+//
+//			break;
 //		case Message:
 //			if (con.userid == "") {
 //				_response.type = (int)ResponseMessage::Unauthorized;
@@ -324,22 +341,6 @@
 //			_response.socket = &__peer;
 //			responsehelper::parseresponse(_response, buffer, false);
 //			QueueManager::addresponse(_response);
-//			break;
-//		case Logout:  // 9
-//			con.userid = "";
-//			ClientManager::removeconnection(con.id);
-//			GroupManager::removeFromAll(con.userid);
-//			_response.socket = &__peer;
-//			_response.type = (int)ResponseMessage::Logout;
-//			responsehelper::parseresponse(_response, "", false);
-//			QueueManager::addresponse(_response);
-//			ACE_OS::sleep(3);
-//			con.socket->close();
-//			ACE_Thread::cancel(t); // cancel the thread
-//			ACE_Thread::exit();
-//			logout = true;
-//			return -1; // deregister from reactor
-//
 //			break;
 //		default:
 //			_response.type = (int)ResponseMessage::InvalidSpecifier;

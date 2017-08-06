@@ -135,23 +135,19 @@ groupauthentication GroupManager::joinGroup(std::string groupname,  Connection& 
 			if (!_g._private) {
 				// Public
 				GroupManager::_allconnections[GroupManager::mapId++] = mypair;    // u1  ,,, sender u3
-
 				return groupauthentication::Added;
 			}
 			else {
 				if (_g.adminid == requesterid) {
 					GroupManager::_allconnections[GroupManager::mapId++] = mypair;    // u1  ,,, sender u3
-		
 					return groupauthentication::Added;
 				} 
-
-				//return groupauthentication::Private;
 				return groupauthentication::Private;
 			}
 		}
 	}
 
-	// Group not found.
+	return groupauthentication::GroupNotFound;
 }
 
 std::string GroupManager::getuserlist(char groupId[6]) {

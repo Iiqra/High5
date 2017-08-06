@@ -40,7 +40,7 @@ public:
 	static int getId() { return id++; }
 };
 
-enum class groupauthentication { Created, Exist, Added, Private /*ask admin to add you*/ };
+enum class groupauthentication { Created, Exist, Added, Private, GroupNotFound /*ask admin to add you*/ };
 class GroupManager {
 	static int mapId;
 public:
