@@ -1,5 +1,6 @@
 #pragma once 
 #include "MessageProtocol.h"
+#include<iomanip>
  int requesthelper::request_reader(ACE_SOCK_Stream& _peer, std::string & container, int len){
 	char* buffer = new char[len];
 	container = "";
@@ -7,11 +8,11 @@
 	int read = _peer.recv_n(buffer, len);
 	if (read == len) {
 		container += buffer;
-		delete[] buffer;
+		//delete[] buffer;
 		return 1;
 	}
 	else {
-	  delete[] buffer;
+	//  delete[] buffer;
 		return 0;
 	}
 }
@@ -100,7 +101,7 @@
 			 getlength(&resp.length, size);
 			 break;
 		 case ResponseMessage::AddedInGroup:
-			 resp.buffer = "Okay. You Added";
+			 resp.buffer = "Okay. Requested user is added";
 			 size = strlen(resp.buffer);
 			 getlength(&resp.length, size);
 			 break;
@@ -126,6 +127,10 @@
 			 break;
 		 case ResponseMessage::AlreadyLoggedIn:
 			 resp.buffer = "Already LoggedIn";
+			 getlength(&resp.length, strlen(resp.buffer));
+			 break;
+		 case ResponseMessage::InvalidToorFrom:
+			 resp.buffer = "Either Sender or Receiver or both are Invalid";
 			 getlength(&resp.length, strlen(resp.buffer));
 			 break;
 		 default:

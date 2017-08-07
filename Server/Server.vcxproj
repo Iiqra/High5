@@ -28,7 +28,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -89,7 +89,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\Users\Iiqra\Source\Repos\High5FromGit\Client;C:\Users\iali\Documents\Visual Studio 2015\Projects\C++\ACE\High5\High5\Client;C:\ACE-6.4.0\ACE_wrappers;C:\ACE-6.4.3\ACE_wrappers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\iali\Documents\Visual Studio 2015\Projects\C++\ACE\High5\High5\ConsoleApplication1;C:\Users\Iiqra\Source\Repos\High5FromGit\Client;C:\Users\iali\Documents\Visual Studio 2015\Projects\C++\ACE\High5\High5\Client;C:\ACE-6.4.0\ACE_wrappers;C:\ACE-6.4.3\ACE_wrappers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -152,26 +152,13 @@
   <ItemGroup>
     <ClCompile Include="..\Client\ClientManager.cpp" />
     <ClCompile Include="..\Client\DbHelper.cpp" />
-    <ClCompile Include="..\Client\Server.cpp" />
-    <ClCompile Include="AcceptorPattern.cpp" />
-    <ClCompile Include="Connector with 1 svc thread.cpp" />
-    <ClCompile Include="Connector- with 2 threads.cpp" />
-    <ClCompile Include="CoonectorPattern.cpp" />
     <ClCompile Include="createthreadafterlogin.cpp" />
+    <ClCompile Include="Log.cpp" />
     <ClCompile Include="Logger.cpp" />
-    <ClCompile Include="MainServer- reactor with threadpool.cpp" />
+    <ClCompile Include="LogTesting.cpp" />
     <ClCompile Include="Message.cpp" />
-    <ClCompile Include="MainServer-simple reactor pattern.cpp" />
     <ClCompile Include="MessageProtocol.cpp" />
-    <ClCompile Include="Server v3- DEMO.cpp" />
-    <ClCompile Include="Server v4.cpp" />
-    <ClCompile Include="server- dont touch its running one.cpp" />
-    <ClCompile Include="server- group logic.cpp" />
     <ClCompile Include="Server-final.cpp" />
-    <ClCompile Include="ServerPhase1Things.cpp" />
-    <ClCompile Include="ServerWithQueue.cpp" />
-    <ClCompile Include="Source.cpp" />
-    <ClCompile Include="Source1.cpp" />
     <ClCompile Include="User.cpp" />
     <ClCompile Include="usermanager.cpp" />
   </ItemGroup>
@@ -179,7 +166,7 @@
     <ClInclude Include="..\Client\ClientManager.h" />
     <ClInclude Include="..\Client\DBHelper.h" />
     <ClInclude Include="..\Client\Server.h" />
-    <ClInclude Include="AllHeaders.h" />
+    <ClInclude Include="Log.h" />
     <ClInclude Include="Logger.h" />
     <ClInclude Include="MessageProtocol.h" />
     <ClInclude Include="QueueManager.h" />

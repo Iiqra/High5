@@ -1,8 +1,8 @@
 #pragma once
 #include <queue>
-#include "MessageProtocol.h"
 #include "ace/Thread_Mutex.h"
 #include <mutex>
+#include "Header.h"
 
 //typedef ACE_Singleton<ACE_Mutex, ACE_Null_Mutex> MyMutex;
 
@@ -17,6 +17,7 @@ public:
 		if (responses.empty()) { return 0; }
 		r = responses.front();
 		int size = responses.size();
+		//if (!responses.empty())
 		responses.pop();
 		return 1;
 	}
