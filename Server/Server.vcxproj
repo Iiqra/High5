@@ -89,7 +89,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\Users\iali\Documents\Visual Studio 2015\Projects\C++\ACE\High5\High5\ConsoleApplication1;C:\Users\Iiqra\Source\Repos\High5FromGit\Client;C:\Users\iali\Documents\Visual Studio 2015\Projects\C++\ACE\High5\High5\Client;C:\ACE-6.4.0\ACE_wrappers;C:\ACE-6.4.3\ACE_wrappers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Iiqra\Documents\GitHub\High5\ConsoleApplication1;C:\Users\iali\Documents\Visual Studio 2015\Projects\C++\ACE\High5\High5\ConsoleApplication1;C:\Users\Iiqra\Source\Repos\High5FromGit\Client;C:\Users\iali\Documents\Visual Studio 2015\Projects\C++\ACE\High5\High5\Client;C:\ACE-6.4.0\ACE_wrappers;C:\ACE-6.4.3\ACE_wrappers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>

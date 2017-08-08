@@ -8,7 +8,6 @@
 //#include <cctype>
 //#include "ace/OS.h"
 //#include "ClientManager.h"
-//#include "MessageProtocol.h"
 //#include "QueueManager.h"
 //#include "User.h"
 //
@@ -162,7 +161,7 @@
 //			requesthelper::request_reader(__peer, recipient, 6); // u00001
 //
 //			//__peer.recv_n((char*)container.c_str(), 6);
-//		//	recipient = container; //u00003
+//			recipient = container; //u00003
 //			if (recipient[0] == 'u' || recipient[0] == 'U') {
 //				// username = content;
 //				_response.type = (int)(ResponseMessage::UserMessage);
@@ -171,9 +170,10 @@
 //				requesthelper::request_reader(__peer, container, 4);
 //				char* msgLength = (char*)container.c_str();
 //				int length = std::stoi(msgLength);
+//				requesthelper::request_reader(__peer, container, length);
 //				for (auto _con : ClientManager::connections) {
 //					if (_con.userid == recipient.c_str()) {
-//						requesthelper::request_reader(__peer, container, length); // limit of a text
+//						// requesthelper::request_reader(__peer, container, length); // limit of a text
 //						content += container;
 //						///send call
 //						_forward.socket = _con.socket;
@@ -182,8 +182,9 @@
 //						responsehelper::parseresponse(_response, "Okay", false);
 //						QueueManager::addresponse(_forward);
 //						QueueManager::addresponse(_response);
+//						return 0;
 //					}
-//				} break;
+//				} 
 //				_response.type = (int)(ResponseMessage::ClientOffline);
 //				_response.socket = &__peer;
 //				responsehelper::parseresponse(_response, "", false);

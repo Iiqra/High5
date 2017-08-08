@@ -65,7 +65,7 @@
 			 getlength(&resp.length, strlen(resp.buffer));
 			 break;
 		 case ResponseMessage::ClientOffline:
-			 resp.buffer = "Ahh, You're late, This user has just gone!";
+			 resp.buffer = "Ahh, You're late, This user has just gone!"; // :D
 			 getlength(&resp.length, strlen(resp.buffer));
 			 break;
 		 case ResponseMessage::GroupNotFound:
@@ -141,4 +141,8 @@
 	 return ss.str();
  }
 
- 
+#ifdef CLIENT_APP
+ void parseresponse(std::string msg, response& r) {
+
+ }
+#endif
