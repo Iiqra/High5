@@ -1,8 +1,10 @@
 #pragma once
 #include <queue>
-#include "ace/Thread_Mutex.h"
-#include <mutex>
-#include "Header.h"
+#include "ace/Thread_Mutex.h" //3u00002u000030009hdfnsdgjb // 2- u00002- mesage sent  3- u0003 hello
+#include <mutex>   // 3
+#include "MsgProtocol.h"
+using namespace MessageProtocol;
+
 
 //typedef ACE_Singleton<ACE_Mutex, ACE_Null_Mutex> MyMutex;
 

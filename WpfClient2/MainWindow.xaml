@@ -20,7 +20,7 @@
 
                 </Grid>
             </TabItem>
-            <TabItem Header="Register" Name="register">
+            <TabItem Header="Register" Name="register" HorizontalAlignment="Left" Width="61">
                 <Grid Background="#FFE5E5E5">
                     <StackPanel>
                         <RadioButton Name="rg1">1username01password01</RadioButton>

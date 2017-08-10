@@ -8,19 +8,17 @@
 #include <cctype>
 #include "ace/OS.h"
 #include "ClientManager.h"
-#include "QueueManager.h"
 #include "User.h"
+#include "QueueManager.h"
+#include "MsgProtocol.h"
+using namespace MessageProtocol;
 class MyServiceHandler; //forward declaration
-
 char id = 'A';
 static bool logout = false;
 static int instance = 1;
 typedef ACE_Singleton<ACE_Reactor, ACE_Null_Mutex> Reactor;
 typedef ACE_Acceptor<MyServiceHandler, ACE_SOCK_ACCEPTOR> Acceptor;
-
-//enum RequestTypes {Register=1, Login, Message, CreateGroup, MyGroupList, JoinGroup, MemberList, ActiveUsers, Broadcast, Logout=100 };
 enum RequestTypes { Register = 1, Login, Message, CreateGroup, JoinGroup, MemberList, ActiveUsers, Broadcast, Logout };
-
 class MyServiceHandler : public ACE_Svc_Handler<ACE_SOCK_STREAM, ACE_MT_SYNCH> {
 	ACE_thread_t thread_names[1];
 	Connection con;
@@ -347,7 +345,7 @@ public:
 			logout = true;
 			return -1; // deregister from reactor
 			break;
-		default:
+		default:  
 			_response.type = (int)ResponseMessage::InvalidSpecifier;
 			_response.socket = &__peer;
 			responsehelper::parseresponse(_response, "", false);
@@ -409,6 +407,7 @@ int main(int argc, char* argv[]) {
 	Acceptor myacceptor(addr, Reactor::instance());
 	ACE_Thread::spawn((ACE_THR_FUNC)MyServiceHandler::write);
 	GroupManager::defaultgroups(); /// will load default groups
+
 
 	addData();
 	while (1)

@@ -36,9 +36,6 @@
     <ClCompile Include="Server-final.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="MessageProtocol.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="createthreadafterlogin.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -46,6 +43,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="LogTesting.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DllLinkTesting.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -60,9 +60,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Client\ClientManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MessageProtocol.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="User.h">

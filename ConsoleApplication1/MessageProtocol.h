@@ -5,13 +5,13 @@
 #include <string>
 #include <sstream>
 #include <iostream>
-//#include "ace/SOCK_Acceptor.h"
+#include "ace/SOCK_Acceptor.h"
 class request;
 class response;
-enum class MessageType { Register = 1, Login, Message, Group, Broadcast, Image, File };
-enum class RequestStatus { InvalidPacketLength, InvalidSenderId, InvalidReceiverId, InvalidRequestSpecifier, BlockedSender, BlockedRecipient, Unauthorized, OK };
-enum class ResponseType { Invalid, HeaderError, Blocked, Unauthorized, OK };
-enum class ResponseMessage {
+enum  MessageType { Register = 1, Login, Message, Group, Broadcast, Image, File };
+enum  RequestStatus { InvalidPacketLength, InvalidSenderId, InvalidReceiverId, InvalidRequestSpecifier, BlockedSender, BlockedRecipient, Unauthorized, OK };
+enum  ResponseType { Invalid, HeaderError, Blocked, Unauthorized, OK };
+enum  ResponseMessage {
 	CantLogin = 1, ExistAlready, UsernamePasswordMismatch, Notfound, RegisterOK, LoginOK,
 	GroupCreated, AddedInGroup, AlreadyMember, PrivateGroup, MemberList, GroupNotFound, NoMembers, ClientOffline, UserMessage, GroupMessage, ActiveUsers,
 	InvalidSpecifier, InvalidToorFrom, Unauthorized, AlreadyLoggedIn, Logout, Custom = 255
