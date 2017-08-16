@@ -1,0 +1,65 @@
+ImageRuntimeVersion: v4.0.30319
+Assembly managedcode, Version=1.0.*, Culture=Invariant Language (Invariant Country): 
+	hash=SHA1, flags=PublicKey
+Assembly mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089: 
+	hash=None, flags=None
+Assembly System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089: 
+	hash=None, flags=None
+Assembly System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089: 
+	hash=None, flags=None
+Assembly System.Xml, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089: 
+	hash=None, flags=None
+Class managedcode.RequestManaged: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Methods:
+    SetFields(MessageTypeManaged, String, String, String, Int32): PrivateScope, Public, HideBySig
+    GetString(): PrivateScope, Public, HideBySig
+Class managedcode.RequestHelperManaged: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Methods:
+    SendRequest(TcpClient, String): PrivateScope, Public, Static, HideBySig
+Class managedcode.ResponseManaged: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+Class managedcode.ResponseHelperManaged: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Methods:
+    GetLength(SByte**, Int32): PrivateScope, Public, HideBySig
+    ParseResponse(ResponseManaged, String, Boolean(HasFieldMarshal)): PrivateScope, Public, Static, HideBySig
+Struct managedcode.MessageTypeManaged: AutoLayout, AnsiClass, Class, Public, Sealed, BeforeFieldInit
+  :System.Enum
+  Fields:
+    Int32 value__ : Public, SpecialName, RTSpecialName
+    managedcode.MessageTypeManaged Register = 1 : Public, Static, Literal, HasDefault
+    managedcode.MessageTypeManaged Login = 2 : Public, Static, Literal, HasDefault
+    managedcode.MessageTypeManaged Message = 3 : Public, Static, Literal, HasDefault
+    managedcode.MessageTypeManaged Group = 4 : Public, Static, Literal, HasDefault
+    managedcode.MessageTypeManaged Broadcast = 5 : Public, Static, Literal, HasDefault
+    managedcode.MessageTypeManaged Image = 6 : Public, Static, Literal, HasDefault
+    managedcode.MessageTypeManaged File = 7 : Public, Static, Literal, HasDefault
+Struct managedcode.ResponseMessageManaged: AutoLayout, AnsiClass, Class, Public, Sealed, BeforeFieldInit
+  :System.Enum
+  Fields:
+    Int32 value__ : Public, SpecialName, RTSpecialName
+    managedcode.ResponseMessageManaged CantLogin = 1 : Public, Static, Literal, HasDefault
+    managedcode.ResponseMessageManaged ExistAlready = 2 : Public, Static, Literal, HasDefault
+    managedcode.ResponseMessageManaged UsernamePasswordMismatch = 3 : Public, Static, Literal, HasDefault
+    managedcode.ResponseMessageManaged Notfound = 4 : Public, Static, Literal, HasDefault
+    managedcode.ResponseMessageManaged RegisterOK = 5 : Public, Static, Literal, HasDefault
+    managedcode.ResponseMessageManaged LoginOK = 6 : Public, Static, Literal, HasDefault
+    managedcode.ResponseMessageManaged GroupCreated = 7 : Public, Static, Literal, HasDefault
+    managedcode.ResponseMessageManaged AddedInGroup = 8 : Public, Static, Literal, HasDefault
+    managedcode.ResponseMessageManaged AlreadyMember = 9 : Public, Static, Literal, HasDefault
+    managedcode.ResponseMessageManaged PrivateGroup = 10 : Public, Static, Literal, HasDefault
+    managedcode.ResponseMessageManaged MemberList = 11 : Public, Static, Literal, HasDefault
+    managedcode.ResponseMessageManaged GroupNotFound = 12 : Public, Static, Literal, HasDefault
+    managedcode.ResponseMessageManaged NoMembers = 13 : Public, Static, Literal, HasDefault
+    managedcode.ResponseMessageManaged ClientOffline = 14 : Public, Static, Literal, HasDefault
+    managedcode.ResponseMessageManaged UserMessage = 15 : Public, Static, Literal, HasDefault
+    managedcode.ResponseMessageManaged GroupMessage = 16 : Public, Static, Literal, HasDefault
+    managedcode.ResponseMessageManaged ActiveUsers = 17 : Public, Static, Literal, HasDefault
+    managedcode.ResponseMessageManaged InvalidSpecifier = 18 : Public, Static, Literal, HasDefault
+    managedcode.ResponseMessageManaged InvalidToorFrom = 19 : Public, Static, Literal, HasDefault
+    managedcode.ResponseMessageManaged Unauthorized = 20 : Public, Static, Literal, HasDefault
+    managedcode.ResponseMessageManaged AlreadyLoggedIn = 21 : Public, Static, Literal, HasDefault
+    managedcode.ResponseMessageManaged Logout = 22 : Public, Static, Literal, HasDefault
+    managedcode.ResponseMessageManaged Custom = 255 : Public, Static, Literal, HasDefault

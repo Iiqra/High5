@@ -1,0 +1,16 @@
+c:\users\iali\documents\visual studio 2015\Projects\15August\client\bin\Debug\client.exe.config
+c:\users\iali\documents\visual studio 2015\Projects\15August\client\obj\Debug\client.csprojResolveAssemblyReference.cache
+c:\users\iali\documents\visual studio 2015\Projects\15August\client\obj\Debug\MainWindow.g.cs
+c:\users\iali\documents\visual studio 2015\Projects\15August\client\obj\Debug\App.g.cs
+c:\users\iali\documents\visual studio 2015\Projects\15August\client\obj\Debug\client_MarkupCompile.cache
+c:\users\iali\documents\visual studio 2015\Projects\15August\client\obj\Debug\client_MarkupCompile.lref
+c:\users\iali\documents\visual studio 2015\Projects\15August\client\bin\Debug\client.exe
+c:\users\iali\documents\visual studio 2015\Projects\15August\client\bin\Debug\client.pdb
+c:\users\iali\documents\visual studio 2015\Projects\15August\client\obj\Debug\MainWindow.baml
+c:\users\iali\documents\visual studio 2015\Projects\15August\client\obj\Debug\client.g.resources
+c:\users\iali\documents\visual studio 2015\Projects\15August\client\obj\Debug\client.Properties.Resources.resources
+c:\users\iali\documents\visual studio 2015\Projects\15August\client\obj\Debug\client.csproj.GenerateResource.Cache
+c:\users\iali\documents\visual studio 2015\Projects\15August\client\obj\Debug\client.exe
+c:\users\iali\documents\visual studio 2015\Projects\15August\client\obj\Debug\client.pdb
+c:\users\iali\documents\visual studio 2015\Projects\15August\client\bin\Debug\managedcode.dll
+c:\users\iali\documents\visual studio 2015\Projects\15August\client\bin\Debug\managedcode.pdb

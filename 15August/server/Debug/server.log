@@ -1,0 +1,10 @@
+﻿  User.cpp
+  Server-final.cpp
+c:\users\iali\documents\visual studio 2015\projects\c++\ace\high5\high5\server\server-final.cpp(43): warning C4101: 'r': unreferenced local variable
+c:\users\iali\documents\visual studio 2015\projects\c++\ace\high5\high5\server\server-final.cpp(361): warning C4244: 'argument': conversion from 'double' to 'u_int', possible loss of data
+c:\users\iali\documents\visual studio 2015\projects\c++\ace\high5\high5\server\server-final.cpp(379): warning C4244: 'argument': conversion from 'double' to 'u_int', possible loss of data
+  msgprotocol.cpp
+  ClientManager.cpp
+  Generating Code...
+  server.vcxproj -> C:\Users\iali\Documents\Visual Studio 2015\Projects\15August\Debug\server.exe
+  server.vcxproj -> C:\Users\iali\Documents\Visual Studio 2015\Projects\15August\Debug\server.pdb (Full PDB)

@@ -1,0 +1,13 @@
+C:\Users\iali\Documents\Visual Studio 2015\Projects\15August\ResponsiveClient\bin\Debug\ResponsiveClient.exe.config
+C:\Users\iali\Documents\Visual Studio 2015\Projects\15August\ResponsiveClient\bin\Debug\ResponsiveClient.exe
+C:\Users\iali\Documents\Visual Studio 2015\Projects\15August\ResponsiveClient\bin\Debug\ResponsiveClient.pdb
+C:\Users\iali\Documents\Visual Studio 2015\Projects\15August\ResponsiveClient\obj\Debug\MainWindow.g.cs
+C:\Users\iali\Documents\Visual Studio 2015\Projects\15August\ResponsiveClient\obj\Debug\App.g.cs
+C:\Users\iali\Documents\Visual Studio 2015\Projects\15August\ResponsiveClient\obj\Debug\ResponsiveClient_MarkupCompile.cache
+C:\Users\iali\Documents\Visual Studio 2015\Projects\15August\ResponsiveClient\obj\Debug\ResponsiveClient_MarkupCompile.lref
+C:\Users\iali\Documents\Visual Studio 2015\Projects\15August\ResponsiveClient\obj\Debug\MainWindow.baml
+C:\Users\iali\Documents\Visual Studio 2015\Projects\15August\ResponsiveClient\obj\Debug\ResponsiveClient.g.resources
+C:\Users\iali\Documents\Visual Studio 2015\Projects\15August\ResponsiveClient\obj\Debug\ResponsiveClient.Properties.Resources.resources
+C:\Users\iali\Documents\Visual Studio 2015\Projects\15August\ResponsiveClient\obj\Debug\ResponsiveClient.csproj.GenerateResource.Cache
+C:\Users\iali\Documents\Visual Studio 2015\Projects\15August\ResponsiveClient\obj\Debug\ResponsiveClient.exe
+C:\Users\iali\Documents\Visual Studio 2015\Projects\15August\ResponsiveClient\obj\Debug\ResponsiveClient.pdb

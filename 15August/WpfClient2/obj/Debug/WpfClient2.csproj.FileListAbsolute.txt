@@ -1,0 +1,33 @@
+C:\Users\Iiqra\Documents\GitHub\High5\WpfClient2\bin\Debug\WpfClient2.exe.config
+C:\Users\Iiqra\Documents\GitHub\High5\WpfClient2\bin\Debug\WpfClient2.exe
+C:\Users\Iiqra\Documents\GitHub\High5\WpfClient2\bin\Debug\WpfClient2.pdb
+C:\Users\Iiqra\Documents\GitHub\High5\WpfClient2\obj\Debug\MainWindow.g.cs
+C:\Users\Iiqra\Documents\GitHub\High5\WpfClient2\obj\Debug\App.g.cs
+C:\Users\Iiqra\Documents\GitHub\High5\WpfClient2\obj\Debug\WpfClient2_MarkupCompile.cache
+C:\Users\Iiqra\Documents\GitHub\High5\WpfClient2\obj\Debug\WpfClient2_MarkupCompile.lref
+C:\Users\Iiqra\Documents\GitHub\High5\WpfClient2\obj\Debug\MainWindow.baml
+C:\Users\Iiqra\Documents\GitHub\High5\WpfClient2\obj\Debug\WpfClient2.g.resources
+C:\Users\Iiqra\Documents\GitHub\High5\WpfClient2\obj\Debug\WpfClient2.Properties.Resources.resources
+C:\Users\Iiqra\Documents\GitHub\High5\WpfClient2\obj\Debug\WpfClient2.csproj.GenerateResource.Cache
+C:\Users\Iiqra\Documents\GitHub\High5\WpfClient2\obj\Debug\WpfClient2.exe
+C:\Users\Iiqra\Documents\GitHub\High5\WpfClient2\obj\Debug\WpfClient2.pdb
+C:\Users\Iiqra\Documents\GitHub\High5\WpfClient2\obj\Debug\InputField.g.cs
+C:\Users\Iiqra\Documents\GitHub\High5\WpfClient2\obj\Debug\GeneratedInternalTypeHelper.g.cs
+C:\Users\Iiqra\Documents\GitHub\High5\WpfClient2\obj\Debug\InputField.baml
+C:\Users\iali\Documents\Visual Studio 2015\Projects\15August\WpfClient2\bin\Debug\WpfClient2.exe.config
+C:\Users\iali\Documents\Visual Studio 2015\Projects\15August\WpfClient2\bin\Debug\WpfClient2.exe
+C:\Users\iali\Documents\Visual Studio 2015\Projects\15August\WpfClient2\bin\Debug\WpfClient2.pdb
+C:\Users\iali\Documents\Visual Studio 2015\Projects\15August\WpfClient2\obj\Debug\WpfClient2.csprojResolveAssemblyReference.cache
+C:\Users\iali\Documents\Visual Studio 2015\Projects\15August\WpfClient2\obj\Debug\InputField.g.cs
+C:\Users\iali\Documents\Visual Studio 2015\Projects\15August\WpfClient2\obj\Debug\MainWindow.g.cs
+C:\Users\iali\Documents\Visual Studio 2015\Projects\15August\WpfClient2\obj\Debug\App.g.cs
+C:\Users\iali\Documents\Visual Studio 2015\Projects\15August\WpfClient2\obj\Debug\GeneratedInternalTypeHelper.g.cs
+C:\Users\iali\Documents\Visual Studio 2015\Projects\15August\WpfClient2\obj\Debug\WpfClient2_MarkupCompile.cache
+C:\Users\iali\Documents\Visual Studio 2015\Projects\15August\WpfClient2\obj\Debug\WpfClient2_MarkupCompile.lref
+C:\Users\iali\Documents\Visual Studio 2015\Projects\15August\WpfClient2\obj\Debug\InputField.baml
+C:\Users\iali\Documents\Visual Studio 2015\Projects\15August\WpfClient2\obj\Debug\MainWindow.baml
+C:\Users\iali\Documents\Visual Studio 2015\Projects\15August\WpfClient2\obj\Debug\WpfClient2.g.resources
+C:\Users\iali\Documents\Visual Studio 2015\Projects\15August\WpfClient2\obj\Debug\WpfClient2.Properties.Resources.resources
+C:\Users\iali\Documents\Visual Studio 2015\Projects\15August\WpfClient2\obj\Debug\WpfClient2.csproj.GenerateResource.Cache
+C:\Users\iali\Documents\Visual Studio 2015\Projects\15August\WpfClient2\obj\Debug\WpfClient2.exe
+C:\Users\iali\Documents\Visual Studio 2015\Projects\15August\WpfClient2\obj\Debug\WpfClient2.pdb

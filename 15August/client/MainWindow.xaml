@@ -1,0 +1,19 @@
+﻿<Window x:Class="client.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:client"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="294.149" Width="525">
+    <Grid>
+        <Border Padding="60">
+         <StackPanel>
+                <TextBox x:Name="txtrequest"  Width="200" Height="20" TextChanged="txtrequest_TextChanged"/>
+                <Button  Name="btnenter" Content="Enter"  Width="60" Height="20" Margin="10,10" Click="btnenter_Click"/>
+                <TextBox x:Name="txtresponse"  Width="200" Height="20"/>
+        </StackPanel>
+
+        </Border>
+    </Grid>
+</Window>

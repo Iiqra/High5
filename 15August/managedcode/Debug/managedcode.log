@@ -1,0 +1,5 @@
+﻿  managedcode.cpp
+  AssemblyInfo.obj : /DEBUG:FASTLINK is not supported when managed code is present; restarting link with /DEBUG:FULL
+managedcode.obj : warning LNK4248: unresolved typeref token (0100002F) for 'ACE_Time_Value'; image may not run
+  managedcode.vcxproj -> C:\Users\iali\Documents\Visual Studio 2015\Projects\15August\Debug\managedcode.dll
+  managedcode.vcxproj -> C:\Users\iali\Documents\Visual Studio 2015\Projects\15August\Debug\managedcode.pdb (Partial PDB)
